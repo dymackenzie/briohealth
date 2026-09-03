@@ -1,0 +1,54 @@
+:root {
+  /* Brand teal */
+  --teal-700: #0C4A4F;
+  --teal-600: #12686F;
+  --teal-500: #1A929C;
+  --teal-300: #7CC0C4;
+  --teal-100: #D6EBEC;
+  --teal-050: #ECF5F5;
+
+  /* Ink */
+  --ink-900: #0E1414;
+  --ink-700: #243031;
+  --ink-500: #5A6566;
+  --ink-300: #9AA3A3;
+
+  /* Warm neutrals */
+  --canvas: #FAF6EF;
+  --sand-200: #F1E9DB;
+  --sand-300: #E7DCC9;
+  --paper: #FFFFFF;
+
+  /* Coral accent */
+  --coral-500: #E8775A;
+  --coral-300: #F3B39E;
+  --coral-100: #FBE7DF;
+
+  /* Gold */
+  --gold-300: #F4C77B;
+  --gold-100: #FBEFD6;
+
+  /* Functional */
+  --success: #2F8F6B;
+  --error: #C7493A;
+  --focus: #1A929C;
+
+  /* Spacing */
+  --space: 0.5rem;
+  --section-y: clamp(4rem, 9vw, 8rem);
+  --container: 1200px;
+  --container-prose: 720px;
+  --gutter: clamp(1.25rem, 4vw, 3rem);
+
+  /* Radius */
+  --r-sm: 0.625rem;
+  --r-md: 1rem;
+  --r-lg: 1.5rem;
+  --r-xl: 2rem;
+  --r-pill: 999px;
+
+  /* Shadows */
+  --shadow-sm: 0 1px 2px rgba(14,20,20,.04), 0 2px 8px rgba(14,20,20,.04);
+  --shadow-md: 0 6px 24px rgba(14,20,20,.06);
+  --shadow-lg: 0 18px 48px rgba(12,74,79,.10);
+}

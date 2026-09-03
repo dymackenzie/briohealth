@@ -1,0 +1,38 @@
+{
+  "name": "brio",
+  "version": "0.1.0",
+  "private": true,
+  "scripts": {
+    "dev": "next dev",
+    "build": "next build",
+    "start": "next start",
+    "lint": "eslint"
+  },
+  "dependencies": {
+    "@portabletext/react": "^6.2.0",
+    "@sanity/icons": "^3.7.4",
+    "@sanity/image-url": "^2.1.1",
+    "@sanity/vision": "^5.30.0",
+    "@sanity/visual-editing": "^5.4.3",
+    "@vercel/analytics": "^2.0.1",
+    "embla-carousel-react": "^8.6.0",
+    "lucide-react": "^1.17.0",
+    "motion": "^12.40.0",
+    "next": "16.2.7",
+    "next-sanity": "^13.0.11",
+    "react": "19.2.4",
+    "react-dom": "19.2.4",
+    "sanity": "^5.30.0",
+    "styled-components": "^6.4.2"
+  },
+  "devDependencies": {
+    "@tailwindcss/postcss": "^4",
+    "@types/node": "^20",
+    "@types/react": "^19",
+    "@types/react-dom": "^19",
+    "eslint": "^9",
+    "eslint-config-next": "16.2.7",
+    "tailwindcss": "^4",
+    "typescript": "^5"
+  }
+}
