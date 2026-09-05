@@ -1,123 +1,332 @@
-@import "tailwindcss";
-@import "../styles/tokens.css";
-
-@theme inline {
-  --color-teal-700: var(--teal-700);
-  --color-teal-600: var(--teal-600);
-  --color-teal-500: var(--teal-500);
-  --color-teal-300: var(--teal-300);
-  --color-teal-100: var(--teal-100);
-  --color-teal-050: var(--teal-050);
-  --color-ink-900: var(--ink-900);
-  --color-ink-700: var(--ink-700);
-  --color-ink-500: var(--ink-500);
-  --color-ink-300: var(--ink-300);
-  --color-canvas: var(--canvas);
-  --color-sand-200: var(--sand-200);
-  --color-sand-300: var(--sand-300);
-  --color-paper: var(--paper);
-  --color-coral-500: var(--coral-500);
-  --color-coral-300: var(--coral-300);
-  --color-coral-100: var(--coral-100);
-  --color-gold-300: var(--gold-300);
-  --color-gold-100: var(--gold-100);
-  --color-success: var(--success);
-  --color-error: var(--error);
-  --font-display: var(--font-fraunces), Georgia, serif;
-  --font-body: var(--font-hanken), system-ui, sans-serif;
-}
+@import 'tailwindcss';
+@import '../styles/tokens.css';
 
 html {
+  -webkit-text-size-adjust: 100%;
   scroll-behavior: smooth;
 }
 
-body {
-  background: var(--canvas);
-  color: var(--ink-700);
-  font-family: var(--font-hanken), system-ui, sans-serif;
-  font-size: 1.0625rem;
-  line-height: 1.65;
-  -webkit-font-smoothing: antialiased;
-}
-
-h1, h2, h3, h4, h5, h6 {
-  font-family: var(--font-fraunces), Georgia, serif;
-  color: var(--ink-900);
-  line-height: 1.15;
-}
-
-a {
-  color: var(--teal-500);
-  text-underline-offset: 3px;
-}
-
-a:hover {
-  color: var(--teal-600);
-}
-
-:focus-visible {
-  outline: 2px solid var(--focus);
-  outline-offset: 3px;
-  border-radius: var(--r-sm);
-}
-
 @media (prefers-reduced-motion: reduce) {
-  *, *::before, *::after {
+  html {
+    scroll-behavior: auto;
+  }
+  *,
+  *::before,
+  *::after {
     animation-duration: 0.01ms !important;
+    animation-delay: 0ms !important;
     animation-iteration-count: 1 !important;
     transition-duration: 0.01ms !important;
-    scroll-behavior: auto !important;
+    transition-delay: 0ms !important;
   }
 }
 
-/* Prose styles for rich text */
-.prose {
+body {
+  background: var(--color-canvas);
+  color: var(--color-ink-900);
+  font-family: var(--font-body);
+  /* 16px base. The audience skews older, so this is the floor. */
+  font-size: 1rem;
+  line-height: 1.6;
+  -webkit-font-smoothing: antialiased;
+  text-rendering: optimizeLegibility;
+}
+
+/* A little WONK so headings read warm, not institutional. */
+:is(h1, h2, h3, h4) {
+  font-family: var(--font-display);
+  font-variation-settings: 'SOFT' 0, 'WONK' 1;
+  line-height: 1.1;
+  letter-spacing: -0.015em;
+  text-wrap: balance;
+}
+
+p {
+  text-wrap: pretty;
+}
+
+:focus-visible {
+  outline: 2px solid var(--color-teal-500);
+  outline-offset: 3px;
+  border-radius: 2px;
+}
+
+/* The teal ring vanishes on teal bands. */
+.band-teal :focus-visible,
+.band-teal-deep :focus-visible {
+  outline-color: var(--color-canvas);
+}
+
+::selection {
+  background: var(--color-teal-500);
+  color: var(--color-paper);
+}
+
+.container-x {
+  width: 100%;
+  max-width: var(--container);
+  margin-inline: auto;
+  padding-inline: var(--gutter);
+}
+
+.container-prose {
+  width: 100%;
   max-width: var(--container-prose);
-  color: var(--ink-700);
+  margin-inline: auto;
+  padding-inline: var(--gutter);
 }
 
-.prose h1, .prose h2, .prose h3, .prose h4 {
-  font-family: var(--font-fraunces), Georgia, serif;
-  color: var(--ink-900);
-  margin-top: 2em;
+.section-y {
+  padding-block: var(--section-y);
+}
+
+/* Full-bleed colour blocks alternating down the page. Colour carries the
+ * hierarchy, so nothing needs a card or a border. */
+
+.band-cream {
+  background: var(--color-canvas);
+  color: var(--color-ink-900);
+}
+
+.band-sand {
+  background: var(--color-sand-200);
+  color: var(--color-ink-900);
+}
+
+.band-teal {
+  background: var(--color-teal-700);
+  color: var(--color-canvas);
+}
+
+.band-teal-deep {
+  background: var(--color-teal-900);
+  color: var(--color-canvas);
+}
+
+:is(.band-teal, .band-teal-deep) :is(h1, h2, h3, h4) {
+  color: var(--color-paper);
+}
+
+/* Motion
+ *
+ * Scoped to `.js`, which an inline script in the head sets before first paint.
+ * No class means everything renders visible — otherwise a script failure takes
+ * the whole page with it. Transform and opacity only. */
+.js [data-reveal] {
+  opacity: 0;
+  transition:
+    opacity 0.7s cubic-bezier(0.22, 1, 0.36, 1),
+    transform 0.7s cubic-bezier(0.22, 1, 0.36, 1);
+}
+
+.js [data-reveal='up'] { transform: translateY(1.15rem); }
+.js [data-reveal='left'] { transform: translateX(-1.15rem); }
+.js [data-reveal='right'] { transform: translateX(1.15rem); }
+.js [data-reveal='scale'] { transform: scale(0.94); }
+
+.js [data-reveal][data-shown] {
+  opacity: 1;
+  transform: none;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .js [data-reveal] {
+    opacity: 1;
+    transform: none;
+    transition: none;
+  }
+}
+
+/* Don't hide anything from print. */
+@media print {
+  .js [data-reveal] {
+    opacity: 1;
+    transform: none;
+  }
+}
+
+/* The headline sets a word at a time out of a mask. Server-rendered, so the
+ * words are visible with no JS at all; the `js` class is what hides them so a
+ * script failure can't take the headline with it. */
+.hero-word {
+  position: relative;
+  display: inline-flex;
+  overflow: hidden;
+  padding-bottom: 0.12em;
+  vertical-align: bottom;
+}
+
+.js .hero-word > span {
+  display: inline-block;
+  transform: translateY(105%);
+  animation: word-rise 0.75s cubic-bezier(0.22, 1, 0.36, 1) forwards;
+}
+
+@keyframes word-rise {
+  to {
+    transform: none;
+  }
+}
+
+.js .hero-underline path {
+  stroke-dasharray: 1;
+  stroke-dashoffset: 1;
+  animation: draw-underline 0.6s ease-out forwards;
+}
+
+@keyframes draw-underline {
+  to {
+    stroke-dashoffset: 0;
+  }
+}
+
+/* Hero is already in view on load, so it staggers on a delay instead. */
+@keyframes rise-in {
+  from {
+    opacity: 0;
+    transform: translateY(1rem);
+  }
+  to {
+    opacity: 1;
+    transform: none;
+  }
+}
+
+.rise-in {
+  animation: rise-in 0.9s cubic-bezier(0.22, 1, 0.36, 1) backwards;
+}
+
+/* Slow enough to read as ambient. */
+@keyframes drift {
+  0%,
+  100% {
+    transform: translate3d(0, 0, 0) rotate(0deg);
+  }
+  50% {
+    transform: translate3d(-1.5%, 2%, 0) rotate(4deg);
+  }
+}
+
+.drift {
+  animation: drift 28s ease-in-out infinite;
+}
+
+.media-hover:hover .media-zoom {
+  transform: scale(1.04);
+}
+
+.media-zoom {
+  transition: transform 0.7s cubic-bezier(0.22, 1, 0.36, 1);
+}
+
+/* Post bodies. Twenty years of WordPress output, so this has to hold up for
+ * classic editor markup, Gutenberg blocks and unwrapped Avada alike. */
+.post-body {
+  font-size: 1.05rem;
+  line-height: 1.7;
+}
+
+.post-body > * + * {
+  margin-top: 1.2em;
+}
+
+.post-body :is(h2, h3, h4) {
+  margin-top: 1.9em;
   margin-bottom: 0.5em;
 }
 
-.prose p {
-  margin-bottom: 1.25em;
-  line-height: 1.75;
-}
+.post-body h2 { font-size: clamp(1.45rem, 2.6vw, 1.8rem); }
+.post-body h3 { font-size: clamp(1.2rem, 2vw, 1.4rem); }
+.post-body h4 { font-size: 1.08rem; }
 
-.prose ul, .prose ol {
-  padding-left: 1.5em;
-  margin-bottom: 1.25em;
-}
-
-.prose li {
-  margin-bottom: 0.5em;
-}
-
-.prose blockquote {
-  border-left: 3px solid var(--teal-500);
-  padding-left: 1.25em;
-  color: var(--ink-500);
-  font-style: italic;
-  font-family: var(--font-fraunces), Georgia, serif;
-  margin: 2em 0;
-}
-
-.prose strong {
-  color: var(--ink-900);
-  font-weight: 600;
-}
-
-.prose a {
-  color: var(--teal-600);
+.post-body a {
+  color: var(--color-teal-700);
   text-decoration: underline;
   text-underline-offset: 3px;
 }
 
-.prose img {
-  border-radius: var(--r-xl);
+.post-body a:hover {
+  text-decoration: none;
+}
+
+.post-body :is(ul, ol) {
+  padding-left: 1.4em;
+}
+
+.post-body ul { list-style: disc; }
+.post-body ol { list-style: decimal; }
+
+.post-body li + li {
+  margin-top: 0.45em;
+}
+
+.post-body li::marker {
+  color: var(--color-teal-500);
+}
+
+.post-body :is(img, iframe) {
+  max-width: 100%;
+  height: auto;
+  border-radius: var(--radius-md);
+}
+
+.post-body iframe {
+  aspect-ratio: 16 / 9;
   width: 100%;
+}
+
+.post-body blockquote {
+  border-left: 3px solid var(--color-teal-300);
+  padding-left: 1.4em;
+  font-family: var(--font-display);
+  font-size: 1.2em;
+  line-height: 1.45;
+}
+
+.post-body :is(strong, b) {
+  font-weight: 600;
+}
+
+.post-body hr {
+  border: 0;
+  border-top: 1px solid rgb(35 31 32 / 0.12);
+  margin-block: 2em;
+}
+
+.post-body table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 0.95em;
+}
+
+.post-body :is(th, td) {
+  border: 1px solid rgb(35 31 32 / 0.12);
+  padding: 0.6em 0.8em;
+  text-align: left;
+}
+
+/* Old posts are full of empty paragraphs used as spacers. */
+.post-body p:empty {
+  display: none;
+}
+
+/* Inline highlight, written as **like this** in the copy.
+ *
+ * A gradient stop rather than a solid background, so it sits under the text
+ * like a marker pass instead of boxing the words in. --mark is redefined per
+ * band because a cream wash disappears on teal. */
+.mark {
+  --mark: var(--color-teal-100);
+  background: linear-gradient(to top, var(--mark) 0 38%, transparent 38%);
+  padding-inline: 0.1em;
+  color: inherit;
+  border-radius: 2px;
+}
+
+.band-sand .mark {
+  --mark: color-mix(in srgb, var(--color-teal-300) 55%, transparent);
+}
+
+:is(.band-teal, .band-teal-deep) .mark {
+  --mark: color-mix(in srgb, var(--color-teal-400) 45%, transparent);
 }
