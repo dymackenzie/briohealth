@@ -1,43 +1,64 @@
 import type { NextConfig } from 'next'
 
+/**
+ * Pages that moved to a different path. Blog posts aren't here — there are 418
+ * of them and proxy.ts handles those.
+ */
+const legacyRedirects = [
+  ['/about-2', '/about'],
+  ['/naturopathic', '/services/naturopathic'],
+  ['/acupuncture-3', '/services/acupuncture'],
+  ['/i-v-therapy', '/services/iv-therapy'],
+  ['/book-now', '/book'],
+  ['/contact-us', '/contact'],
+  ['/contact-us-2', '/contact'],
+
+  // Both still published on the live install. brio-home is the front page
+  // under its own slug; the store page has been empty for years.
+  ['/brio-home', '/'],
+  ['/brio-health-store', '/'],
+
+  // She's left and the page already 404s, so send it to About.
+  ['/about-brio-integrative-health-centre/about-dr-neetu-dhiman', '/about'],
+] as const
+
+/**
+ * Deliberately not redirected — these are blog posts, not pages:
+ *
+ *   /low-level-laser-therapy       (2010, 1124 words)
+ *   /registered-massage-therapy    (2014)
+ *   /weight-loss-in-richmond-bc    (2015)
+ *   /liver-detox-program           (2010)
+ *   /healthy-living-101-event      (2016)
+ *   /workshop                      (2013)
+ *   /about-kyra-sturrock           (2012, practitioner has left)
+ *   /learn-more-about-linda        (2014, practitioner has left)
+ *
+ * The proposed IA treated these as service/program/team pages. They're
+ * decade-old posts, untouched since publication, so pointing them at
+ * /services/* would send traffic to pages we have no content for. proxy.ts
+ * sends them to /blog/<slug> instead, where the content actually is.
+ */
+
 const nextConfig: NextConfig = {
   images: {
     remotePatterns: [
-      { protocol: 'https', hostname: 'cdn.sanity.io' },
+      // Media stays on the WP host.
+      { protocol: 'https', hostname: 'cms.yourbriohealth.com' },
+      // Pre-cutover it's still on the apex.
+      { protocol: 'https', hostname: 'yourbriohealth.com' },
       { protocol: 'https', hostname: 'img.youtube.com' },
     ],
   },
+
+  // No trailing-slash variants needed — Next normalises `/foo/` to `/foo`
+  // with its own 308 before any of these are consulted.
   async redirects() {
-    return [
-      { source: '/about-2/', destination: '/about', permanent: true },
-      { source: '/about-2', destination: '/about', permanent: true },
-      { source: '/about-brio-integrative-health-centre/about-dr-neetu-dhiman/', destination: '/about/team/neetu-dhiman', permanent: true },
-      { source: '/about-kyra-sturrock/', destination: '/about/team/kyra-sturrock', permanent: true },
-      { source: '/learn-more-about-linda/', destination: '/about/team/linda-mclaren', permanent: true },
-      { source: '/naturopathic/', destination: '/services/naturopathic', permanent: true },
-      { source: '/naturopathic', destination: '/services/naturopathic', permanent: true },
-      { source: '/acupuncture-3/', destination: '/services/acupuncture', permanent: true },
-      { source: '/acupuncture-3', destination: '/services/acupuncture', permanent: true },
-      { source: '/i-v-therapy/', destination: '/services/iv-therapy', permanent: true },
-      { source: '/i-v-therapy', destination: '/services/iv-therapy', permanent: true },
-      { source: '/low-level-laser-therapy/', destination: '/services/low-level-laser-therapy', permanent: true },
-      { source: '/registered-massage-therapy/', destination: '/services/registered-massage-therapy', permanent: true },
-      { source: '/pickleball/', destination: '/pickleball', permanent: true },
-      { source: '/weight-loss-in-richmond-bc/', destination: '/programs/weight-loss-rehab', permanent: true },
-      { source: '/weight-loss-in-richmond-bc', destination: '/programs/weight-loss-rehab', permanent: true },
-      { source: '/liver-detox-program/', destination: '/programs/liver-detox', permanent: true },
-      { source: '/healthy-living-101-event/', destination: '/programs/healthy-living-101', permanent: true },
-      { source: '/workshop/', destination: '/programs/workshops', permanent: true },
-      { source: '/book-now/', destination: '/book', permanent: true },
-      { source: '/book-now', destination: '/book', permanent: true },
-      { source: '/contact-us/', destination: '/contact', permanent: true },
-      { source: '/contact-us', destination: '/contact', permanent: true },
-      { source: '/blog/', destination: '/blog', permanent: true },
-      { source: '/privacy-policy/', destination: '/privacy-policy', permanent: true },
-      { source: '/terms-of-use/', destination: '/terms-of-use', permanent: true },
-      // Legacy blog posts — catch-all for root-level slugs that are blog posts
-      // handled by middleware
-    ]
+    return legacyRedirects.map(([source, destination]) => ({
+      source,
+      destination,
+      permanent: true,
+    }))
   },
 }
 
