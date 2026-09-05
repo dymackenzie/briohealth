@@ -12,6 +12,11 @@ const eslintConfig = defineConfig([
     "out/**",
     "build/**",
     "next-env.d.ts",
+    // Reference material, not source. `briohealth/` is an HTTrack mirror of
+    // the old WordPress site — ~2,900 files, including every minified script
+    // WordPress ships. Linting it buries real findings under 500 warnings.
+    "briohealth/**",
+    "planning/**",
   ]),
 ]);
 
