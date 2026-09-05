@@ -1,199 +1,122 @@
 'use client'
 
-import { useState, useEffect } from 'react'
 import Link from 'next/link'
-import { Menu, X, Phone, ChevronDown } from 'lucide-react'
-import { resolveHref } from '@/lib/resolveHref'
-import Button from '@/components/ui/Button'
+import { useState } from 'react'
+import { ChevronDown, Menu, X } from 'lucide-react'
 
-interface HeaderProps {
-  navigation: any
-  settings: any
-}
+import { Logo } from './Logo'
+import { Button } from '@/components/ui/Button'
+import { primaryNav, site } from '@/lib/site'
 
-export default function Header({ navigation, settings }: HeaderProps) {
-  const [scrolled, setScrolled] = useState(false)
+/**
+ * Sits inside the teal band rather than on a bar of its own, so the page opens
+ * as one field of colour. Dropdowns open on hover and focus-within, which gets
+ * keyboard users the same behaviour without a focus trap.
+ */
+export function Header() {
   const [mobileOpen, setMobileOpen] = useState(false)
-  const [openDropdown, setOpenDropdown] = useState<string | null>(null)
-
-  useEffect(() => {
-    const onScroll = () => setScrolled(window.scrollY > 20)
-    window.addEventListener('scroll', onScroll, { passive: true })
-    return () => window.removeEventListener('scroll', onScroll)
-  }, [])
-
-  const janeUrl = settings?.janeUrl || 'https://yourbriohealth.janeapp.com'
-  const bookLabel = settings?.bookingLabel || 'Book Now'
-  const phone = settings?.phone || '(604) 271-9355'
-  const primaryNav = navigation?.primary || []
-  const ctaLink = navigation?.ctaButton?.link
-    ? resolveHref(navigation.ctaButton.link)
-    : janeUrl
 
   return (
-    <header
-      className={`sticky top-0 z-50 transition-all duration-300 ${
-        scrolled
-          ? 'bg-canvas/95 backdrop-blur-md shadow-sm border-b border-sand-300'
-          : 'bg-canvas/80 backdrop-blur-sm'
-      }`}
-    >
-      <div className="max-w-[1200px] mx-auto px-[clamp(1.25rem,4vw,3rem)]">
-        <div className="flex items-center justify-between h-16 lg:h-20">
-          {/* Logo */}
-          <Link href="/" className="flex items-center gap-2 shrink-0">
-            <span className="font-display text-xl font-semibold text-ink-900 tracking-tight">
-              Brio Health
-            </span>
-          </Link>
+    <header className="relative z-40">
+      <div className="container-x flex items-center justify-between gap-6 py-4">
+        <Logo />
 
-          {/* Desktop nav */}
-          <nav className="hidden lg:flex items-center gap-1" aria-label="Primary navigation">
-            {primaryNav.map((item: any) => {
-              if (item.type === 'dropdown') {
-                return (
-                  <div
-                    key={item.label}
-                    className="relative"
-                    onMouseEnter={() => setOpenDropdown(item.label)}
-                    onMouseLeave={() => setOpenDropdown(null)}
-                  >
-                    <button className="flex items-center gap-1 px-3 py-2 font-body text-[0.9375rem] text-ink-700 hover:text-teal-500 transition-colors rounded-[var(--r-md)] cursor-pointer">
-                      {item.label}
-                      <ChevronDown size={14} className={`transition-transform ${openDropdown === item.label ? 'rotate-180' : ''}`} />
-                    </button>
-                    {openDropdown === item.label && (
-                      <div className="absolute top-full left-0 pt-2 z-50">
-                        <div className="bg-paper rounded-[var(--r-lg)] shadow-lg border border-sand-300 p-4 min-w-[220px]">
-                          {item.columns?.map((col: any) => (
-                            <div key={col.heading}>
-                              {col.heading && (
-                                <p className="text-[0.75rem] font-semibold uppercase tracking-widest text-ink-300 px-2 mb-2">{col.heading}</p>
-                              )}
-                              {col.items?.map((subItem: any) => (
-                                <Link
-                                  key={subItem.label}
-                                  href={resolveHref(subItem.link) || '#'}
-                                  className="flex items-start gap-3 px-2 py-2 rounded-[var(--r-md)] hover:bg-sand-200 transition-colors group"
-                                  onClick={() => setOpenDropdown(null)}
-                                >
-                                  <div>
-                                    <p className="font-body font-medium text-ink-900 text-[0.9375rem] group-hover:text-teal-500 transition-colors">
-                                      {subItem.label}
-                                    </p>
-                                    {subItem.description && (
-                                      <p className="text-ink-500 text-[0.8125rem] mt-0.5">{subItem.description}</p>
-                                    )}
-                                  </div>
-                                </Link>
-                              ))}
-                            </div>
-                          ))}
-                        </div>
-                      </div>
-                    )}
-                  </div>
-                )
-              }
-
-              return (
+        <nav aria-label="Primary" className="hidden lg:block">
+          <ul className="flex items-center gap-1">
+            {primaryNav.map((item) => (
+              <li key={item.href} className="group relative">
                 <Link
-                  key={item.label}
-                  href={resolveHref(item.link) || '#'}
-                  className="px-3 py-2 font-body text-[0.9375rem] text-ink-700 hover:text-teal-500 transition-colors rounded-[var(--r-md)]"
+                  href={item.href}
+                  className="inline-flex items-center gap-1 rounded-md px-3.5 py-2 text-[0.95rem] opacity-85 transition-opacity hover:opacity-100"
                 >
                   {item.label}
+                  {item.children && (
+                    <ChevronDown
+                      className="h-3.5 w-3.5 opacity-60 transition-transform duration-200 group-hover:rotate-180 group-focus-within:rotate-180"
+                      aria-hidden
+                    />
+                  )}
                 </Link>
-              )
-            })}
-          </nav>
 
-          {/* Right: phone + CTA */}
-          <div className="hidden lg:flex items-center gap-3">
-            <a
-              href={`tel:${phone.replace(/\D/g, '')}`}
-              className="text-[0.875rem] font-body text-ink-500 hover:text-teal-500 transition-colors"
-            >
-              {phone}
-            </a>
-            <Button href={ctaLink} external={ctaLink.startsWith('http')} size="sm">
-              {bookLabel}
-            </Button>
-          </div>
+                {item.children && (
+                  <div className="invisible absolute top-full left-0 pt-2 opacity-0 transition-[opacity,visibility] duration-200 group-hover:visible group-hover:opacity-100 group-focus-within:visible group-focus-within:opacity-100">
+                    <ul className="min-w-60 rounded-lg bg-canvas p-2 shadow-lg">
+                      {item.children.map((child) => (
+                        <li key={child.href}>
+                          <Link
+                            href={child.href}
+                            className="block rounded-md px-3.5 py-2.5 text-[0.925rem] text-ink-700 transition-colors hover:bg-teal-50 hover:text-teal-700"
+                          >
+                            {child.label}
+                          </Link>
+                        </li>
+                      ))}
+                    </ul>
+                  </div>
+                )}
+              </li>
+            ))}
+          </ul>
+        </nav>
 
-          {/* Mobile hamburger */}
-          <button
-            className="lg:hidden p-2 rounded-[var(--r-md)] text-ink-700 hover:bg-sand-200 transition-colors cursor-pointer"
-            onClick={() => setMobileOpen(!mobileOpen)}
-            aria-label={mobileOpen ? 'Close menu' : 'Open menu'}
-            aria-expanded={mobileOpen}
+        <div className="flex items-center gap-3">
+          <Button
+            href={site.bookingUrl}
+            variant="onTeal"
+            className="hidden px-4 py-3 text-[0.925rem] sm:inline-flex"
           >
-            {mobileOpen ? <X size={22} /> : <Menu size={22} />}
+            Book Now
+          </Button>
+
+          <button
+            type="button"
+            onClick={() => setMobileOpen((open) => !open)}
+            aria-expanded={mobileOpen}
+            aria-controls="mobile-nav"
+            aria-label={mobileOpen ? 'Close menu' : 'Open menu'}
+            className="rounded-md p-2 lg:hidden"
+          >
+            {mobileOpen ? <X className="h-6 w-6" /> : <Menu className="h-6 w-6" />}
           </button>
         </div>
       </div>
 
-      {/* Mobile menu */}
       {mobileOpen && (
-        <div className="lg:hidden fixed inset-0 top-16 bg-canvas z-40 overflow-y-auto">
-          <div className="flex flex-col p-6 gap-1">
-            {primaryNav.map((item: any) => {
-              if (item.type === 'dropdown') {
-                return (
-                  <MobileDropdown key={item.label} item={item} onClose={() => setMobileOpen(false)} />
-                )
-              }
-              return (
+        <nav id="mobile-nav" aria-label="Primary" className="container-x pb-6 lg:hidden">
+          <ul className="flex flex-col gap-1 border-t border-current/15 pt-4">
+            {primaryNav.map((item) => (
+              <li key={item.href}>
                 <Link
-                  key={item.label}
-                  href={resolveHref(item.link) || '#'}
-                  className="py-3.5 px-4 font-body font-medium text-lg text-ink-900 border-b border-sand-300 hover:text-teal-500 transition-colors"
+                  href={item.href}
                   onClick={() => setMobileOpen(false)}
+                  className="block py-2.5 text-base"
                 >
                   {item.label}
                 </Link>
-              )
-            })}
-            <div className="mt-6 flex flex-col gap-3">
-              <a href={`tel:${phone.replace(/\D/g, '')}`} className="flex items-center gap-2 text-teal-500 font-body font-semibold text-lg">
-                <Phone size={18} /> {phone}
-              </a>
-              <Button href={ctaLink} external size="lg" className="w-full justify-center">
-                {bookLabel}
-              </Button>
-            </div>
-          </div>
-        </div>
+                {item.children && (
+                  <ul className="mb-2 ml-4 flex flex-col gap-0.5 border-l border-current/15 pl-4">
+                    {item.children.map((child) => (
+                      <li key={child.href}>
+                        <Link
+                          href={child.href}
+                          onClick={() => setMobileOpen(false)}
+                          className="block py-1.5 text-[0.95rem] opacity-80"
+                        >
+                          {child.label}
+                        </Link>
+                      </li>
+                    ))}
+                  </ul>
+                )}
+              </li>
+            ))}
+          </ul>
+
+          <Button href={site.bookingUrl} variant="onTeal" className="mt-4 w-full sm:hidden">
+            Book Now
+          </Button>
+        </nav>
       )}
     </header>
-  )
-}
-
-function MobileDropdown({ item, onClose }: { item: any; onClose: () => void }) {
-  const [open, setOpen] = useState(false)
-  return (
-    <div>
-      <button
-        className="w-full flex items-center justify-between py-3.5 px-4 font-body font-medium text-lg text-ink-900 border-b border-sand-300 cursor-pointer"
-        onClick={() => setOpen(!open)}
-      >
-        {item.label}
-        <ChevronDown size={18} className={`transition-transform ${open ? 'rotate-180' : ''}`} />
-      </button>
-      {open && (
-        <div className="pl-4 bg-sand-200/50">
-          {item.columns?.flatMap((col: any) => col.items || []).map((sub: any) => (
-            <Link
-              key={sub.label}
-              href={resolveHref(sub.link) || '#'}
-              className="block py-3 px-4 font-body text-ink-700 hover:text-teal-500 border-b border-sand-300/50"
-              onClick={onClose}
-            >
-              {sub.label}
-            </Link>
-          ))}
-        </div>
-      )}
-    </div>
   )
 }
