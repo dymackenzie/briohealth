@@ -1,54 +1,61 @@
-:root {
-  /* Brand teal */
-  --teal-700: #0C4A4F;
-  --teal-600: #12686F;
-  --teal-500: #1A929C;
-  --teal-300: #7CC0C4;
-  --teal-100: #D6EBEC;
-  --teal-050: #ECF5F5;
+/*
+ * The teal ramp is the logo colour at different lightnesses — same hue (184.6)
+ * and same full saturation the whole way down, so a band and the mark read as
+ * one colour. #00919D is the logo exactly; the #1A929C in the old planning
+ * notes is a near-miss and looks muddier beside it.
+ *
+ * 700 is as bright as a text-bearing band can go: cream on it is 5.7:1, and
+ * cream on 500 is only 3.8:1, which fails. So 500 does the accents and 700
+ * does the ground.
+ */
+
+@theme {
+  /* Teal is the ground here, not an accent. */
+  --color-teal-900: #003D42; /* footer, deepest band */
+  --color-teal-800: #005057; /* button hover, pressed states */
+  --color-teal-700: #006C75; /* dominant band colour */
+  --color-teal-600: #00848F; /* icons and rules on cream */
+  --color-teal-500: #00919D; /* the logo teal */
+  --color-teal-400: #3FAFB8;
+  --color-teal-300: #6FC2CA;
+  --color-teal-200: #A6D9DF;
+  --color-teal-100: #D2EDF0;
+  --color-teal-50: #EBF7F8;
 
   /* Ink */
-  --ink-900: #0E1414;
-  --ink-700: #243031;
-  --ink-500: #5A6566;
-  --ink-300: #9AA3A3;
+  --color-ink-900: #231F20; /* warm near-black, off the logo */
+  --color-ink-700: #3A3536;
+  --color-ink-500: #5A6566;
+  --color-ink-300: #9AA3A3;
 
-  /* Warm neutrals */
-  --canvas: #FAF6EF;
-  --sand-200: #F1E9DB;
-  --sand-300: #E7DCC9;
-  --paper: #FFFFFF;
+  /* Neutrals */
+  --color-canvas: #FAF6EF; /* the cream band */
+  --color-sand-200: #F1E9DB;
+  --color-sand-300: #E7DCC9;
+  --color-paper: #FFFFFF;
 
-  /* Coral accent */
-  --coral-500: #E8775A;
-  --coral-300: #F3B39E;
-  --coral-100: #FBE7DF;
+  /* State. Both are form-validation colours and nothing else uses them. */
+  --color-coral-300: #F3B39E;
+  --color-error: #C7493A;
 
-  /* Gold */
-  --gold-300: #F4C77B;
-  --gold-100: #FBEFD6;
+  /* Type */
+  --font-display: var(--font-fraunces), ui-serif, Georgia, serif;
+  --font-body: var(--font-hanken), ui-sans-serif, system-ui, sans-serif;
 
-  /* Functional */
-  --success: #2F8F6B;
-  --error: #C7493A;
-  --focus: #1A929C;
+  /* Radii */
+  --radius-md: 1rem;
+  --radius-lg: 1.5rem;
+  --radius-xl: 2rem;
+  --radius-pill: 999px;
 
-  /* Spacing */
-  --space: 0.5rem;
-  --section-y: clamp(4rem, 9vw, 8rem);
+  /* Soft — this isn't a card-based design, so there's only the one. */
+  --shadow-lg: 0 18px 48px rgb(12 74 79 / 0.10);
+}
+
+:root {
+  /* Layout primitives, not utilities, so they stay out of @theme. */
+  --section-y: clamp(2.75rem, 5.5vw, 4.75rem);
   --container: 1200px;
-  --container-prose: 720px;
-  --gutter: clamp(1.25rem, 4vw, 3rem);
-
-  /* Radius */
-  --r-sm: 0.625rem;
-  --r-md: 1rem;
-  --r-lg: 1.5rem;
-  --r-xl: 2rem;
-  --r-pill: 999px;
-
-  /* Shadows */
-  --shadow-sm: 0 1px 2px rgba(14,20,20,.04), 0 2px 8px rgba(14,20,20,.04);
-  --shadow-md: 0 6px 24px rgba(14,20,20,.06);
-  --shadow-lg: 0 18px 48px rgba(12,74,79,.10);
+  --container-prose: 680px;
+  --gutter: clamp(1.15rem, 3vw, 2.5rem);
 }
