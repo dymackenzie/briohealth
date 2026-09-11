@@ -1,0 +1,12 @@
+/*
+Theme Name: Brio Headless
+Theme URI: https://yourbriohealth.com
+Author: Mackenzie
+Description: Backend-only theme for Brio Health. WordPress keeps the content and the editing flow; Next.js renders the public site. There are no templates here on purpose.
+Version: 1.0.0
+Requires at least: 6.4
+Requires PHP: 8.1
+License: GPL-2.0-or-later
+License URI: https://www.gnu.org/licenses/gpl-2.0.html
+Text Domain: brio-headless
+*/
