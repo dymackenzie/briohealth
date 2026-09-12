@@ -55,3 +55,8 @@ CLAUDE.md
 
 # codegraph
 .codegraph/
+# playwright mcp
+/.playwright-mcp
+
+# docs
+/docs
