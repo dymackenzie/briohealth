@@ -8,7 +8,7 @@ export const POSTS_PER_PAGE = 12
  * reachable at /blog/<slug> so the inbound links keep working, but they'd be
  * noise in the index — the newest is from 2016. See docs/client-inputs.md.
  */
-const NOT_REALLY_POSTS = new Set([
+const NOT_REALLY_POSTS = [
   'low-level-laser-therapy',
   'registered-massage-therapy',
   'weight-loss-in-richmond-bc',
@@ -17,7 +17,7 @@ const NOT_REALLY_POSTS = new Set([
   'workshop',
   'about-kyra-sturrock',
   'learn-more-about-linda',
-])
+]
 
 const EMBED = { _embed: '1' }
 
@@ -40,22 +40,29 @@ export async function getPosts({
   /** Narrow the response when the caller only needs a few fields. */
   fields?: string
 } = {}) {
-  // Over-fetch a little so filtering the strays doesn't leave a short page.
+  // Excluded by WordPress rather than filtered here, so pages stay full and
+  // the totals match what's listed.
   const { items, total, totalPages } = await wpFetchMany<WPPost>('posts', {
     tags: [tags.posts],
     query: {
       ...(fields ? { _fields: fields } : EMBED),
       page,
-      per_page: perPage + NOT_REALLY_POSTS.size,
+      per_page: perPage,
       categories: categoryId,
+      exclude: (await notReallyPostIds()).join(',') || undefined,
     },
   })
 
-  return {
-    posts: items.filter((p) => !NOT_REALLY_POSTS.has(p.slug)).slice(0, perPage),
-    total,
-    totalPages,
-  }
+  return { posts: items, total, totalPages }
+}
+
+/** exclude= only takes IDs. Looked up by slug so they survive a re-import. */
+async function notReallyPostIds() {
+  const { items } = await wpFetchMany<Pick<WPPost, 'id'>>('posts', {
+    tags: [tags.posts],
+    query: { slug: NOT_REALLY_POSTS.join(','), per_page: 100, _fields: 'id' },
+  })
+  return items.map((p) => p.id)
 }
 
 export function getPost(slug: string) {
