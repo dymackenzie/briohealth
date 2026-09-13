@@ -1,4 +1,5 @@
 import Link from 'next/link'
+import { notFound } from 'next/navigation'
 
 import { PageHero } from '@/components/layout/PageHero'
 import { Footer } from '@/components/layout/Footer'
@@ -27,6 +28,9 @@ export default async function BlogIndex(props: {
     getPosts({ page }),
     getCategories(),
   ])
+
+  // Past the last page, not a quiet blog.
+  if (page > 1 && posts.length === 0) notFound()
 
   return (
     <>

@@ -47,6 +47,7 @@ export default async function CategoryPage(props: {
 
   const page = Math.max(1, Number(pageParam) || 1)
   const { posts, totalPages } = await getPosts({ page, categoryId: category.id })
+  if (page > 1 && posts.length === 0) notFound()
 
   return (
     <>
