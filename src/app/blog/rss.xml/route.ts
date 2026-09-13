@@ -17,17 +17,19 @@ export async function GET() {
   // full HTML body across the wire — about a megabyte to build 15KB of feed.
   const { posts } = await getPosts({
     perPage: 30,
-    fields: 'id,slug,date,title,excerpt',
+    fields: 'id,slug,date_gmt,title,excerpt',
   })
 
   const items = posts
     .map((post) => {
       const url = absoluteUrl(`/blog/${post.slug}`)
+      // WordPress dates carry no offset. `date` is clinic-local and would be
+      // read as UTC, so use the GMT one.
       return `    <item>
       <title>${escape(decodeTitle(post.title.rendered))}</title>
       <link>${url}</link>
       <guid isPermaLink="true">${url}</guid>
-      <pubDate>${new Date(post.date).toUTCString()}</pubDate>
+      <pubDate>${new Date(`${post.date_gmt}Z`).toUTCString()}</pubDate>
       <description>${escape(plainExcerpt(post.excerpt.rendered, 300))}</description>
     </item>`
     })
