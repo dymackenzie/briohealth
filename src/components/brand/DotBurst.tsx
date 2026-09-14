@@ -45,7 +45,7 @@ function dots(rings: Ring[]) {
   return out
 }
 
-// Same geometry every time, and the burst renders about eleven times a page.
+// Same geometry every time, so work it out once.
 const BURST = dots(RINGS)
 
 export function DotBurst({

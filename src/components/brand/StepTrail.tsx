@@ -143,9 +143,9 @@ function TrailDot({
 }) {
   // Each dot lands just after the one before it, so the trail draws rather
   // than fading in all at once.
-  const window = 0.12
-  const opacity = useTransform(progress, [at, at + window], [0, 0.55])
-  const r = useTransform(progress, [at, at + window], [0, 2.6])
+  const fade = 0.12
+  const opacity = useTransform(progress, [at, at + fade], [0, 0.55])
+  const r = useTransform(progress, [at, at + fade], [0, 2.6])
 
   if (still) return <circle cx={x} cy={y} r={2.6} fill="currentColor" opacity={0.55} />
 

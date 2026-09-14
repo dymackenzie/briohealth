@@ -15,8 +15,8 @@ export function Pagination({
   const href = (n: number) => (n === 1 ? basePath : `${basePath}?page=${n}`)
 
   // 34 pages of posts, so show a window rather than every number.
-  const window = new Set([1, totalPages, page - 1, page, page + 1])
-  const shown = [...window].filter((n) => n >= 1 && n <= totalPages).sort((a, b) => a - b)
+  const nearby = new Set([1, totalPages, page - 1, page, page + 1])
+  const shown = [...nearby].filter((n) => n >= 1 && n <= totalPages).sort((a, b) => a - b)
 
   return (
     <nav aria-label="Pagination" className="mt-14 flex items-center justify-center gap-2">

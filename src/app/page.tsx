@@ -198,7 +198,7 @@ export default function HomePage() {
                   </ScrollZoom>
                 </Reveal>
 
-                {/* Hairlines, not boxes — the numeral carries the hierarchy. */}
+                {/* Hairlines, not boxes. */}
                 <ul className="lg:pt-4">
                   {home.value.items.map((item, i) => (
                     <Reveal

@@ -14,7 +14,7 @@ const fraunces = Fraunces({
   axes: ['SOFT', 'WONK', 'opsz'],
 })
 
-/** Body. High x-height, holds up at 17px. */
+/** Body. High x-height, holds up at 16px. */
 const hanken = Hanken_Grotesk({
   subsets: ['latin'],
   display: 'swap',
