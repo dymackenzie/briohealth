@@ -83,7 +83,10 @@ function cleanAttributes() {
   return (tree: Root) => {
     visit(tree, 'element', (node: Element) => {
       const props = node.properties
-      if (!props) return
+
+      // Avada puts the page title in the body as an h1, and the page already
+      // has one.
+      if (node.tagName === 'h1') node.tagName = 'h2'
 
       // Avada's inline custom properties. Nothing outside Avada reads them.
       if (typeof props.style === 'string' && props.style.includes('--awb-')) {
@@ -130,21 +133,33 @@ function rewriteHost(url: string): string {
  * Take out <style> and friends, contents and all.
  *
  * rehype-sanitize drops the tag but keeps its text children, so an Avada FAQ
- * block was printing its own stylesheet into the middle of the page.
+ * block was printing its own stylesheet into the middle of the page. Forms go
+ * the same way: Avada's post back to a WordPress page that no longer exists,
+ * and sanitized they came out as a row of disabled checkboxes.
  */
-const NOISE = new Set(['style', 'script', 'noscript', 'link', 'meta'])
+const NOISE = new Set(['style', 'script', 'noscript', 'link', 'meta', 'form'])
 
 // Avada's FAQ accordion writes its schema.org markup as real spans and hides
 // them in CSS. We drop the CSS, so without this the questions print twice with
 // the author login and an ISO timestamp between them.
 const HIDDEN = ['rich-snippet-hidden', 'screen-reader-text', 'fusion-meta-hidden']
 
+function isNoise(el: Element): boolean {
+  if (NOISE.has(el.tagName)) return true
+  if (classes(el).some((c) => HIDDEN.includes(c))) return true
+
+  // Avada's spacer images are a data: GIF with nothing lazy-loaded behind
+  // them. Sanitize strips the data: URL and leaves an img with no src.
+  if (el.tagName !== 'img' || el.properties.dataOrigSrc) return false
+  const src = el.properties.src
+  return typeof src !== 'string' || src === '' || src.startsWith('data:')
+}
+
 function dropNoise() {
   return (tree: Root) => {
     visit(tree, 'element', (node, index, parent) => {
       if (!parent || index === undefined) return
-      const el = node as Element
-      if (NOISE.has(el.tagName) || classes(el).some((c) => HIDDEN.includes(c))) {
+      if (isNoise(node)) {
         parent.children.splice(index, 1)
         // The three hidden spans are siblings; without rewinding, visit skips
         // whichever one slides into the gap.
