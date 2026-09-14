@@ -52,30 +52,18 @@ function isFusionWrapper(node: Element): boolean {
   return list.some((c) => FUSION_WRAPPERS.some((w) => c.startsWith(w)))
 }
 
-/**
- * Flatten the builder scaffolding.
- *
- * Runs repeatedly because the wrappers nest several deep and lifting one
- * exposes the next. Capped so a pathological document can't spin.
- */
+/** Flatten the builder scaffolding. */
 function unwrapFusion() {
   return (tree: Root) => {
-    for (let pass = 0; pass < 12; pass++) {
-      let changed = false
+    visit(tree, 'element', (node, index, parent) => {
+      if (!parent || index === undefined) return
+      if (!isFusionWrapper(node)) return
 
-      visit(tree, 'element', (node, index, parent) => {
-        if (!parent || index === undefined) return
-        if (!isFusionWrapper(node as Element)) return
-
-        parent.children.splice(index, 1, ...node.children)
-        changed = true
-        // Re-inspect the children we just lifted; without this the nesting
-        // needs a fresh pass per level.
-        return index
-      })
-
-      if (!changed) break
-    }
+      parent.children.splice(index, 1, ...node.children)
+      // Revisit from the same index so the lifted children, which are often
+      // wrappers themselves, get checked too.
+      return index
+    })
   }
 }
 
@@ -102,11 +90,11 @@ function cleanAttributes() {
       if (node.tagName === 'img') {
         // Fusion's lazyloader puts a base64 GIF in src and the real URL in
         // data-orig-src. Miss this and every image on a recent post is blank.
-        const original = props['dataOrigSrc'] ?? props['data-orig-src']
-        if (typeof original === 'string' && original) props.src = original
+        if (typeof props.dataOrigSrc === 'string' && props.dataOrigSrc) {
+          props.src = props.dataOrigSrc
+        }
 
-        delete props['dataOrigSrc']
-        delete props['data-orig-src']
+        delete props.dataOrigSrc
         delete props.srcSet
         delete props.sizes
 
@@ -174,13 +162,12 @@ function dropEmpty() {
   return (tree: Root) => {
     visit(tree, 'element', (node, index, parent) => {
       if (!parent || index === undefined) return
-      const el = node as Element
-      if (el.tagName !== 'div' && el.tagName !== 'p' && el.tagName !== 'span') return
+      if (node.tagName !== 'div' && node.tagName !== 'p' && node.tagName !== 'span') return
 
-      const hasContent = el.children.some(
+      const hasContent = node.children.some(
         (c) =>
           (c.type === 'text' && c.value.trim() !== '') ||
-          (c.type === 'element' && (c as Element).tagName !== 'br'),
+          (c.type === 'element' && c.tagName !== 'br'),
       )
       if (!hasContent) {
         parent.children.splice(index, 1)
