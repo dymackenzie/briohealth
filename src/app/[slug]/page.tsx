@@ -8,13 +8,12 @@ import { decodeTitle, plainExcerpt, renderContent } from '@/lib/wp/renderContent
 import { buildMetadata } from '@/lib/seo'
 
 export const revalidate = 3600
+export const dynamicParams = false
 
 /**
  * Anything CMS-managed that doesn't need its own template — privacy policy,
- * terms, whatever the client adds later.
- *
- * proxy.ts sends unknown root slugs to /blog/<slug>, so this only ever runs
- * for the handful listed here.
+ * terms, whatever the client adds later. A new one needs adding here and to
+ * KNOWN_ROUTES in proxy.ts, which otherwise sends it to /blog/<slug>.
  */
 const CMS_PAGES = ['privacy-policy', 'terms-of-use']
 
@@ -36,8 +35,6 @@ export async function generateMetadata(props: { params: Promise<{ slug: string }
 
 export default async function CmsPage(props: { params: Promise<{ slug: string }> }) {
   const { slug } = await props.params
-  if (!CMS_PAGES.includes(slug)) notFound()
-
   const page = await getPage(slug)
   if (!page) notFound()
 
