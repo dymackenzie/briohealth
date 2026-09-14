@@ -12,14 +12,15 @@ export async function POST(request: Request) {
     return NextResponse.json({ error: 'Not configured yet.' }, { status: 500 })
   }
 
-  let body: { email?: string }
+  let body: { email?: unknown }
   try {
-    body = await request.json()
+    body = (await request.json()) ?? {}
   } catch {
     return NextResponse.json({ error: 'Invalid request.' }, { status: 400 })
   }
 
-  const email = (body.email ?? '').trim().toLowerCase().slice(0, 200)
+  const email =
+    typeof body.email === 'string' ? body.email.trim().toLowerCase().slice(0, 200) : ''
   if (!EMAIL_PATTERN.test(email)) {
     return NextResponse.json({ error: 'Please enter a valid email.' }, { status: 400 })
   }

@@ -24,7 +24,7 @@ export function NewsletterForm() {
 
       if (!response.ok) throw new Error(body.error ?? 'Could not subscribe.')
 
-      setMessage(body.message ?? 'You&rsquo;re on the list.')
+      setMessage(body.message ?? 'You’re on the list.')
       setState('sent')
     } catch (err) {
       setMessage(err instanceof Error ? err.message : 'Could not subscribe.')
@@ -37,7 +37,7 @@ export function NewsletterForm() {
   }
 
   return (
-    <form onSubmit={onSubmit} className="flex flex-col gap-3 sm:flex-row">
+    <form onSubmit={onSubmit} className="flex flex-col gap-3 sm:flex-row sm:flex-wrap">
       <label className="grow">
         <span className="sr-only">Email address</span>
         <input
@@ -59,7 +59,7 @@ export function NewsletterForm() {
       </button>
 
       {state === 'error' && (
-        <p role="alert" className="text-[0.9rem] text-coral-300 sm:sr-only">
+        <p role="alert" className="basis-full text-[0.9rem] text-coral-300">
           {message}
         </p>
       )}

@@ -46,9 +46,9 @@ export async function POST(request: Request) {
     )
   }
 
-  let body: Record<string, string>
+  let body: Record<string, unknown>
   try {
-    body = await request.json()
+    body = (await request.json()) ?? {}
   } catch {
     return NextResponse.json({ error: 'Invalid request.' }, { status: 400 })
   }
@@ -56,16 +56,20 @@ export async function POST(request: Request) {
   // Honeypot — a real visitor never sees this field.
   if (body.website) return NextResponse.json({ ok: true })
 
-  const name = (body.name ?? '').trim().slice(0, MAX.name)
-  const email = (body.email ?? '').trim().slice(0, MAX.email)
-  const phone = (body.phone ?? '').trim().slice(0, MAX.phone)
-  const message = (body.message ?? '').trim().slice(0, MAX.message)
+  const field = (key: keyof typeof MAX) => {
+    const value = body[key]
+    return typeof value === 'string' ? value.trim().slice(0, MAX[key]) : ''
+  }
+  const name = field('name')
+  const email = field('email')
+  const phone = field('phone')
+  const message = field('message')
 
   if (!name || !email || !message) {
     return NextResponse.json({ error: 'Please fill in every field.' }, { status: 400 })
   }
   if (!EMAIL_PATTERN.test(email)) {
-    return NextResponse.json({ error: 'That email doesn&rsquo;t look right.' }, { status: 400 })
+    return NextResponse.json({ error: 'That email doesn’t look right.' }, { status: 400 })
   }
 
   const text = [
