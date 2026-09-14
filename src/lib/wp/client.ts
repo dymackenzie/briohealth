@@ -12,6 +12,9 @@ const WP_BASE = (
   process.env.WP_API_URL ?? 'https://yourbriohealth.com/wp-json/wp/v2'
 ).replace(/\/$/, '')
 
+/** Media lives wherever the API does, so content URLs get pointed here. */
+export const WP_HOST = new URL(WP_BASE).host
+
 // Backstop only; the save_post webhook is what normally busts the cache.
 const DEFAULT_REVALIDATE = 3600
 

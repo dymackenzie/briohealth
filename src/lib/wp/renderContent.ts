@@ -6,6 +6,8 @@ import { unified } from 'unified'
 import { visit } from 'unist-util-visit'
 import type { Element, Root } from 'hast'
 
+import { WP_HOST } from './client'
+
 /**
  * Turns WordPress post HTML into React.
  *
@@ -19,7 +21,6 @@ import type { Element, Root } from 'hast'
  */
 
 const WP_HOSTS = ['yourbriohealth.com', 'www.yourbriohealth.com']
-const CMS_HOST = process.env.NEXT_PUBLIC_CMS_HOST ?? 'yourbriohealth.com'
 
 /** Layout-only wrappers. Their children get lifted; the div goes. */
 const FUSION_WRAPPERS = [
@@ -119,7 +120,7 @@ function cleanAttributes() {
 function rewriteHost(url: string): string {
   for (const host of WP_HOSTS) {
     if (url.includes(`//${host}/wp-content/`)) {
-      return url.replace(`//${host}/`, `//${CMS_HOST}/`)
+      return url.replace(`//${host}/`, `//${WP_HOST}/`)
     }
   }
   return url
