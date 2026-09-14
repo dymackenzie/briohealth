@@ -119,7 +119,7 @@ add_filter( 'post_type_link', function ( string $url, WP_Post $post ): string {
 		'program' => '/programs/',
 	);
 
-	if ( isset( $paths[ $post->post_type ] ) ) {
+	if ( brio_site_url() && isset( $paths[ $post->post_type ] ) ) {
 		return brio_site_url() . $paths[ $post->post_type ] . $post->post_name;
 	}
 

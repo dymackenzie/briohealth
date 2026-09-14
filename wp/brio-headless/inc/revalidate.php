@@ -98,7 +98,7 @@ foreach ( array( 'created_category', 'edited_category', 'delete_category' ) as $
 }
 
 function brio_revalidate( string $post_type, ?string $slug ): void {
-	if ( ! defined( 'BRIO_REVALIDATE_SECRET' ) ) {
+	if ( ! defined( 'BRIO_REVALIDATE_SECRET' ) || ! brio_site_url() ) {
 		return;
 	}
 

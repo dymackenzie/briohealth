@@ -17,11 +17,11 @@ defined( 'ABSPATH' ) || exit;
 define( 'BRIO_THEME_DIR', get_template_directory() );
 
 /**
- * Where the public site lives. Falls back to the WP address so a fresh
- * install without the constant redirects to something rather than nowhere.
+ * Where the public site lives, or null until the constant is set. No fallback
+ * to home_url() — that's this install, so every redirect would loop.
  */
-function brio_site_url(): string {
-	return defined( 'BRIO_SITE_URL' ) ? untrailingslashit( BRIO_SITE_URL ) : home_url();
+function brio_site_url(): ?string {
+	return defined( 'BRIO_SITE_URL' ) ? untrailingslashit( BRIO_SITE_URL ) : null;
 }
 
 require_once BRIO_THEME_DIR . '/inc/post-types.php';

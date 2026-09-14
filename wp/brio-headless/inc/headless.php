@@ -14,21 +14,6 @@
 defined( 'ABSPATH' ) || exit;
 
 add_action( 'template_redirect', function (): void {
-	if ( is_admin() || wp_doing_ajax() || wp_doing_cron() ) {
-		return;
-	}
-	if ( defined( 'REST_REQUEST' ) && REST_REQUEST ) {
-		return;
-	}
-	if ( defined( 'WP_CLI' ) && WP_CLI ) {
-		return;
-	}
-
-	// Logged-in editors sometimes need the raw output to check something.
-	if ( is_user_logged_in() && current_user_can( 'edit_posts' ) && isset( $_GET['brio_raw'] ) ) {
-		return;
-	}
-
 	// Preview is the one front-end request that has to keep working. Next has
 	// no drafts to show, so WordPress renders it. See inc/preview.php.
 	if ( brio_can_preview() ) {
@@ -36,15 +21,18 @@ add_action( 'template_redirect', function (): void {
 		exit;
 	}
 
-	$path = $_SERVER['REQUEST_URI'] ?? '/';
+	$site = brio_site_url();
+	if ( ! $site ) {
+		return; // index.php explains what's missing.
+	}
 
 	// The feed moved with everything else.
 	if ( is_feed() ) {
-		wp_redirect( brio_site_url() . '/blog/rss.xml', 301 );
+		wp_redirect( $site . '/blog/rss.xml', 301 );
 		exit;
 	}
 
-	wp_redirect( brio_site_url() . $path, 301 );
+	wp_redirect( $site . ( $_SERVER['REQUEST_URI'] ?? '/' ), 301 );
 	exit;
 }, 0 );
 
@@ -112,7 +100,7 @@ add_filter( 'show_admin_bar', '__return_false' );
  */
 add_filter( 'admin_bar_menu', function ( WP_Admin_Bar $bar ): void {
 	$node = $bar->get_node( 'view-site' );
-	if ( $node ) {
+	if ( $node && brio_site_url() ) {
 		$node->href = brio_site_url();
 		$node->meta['target'] = '_blank';
 		$bar->add_node( (array) $node );
