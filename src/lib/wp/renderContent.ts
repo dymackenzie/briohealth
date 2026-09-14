@@ -211,47 +211,33 @@ export function renderContent(html: string) {
   return toJsxRuntime(tree, { Fragment, jsx, jsxs })
 }
 
+const parser = unified().use(rehypeParse, { fragment: true })
+
 /**
- * Entities WordPress bakes into titles and excerpts. One table — the two
- * callers had grown separate lists, so a curly apostrophe decoded in a title
- * and printed as `&rsquo;` in the excerpt right below it.
+ * The text of a snippet of WordPress HTML, entities decoded. Goes through the
+ * real parser because the hand-kept entity table it replaced kept missing
+ * ones — `&quot;` was printing as-is in excerpts.
  */
-const ENTITIES: [RegExp, string][] = [
-  [/&#8217;|&rsquo;/g, '’'],
-  [/&#8216;|&lsquo;/g, '‘'],
-  [/&#8220;|&ldquo;/g, '“'],
-  [/&#8221;|&rdquo;/g, '”'],
-  [/&#8211;|&ndash;/g, '–'],
-  [/&#8212;|&mdash;/g, '—'],
-  [/&hellip;/g, '…'],
-  [/&nbsp;/g, ' '],
-  [/&amp;/g, '&'],
-]
-
-const TAGS = /<[^>]+>/g
-const NUMERIC_ENTITY = /&#(\d+);/g
-
-function stripAndDecode(html: string, tagReplacement: string): string {
-  let text = html.replace(TAGS, tagReplacement)
-  for (const [pattern, replacement] of ENTITIES) {
-    text = text.replace(pattern, replacement)
-  }
-  return text.replace(NUMERIC_ENTITY, (_, code) =>
-    String.fromCharCode(Number(code)),
-  )
+function textOf(html: string, separator: string): string {
+  const parts: string[] = []
+  visit(parser.parse(html), 'text', (node) => {
+    parts.push(node.value)
+  })
+  return parts.join(separator)
 }
 
 /** Excerpts come with a "Continue reading" link and entities baked in. */
 export function plainExcerpt(html: string, limit = 180): string {
-  const text = stripAndDecode(html, ' ')
+  const text = textOf(html, ' ')
     .replace(/\s*Continue reading.*$/i, '')
     .replace(/\s+/g, ' ')
     .trim()
 
   if (text.length <= limit) return text
-  return text.slice(0, text.lastIndexOf(' ', limit)).trimEnd() + '…'
+  const cut = text.lastIndexOf(' ', limit)
+  return text.slice(0, cut > 0 ? cut : limit).trimEnd() + '…'
 }
 
 export function decodeTitle(html: string): string {
-  return stripAndDecode(html, '').trim()
+  return textOf(html, '').trim()
 }
