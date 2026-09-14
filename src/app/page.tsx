@@ -83,7 +83,7 @@ export default function HomePage() {
               <Figure
                 subject={home.hero.images.primary}
                 {...photos.leeTeaching}
-                priority
+                preload
                 shape="blob"
                 tone="deep"
                 aspect="1 / 1"

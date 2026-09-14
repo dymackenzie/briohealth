@@ -37,7 +37,7 @@ export function Figure({
   aspect = '4 / 5',
   className = '',
   sizes = '(min-width: 1200px) 560px, (min-width: 1024px) 50vw, 100vw',
-  priority = false,
+  preload = false,
   compact = false,
 }: {
   subject: string
@@ -48,7 +48,7 @@ export function Figure({
   aspect?: string
   className?: string
   sizes?: string
-  priority?: boolean
+  preload?: boolean
   /** Drop the label on small slots where it won't fit. */
   compact?: boolean
 }) {
@@ -62,7 +62,7 @@ export function Figure({
           alt={alt ?? subject}
           fill
           sizes={sizes}
-          priority={priority}
+          preload={preload}
           className="object-cover"
         />
       </div>

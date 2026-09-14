@@ -14,7 +14,7 @@ export function formatDate(iso: string) {
   })
 }
 
-export function PostCard({ post, priority = false }: { post: WPPost; priority?: boolean }) {
+export function PostCard({ post, eager = false }: { post: WPPost; eager?: boolean }) {
   const image = featuredImage(post)
   const category = postCategories(post)[0]
 
@@ -28,7 +28,7 @@ export function PostCard({ post, priority = false }: { post: WPPost; priority?: 
               alt={image.alt}
               width={image.width ?? 800}
               height={image.height ?? 600}
-              priority={priority}
+              loading={eager ? 'eager' : undefined}
               sizes="(min-width: 1200px) 360px, (min-width: 1024px) 33vw, (min-width: 640px) 50vw, 100vw"
               className="media-zoom aspect-[4/3] w-full object-cover"
             />

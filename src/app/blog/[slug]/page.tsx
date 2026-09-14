@@ -122,7 +122,7 @@ export default async function PostPage(props: { params: Promise<{ slug: string }
                 alt={image.alt}
                 width={image.width ?? 1600}
                 height={image.height ?? 900}
-                priority
+                preload
                 sizes="(min-width: 1200px) 1200px, 100vw"
                 style={{ maxWidth: image.width ? `${image.width}px` : undefined }}
                 className="mx-auto w-full rounded-lg object-cover"

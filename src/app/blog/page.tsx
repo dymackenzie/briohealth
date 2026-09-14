@@ -75,7 +75,7 @@ export default async function BlogIndex(props: {
               <ul className="mt-10 grid gap-x-7 gap-y-11 sm:grid-cols-2 lg:grid-cols-3">
                 {posts.map((post, i) => (
                   <Reveal as="li" key={post.id} delay={(i % 3) * 80}>
-                    <PostCard post={post} priority={i < 3} />
+                    <PostCard post={post} eager={i < 3} />
                   </Reveal>
                 ))}
               </ul>
