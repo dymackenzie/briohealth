@@ -13,7 +13,7 @@ Full context is in the design spec, §10.
 | `functions.php` | Wires up the rest and points SCF at `acf-json/` |
 | `inc/post-types.php` | `service`, `program`, `team_member`, `testimonial`, `faq` |
 | `inc/options.php` | Site settings page + `/wp-json/brio/v1/settings` |
-| `inc/revalidate.php` | `save_post` → `POST /api/revalidate` on the Next site |
+| `inc/revalidate.php` | Publish/update/trash → `POST /api/revalidate` on the Next site |
 | `inc/headless.php` | Front-end lockdown and hardening |
 | `inc/preview.php` | Renders post previews, which the lockdown would otherwise kill |
 | `acf-json/` | The field groups, in git |

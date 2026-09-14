@@ -35,9 +35,13 @@ const BRIO_IGNORED_POST_TYPES = array(
 /**
  * Fires on publish, on update, and on unpublish — the last one matters as much
  * as the first, since a page pulled down should stop being served.
+ *
+ * wp_after_insert_post rather than transition_post_status or save_post: those
+ * run before SCF writes its fields, so Next could refetch the old values.
  */
-add_action( 'transition_post_status', function ( string $new, string $old, WP_Post $post ): void {
-	if ( 'publish' !== $new && 'publish' !== $old ) {
+add_action( 'wp_after_insert_post', function ( int $post_id, WP_Post $post, bool $update, ?WP_Post $before ): void {
+	$was_live = $before && 'publish' === $before->post_status;
+	if ( 'publish' !== $post->post_status && ! $was_live ) {
 		return;
 	}
 	if ( in_array( $post->post_type, BRIO_IGNORED_POST_TYPES, true ) ) {
@@ -48,10 +52,10 @@ add_action( 'transition_post_status', function ( string $new, string $old, WP_Po
 	}
 
 	brio_revalidate( $post->post_type, brio_live_slug( $post ) );
-}, 10, 3 );
+}, 10, 4 );
 
 /**
- * Deleting straight out of the trash skips transition_post_status.
+ * Deleting straight out of the trash skips wp_after_insert_post.
  */
 add_action( 'deleted_post', function ( int $id, WP_Post $post ): void {
 	if ( in_array( $post->post_type, BRIO_IGNORED_POST_TYPES, true ) ) {
