@@ -1,43 +1,65 @@
-'use client'
-
 import Link from 'next/link'
-import { ChevronLeft, ChevronRight } from 'lucide-react'
+import { ArrowLeft, ArrowRight } from 'lucide-react'
 
-interface PaginationProps {
-  currentPage: number
+export function Pagination({
+  page,
+  totalPages,
+  basePath,
+}: {
+  page: number
   totalPages: number
   basePath: string
-}
-
-export default function Pagination({ currentPage, totalPages, basePath }: PaginationProps) {
+}) {
   if (totalPages <= 1) return null
 
-  const pageHref = (p: number) => p === 1 ? basePath : `${basePath}?page=${p}`
+  const href = (n: number) => (n === 1 ? basePath : `${basePath}?page=${n}`)
+
+  // 34 pages of posts, so show a window rather than every number.
+  const nearby = new Set([1, totalPages, page - 1, page, page + 1])
+  const shown = [...nearby].filter((n) => n >= 1 && n <= totalPages).sort((a, b) => a - b)
 
   return (
-    <nav className="flex items-center justify-center gap-2 mt-12" aria-label="Pagination">
-      {currentPage > 1 && (
-        <Link href={pageHref(currentPage - 1)} className="w-10 h-10 flex items-center justify-center rounded-full border border-sand-300 hover:bg-teal-500 hover:text-white hover:border-teal-500 transition-colors">
-          <ChevronLeft size={18} />
+    <nav aria-label="Pagination" className="mt-14 flex items-center justify-center gap-2">
+      {page > 1 && (
+        <Link
+          href={href(page - 1)}
+          rel="prev"
+          aria-label="Previous page"
+          className="flex h-11 w-11 items-center justify-center rounded-pill border border-ink-900/15 hover:border-ink-900/40"
+        >
+          <ArrowLeft className="h-4 w-4" aria-hidden />
         </Link>
       )}
-      {Array.from({ length: totalPages }, (_, i) => i + 1).map((p) => (
-        <Link
-          key={p}
-          href={pageHref(p)}
-          aria-current={p === currentPage ? 'page' : undefined}
-          className={`w-10 h-10 flex items-center justify-center rounded-full text-[0.9375rem] font-semibold transition-colors ${
-            p === currentPage
-              ? 'bg-teal-500 text-white'
-              : 'border border-sand-300 hover:bg-sand-200 text-ink-700'
-          }`}
-        >
-          {p}
-        </Link>
+
+      {shown.map((n, i) => (
+        <span key={n} className="flex items-center gap-2">
+          {i > 0 && shown[i - 1] !== n - 1 && (
+            <span className="px-1 text-ink-300" aria-hidden>
+              …
+            </span>
+          )}
+          <Link
+            href={href(n)}
+            aria-current={n === page ? 'page' : undefined}
+            className={`flex h-11 min-w-11 items-center justify-center rounded-pill px-3 tabular-nums ${
+              n === page
+                ? 'bg-teal-700 text-canvas'
+                : 'border border-ink-900/15 hover:border-ink-900/40'
+            }`}
+          >
+            {n}
+          </Link>
+        </span>
       ))}
-      {currentPage < totalPages && (
-        <Link href={pageHref(currentPage + 1)} className="w-10 h-10 flex items-center justify-center rounded-full border border-sand-300 hover:bg-teal-500 hover:text-white hover:border-teal-500 transition-colors">
-          <ChevronRight size={18} />
+
+      {page < totalPages && (
+        <Link
+          href={href(page + 1)}
+          rel="next"
+          aria-label="Next page"
+          className="flex h-11 w-11 items-center justify-center rounded-pill border border-ink-900/15 hover:border-ink-900/40"
+        >
+          <ArrowRight className="h-4 w-4" aria-hidden />
         </Link>
       )}
     </nav>

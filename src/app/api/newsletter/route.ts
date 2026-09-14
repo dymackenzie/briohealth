@@ -1,47 +1,63 @@
-import { type NextRequest, NextResponse } from 'next/server'
+import { createHash } from 'node:crypto'
+import { NextResponse } from 'next/server'
+import { EMAIL_PATTERN } from '@/lib/site'
 
-export async function POST(req: NextRequest) {
+export async function POST(request: Request) {
+  const key = process.env.MAILCHIMP_API_KEY
+  const audience = process.env.MAILCHIMP_AUDIENCE_ID
+  const prefix = process.env.MAILCHIMP_SERVER_PREFIX
+
+  if (!key || !audience || !prefix) {
+    console.error('[newsletter] Mailchimp env vars are not set')
+    return NextResponse.json({ error: 'Not configured yet.' }, { status: 500 })
+  }
+
+  let body: { email?: unknown }
   try {
-    const { email } = await req.json()
-    if (!email || !/^\S+@\S+\.\S+$/.test(email)) {
-      return NextResponse.json({ message: 'Invalid email' }, { status: 400 })
-    }
+    body = (await request.json()) ?? {}
+  } catch {
+    return NextResponse.json({ error: 'Invalid request.' }, { status: 400 })
+  }
 
-    const apiKey = process.env.MAILCHIMP_API_KEY
-    const audienceId = process.env.MAILCHIMP_AUDIENCE_ID
-    const serverPrefix = process.env.MAILCHIMP_SERVER_PREFIX || 'us21'
+  const email =
+    typeof body.email === 'string' ? body.email.trim().toLowerCase().slice(0, 200) : ''
+  if (!EMAIL_PATTERN.test(email)) {
+    return NextResponse.json({ error: 'Please enter a valid email.' }, { status: 400 })
+  }
 
-    if (!apiKey || !audienceId) {
-      // No Mailchimp configured — just acknowledge
-      return NextResponse.json({ message: 'Subscribed (dev mode)' })
-    }
+  // Mailchimp keys member records by the MD5 of the lowercased address, so a
+  // PUT is an upsert — resubscribing an existing address won't 400.
+  const id = createHash('md5').update(email).digest('hex')
+  const url = `https://${prefix}.api.mailchimp.com/3.0/lists/${audience}/members/${id}`
 
-    const response = await fetch(
-      `https://${serverPrefix}.api.mailchimp.com/3.0/lists/${audienceId}/members`,
-      {
-        method: 'POST',
-        headers: {
-          Authorization: `Bearer ${apiKey}`,
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify({
-          email_address: email,
-          status: 'subscribed',
-        }),
-      }
-    )
+  try {
+    const response = await fetch(url, {
+      method: 'PUT',
+      headers: {
+        Authorization: `Bearer ${key}`,
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify({ email_address: email, status_if_new: 'subscribed' }),
+    })
 
     if (!response.ok) {
-      const error = await response.json()
-      // Already subscribed is fine
-      if (error.title === 'Member Exists') {
-        return NextResponse.json({ message: 'Already subscribed' })
-      }
-      return NextResponse.json({ message: 'Subscription failed' }, { status: 400 })
-    }
+      const detail = await response.json().catch(() => ({}))
 
-    return NextResponse.json({ message: 'Subscribed successfully' })
-  } catch {
-    return NextResponse.json({ message: 'Server error' }, { status: 500 })
+      // Someone who previously unsubscribed has to opt back in themselves.
+      if (detail.title === 'Member In Compliance State') {
+        return NextResponse.json(
+          { error: 'Please use the link in a previous email to resubscribe.' },
+          { status: 400 },
+        )
+      }
+
+      console.error('[newsletter] mailchimp rejected', response.status, detail.title)
+      return NextResponse.json({ error: 'Could not subscribe right now.' }, { status: 502 })
+    }
+  } catch (error) {
+    console.error('[newsletter] request failed', error)
+    return NextResponse.json({ error: 'Could not subscribe right now.' }, { status: 502 })
   }
+
+  return NextResponse.json({ ok: true, message: 'You’re on the list — thanks!' })
 }

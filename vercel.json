@@ -1,17 +1,5 @@
 {
   "framework": "nextjs",
   "buildCommand": "yarn build",
-  "installCommand": "yarn install",
-  "env": {
-    "NEXT_PUBLIC_SANITY_PROJECT_ID": "@sanity-project-id",
-    "NEXT_PUBLIC_SANITY_DATASET": "@sanity-dataset",
-    "NEXT_PUBLIC_SANITY_API_VERSION": "2024-10-01",
-    "SANITY_API_READ_TOKEN": "@sanity-read-token",
-    "SANITY_REVALIDATE_SECRET": "@sanity-revalidate-secret",
-    "MAILCHIMP_API_KEY": "@mailchimp-api-key",
-    "MAILCHIMP_AUDIENCE_ID": "@mailchimp-audience-id",
-    "MAILCHIMP_SERVER_PREFIX": "@mailchimp-server-prefix",
-    "RESEND_API_KEY": "@resend-api-key",
-    "NEXT_PUBLIC_SITE_URL": "@site-url"
-  }
+  "installCommand": "yarn install"
 }

@@ -2,61 +2,66 @@
 
 import { useState } from 'react'
 
-export default function NewsletterForm() {
-  const [status, setStatus] = useState<'idle' | 'loading' | 'success' | 'error'>('idle')
-  const [email, setEmail] = useState('')
+type State = 'idle' | 'sending' | 'sent' | 'error'
 
-  async function handleSubmit(e: React.FormEvent) {
-    e.preventDefault()
-    if (!email) return
-    setStatus('loading')
+export function NewsletterForm() {
+  const [state, setState] = useState<State>('idle')
+  const [message, setMessage] = useState('')
+
+  async function onSubmit(event: React.FormEvent<HTMLFormElement>) {
+    event.preventDefault()
+    setState('sending')
+
+    const email = new FormData(event.currentTarget).get('email')
+
     try {
-      const res = await fetch('/api/newsletter', {
+      const response = await fetch('/api/newsletter', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ email }),
       })
-      if (res.ok) {
-        setStatus('success')
-        setEmail('')
-      } else {
-        setStatus('error')
-      }
-    } catch {
-      setStatus('error')
+      const body = await response.json().catch(() => ({}))
+
+      if (!response.ok) throw new Error(body.error ?? 'Could not subscribe.')
+
+      setMessage(body.message ?? 'You’re on the list.')
+      setState('sent')
+    } catch (err) {
+      setMessage(err instanceof Error ? err.message : 'Could not subscribe.')
+      setState('error')
     }
   }
 
-  if (status === 'success') {
-    return (
-      <div className="p-4 bg-teal-050 rounded-[var(--r-md)] text-teal-700 font-semibold text-center">
-        You're subscribed! Check your inbox.
-      </div>
-    )
+  if (state === 'sent') {
+    return <p className="text-[0.95rem] opacity-85">{message}</p>
   }
 
   return (
-    <form onSubmit={handleSubmit} className="flex flex-col sm:flex-row gap-3 w-full max-w-md mx-auto">
-      {/* Honeypot */}
-      <input type="text" name="_hp" className="hidden" tabIndex={-1} autoComplete="off" />
-      <input
-        type="email"
-        value={email}
-        onChange={(e) => setEmail(e.target.value)}
-        required
-        placeholder="your@email.com"
-        className="flex-1 px-4 py-3 rounded-[var(--r-md)] border border-sand-300 bg-paper text-ink-900 placeholder-ink-300 focus:outline-none focus:border-teal-500 text-[0.9375rem]"
-        disabled={status === 'loading'}
-      />
+    <form onSubmit={onSubmit} className="flex flex-col gap-3 sm:flex-row sm:flex-wrap">
+      <label className="grow">
+        <span className="sr-only">Email address</span>
+        <input
+          name="email"
+          type="email"
+          required
+          placeholder="you@example.com"
+          autoComplete="email"
+          className="w-full rounded-pill border border-current/25 bg-transparent px-4 py-3 placeholder:text-current/40 focus:border-current/60 focus:outline-none"
+        />
+      </label>
+
       <button
         type="submit"
-        disabled={status === 'loading'}
-        className="px-6 py-3 bg-teal-500 hover:bg-teal-600 text-white font-semibold rounded-[var(--r-pill)] transition-colors cursor-pointer disabled:opacity-70 shrink-0"
+        disabled={state === 'sending'}
+        className="rounded-pill bg-canvas px-4 py-3 font-medium text-teal-900 transition-colors hover:bg-paper disabled:opacity-60"
       >
-        {status === 'loading' ? 'Subscribing…' : 'Subscribe'}
+        {state === 'sending' ? 'Joining…' : 'Sign up'}
       </button>
-      {status === 'error' && (
-        <p className="text-error text-[0.875rem] mt-1">Something went wrong. Please try again.</p>
+
+      {state === 'error' && (
+        <p role="alert" className="basis-full text-[0.9rem] text-coral-300">
+          {message}
+        </p>
       )}
     </form>
   )

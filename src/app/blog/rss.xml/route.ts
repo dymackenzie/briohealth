@@ -1,63 +1,56 @@
-import { client, isSanityConfigured } from '@/sanity/lib/client'
-import { groq } from 'next-sanity'
+import { getPosts } from '@/lib/wp/queries'
+import { decodeTitle, plainExcerpt } from '@/lib/wp/renderContent'
+import { absoluteUrl, site } from '@/lib/site'
 
-const SITE_URL = process.env.NEXT_PUBLIC_SITE_URL || 'https://www.yourbriohealth.com'
+export const revalidate = 3600
+
+function escape(value: string) {
+  return value
+    .replace(/&/g, '&amp;')
+    .replace(/</g, '&lt;')
+    .replace(/>/g, '&gt;')
+    .replace(/"/g, '&quot;')
+}
 
 export async function GET() {
-  const posts = isSanityConfigured
-    ? await client.fetch(
-        groq`*[_type == "post" && !archived] | order(publishedAt desc) [0...50] {
-          title, slug, excerpt, publishedAt, _updatedAt,
-          "authorName": author->name,
-          "categories": categories[]->title
-        }`
-      ).catch(() => [])
-    : []
+  // Titles and excerpts only. With _embed the same call drags every post's
+  // full HTML body across the wire — about a megabyte to build 15KB of feed.
+  const { posts } = await getPosts({
+    perPage: 30,
+    fields: 'id,slug,date_gmt,title,excerpt',
+  })
 
-  const items = (posts || []).map((post: any) => {
-    const url = `${SITE_URL}/blog/${post.slug?.current}`
-    const pubDate = post.publishedAt
-      ? new Date(post.publishedAt).toUTCString()
-      : new Date().toUTCString()
-    const cats = (post.categories || []).map((c: string) => `<category>${escapeXml(c)}</category>`).join('')
-    return `
-    <item>
-      <title>${escapeXml(post.title)}</title>
+  const items = posts
+    .map((post) => {
+      const url = absoluteUrl(`/blog/${post.slug}`)
+      // WordPress dates carry no offset. `date` is clinic-local and would be
+      // read as UTC, so use the GMT one.
+      return `    <item>
+      <title>${escape(decodeTitle(post.title.rendered))}</title>
       <link>${url}</link>
       <guid isPermaLink="true">${url}</guid>
-      <pubDate>${pubDate}</pubDate>
-      ${post.excerpt ? `<description>${escapeXml(post.excerpt)}</description>` : ''}
-      ${post.authorName ? `<author>${escapeXml(post.authorName)}</author>` : ''}
-      ${cats}
+      <pubDate>${new Date(`${post.date_gmt}Z`).toUTCString()}</pubDate>
+      <description>${escape(plainExcerpt(post.excerpt.rendered, 300))}</description>
     </item>`
-  }).join('')
+    })
+    .join('\n')
 
   const xml = `<?xml version="1.0" encoding="UTF-8"?>
 <rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
   <channel>
-    <title>Brio Health Blog</title>
-    <link>${SITE_URL}/blog</link>
-    <description>Health tips, recipes, and clinic news from Brio Health Inc., Richmond BC.</description>
-    <language>en-ca</language>
-    <lastBuildDate>${new Date().toUTCString()}</lastBuildDate>
-    <atom:link href="${SITE_URL}/blog/rss.xml" rel="self" type="application/rss+xml"/>
-    ${items}
+    <title>${escape(site.name)}</title>
+    <link>${site.url}</link>
+    <description>${escape(site.tagline)}</description>
+    <language>en-CA</language>
+    <atom:link href="${site.url}/blog/rss.xml" rel="self" type="application/rss+xml" />
+${items}
   </channel>
 </rss>`
 
   return new Response(xml, {
     headers: {
-      'Content-Type': 'application/xml; charset=utf-8',
-      'Cache-Control': 'public, max-age=3600',
+      'Content-Type': 'application/rss+xml; charset=utf-8',
+      'Cache-Control': 'public, max-age=3600, s-maxage=3600',
     },
   })
-}
-
-function escapeXml(str: string): string {
-  return str
-    .replace(/&/g, '&amp;')
-    .replace(/</g, '&lt;')
-    .replace(/>/g, '&gt;')
-    .replace(/"/g, '&quot;')
-    .replace(/'/g, '&apos;')
 }

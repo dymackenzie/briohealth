@@ -1,40 +1,46 @@
 import type { Metadata } from 'next'
 
-interface SeoInput {
-  metaTitle?: string
-  metaDescription?: string
-  ogImage?: { asset?: { url: string } }
-  noIndex?: boolean
+import { absoluteUrl, site } from './site'
+
+/**
+ * Next replaces openGraph wholesale rather than merging it with the layout's,
+ * so every page has to carry these or it loses its share image.
+ */
+export const siteOpenGraph = {
+  siteName: site.name,
+  locale: 'en_CA',
+  images: [{ url: '/brio_social_2.png', width: 1081, height: 1081, alt: site.name }],
 }
 
-interface SiteSettings {
-  title?: string
-  metaTitle?: string
-  metaDescription?: string
-  ogImage?: { asset?: { url: string } }
-}
-
-export function buildMetadata(seo: SeoInput | null | undefined, site: SiteSettings | null | undefined, pageTitle?: string): Metadata {
-  const siteName = site?.title || 'Brio Health'
-  const title = seo?.metaTitle || pageTitle || site?.metaTitle || siteName
-  const description = seo?.metaDescription || site?.metaDescription || 'Brio Health Inc. — integrative health clinic in Richmond BC. Naturopathic medicine, acupuncture, IV therapy, laser, massage and more.'
-  const ogImageUrl = seo?.ogImage?.asset?.url || site?.ogImage?.asset?.url
+export function buildMetadata({
+  title,
+  description,
+  path = '/',
+  image,
+  type = 'website',
+  publishedTime,
+}: {
+  title: string
+  description?: string
+  path?: string
+  image?: string | null
+  type?: 'website' | 'article'
+  publishedTime?: string
+}): Metadata {
+  const url = absoluteUrl(path)
 
   return {
-    title: `${title} | ${siteName}`,
+    title,
     description,
+    alternates: { canonical: url },
     openGraph: {
+      ...siteOpenGraph,
       title,
       description,
-      siteName,
-      images: ogImageUrl ? [{ url: ogImageUrl }] : [],
+      url,
+      type,
+      ...(image ? { images: [{ url: image }] } : {}),
+      ...(publishedTime ? { publishedTime } : {}),
     },
-    twitter: {
-      card: 'summary_large_image',
-      title,
-      description,
-      images: ogImageUrl ? [ogImageUrl] : [],
-    },
-    robots: seo?.noIndex ? { index: false, follow: false } : { index: true, follow: true },
   }
 }

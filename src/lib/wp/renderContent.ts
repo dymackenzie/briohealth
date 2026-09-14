@@ -1,0 +1,255 @@
+import { Fragment, jsx, jsxs } from 'react/jsx-runtime'
+import { toJsxRuntime } from 'hast-util-to-jsx-runtime'
+import rehypeParse from 'rehype-parse'
+import rehypeSanitize, { defaultSchema } from 'rehype-sanitize'
+import { unified } from 'unified'
+import { visit } from 'unist-util-visit'
+import type { Element, Root } from 'hast'
+
+import { WP_HOST } from './client'
+
+/**
+ * Turns WordPress post HTML into React.
+ *
+ * Two shapes come out of this install. Older posts (2009-2023, the bulk) are
+ * clean classic HTML. Newer ones are wrapped in Avada/Fusion builder markup —
+ * nested layout divs, fusion-* classes, --awb-* inline styles — with the real
+ * content buried inside. This flattens the second into the first.
+ *
+ * Once Avada is deactivated new posts come out clean and only the sanitize
+ * step matters.
+ */
+
+const WP_HOSTS = ['yourbriohealth.com', 'www.yourbriohealth.com']
+
+/** Layout-only wrappers. Their children get lifted; the div goes. */
+const FUSION_WRAPPERS = [
+  'fusion-fullwidth',
+  'fusion-builder-row',
+  'fusion-row',
+  'fusion-layout-column',
+  'fusion-column-wrapper',
+  'fusion-flex-container',
+  'fusion-content-boxes',
+  'fusion-separator',
+  'fusion-title',
+  'fusion-text',
+  'fusion-builder-module-element',
+]
+
+function classes(node: Element): string[] {
+  // hast types className as an array, but the parser hands back a string for
+  // some nodes, so widen before narrowing.
+  const value: unknown = node.properties?.className
+  if (Array.isArray(value)) return value.map(String)
+  if (typeof value === 'string') return value.split(/\s+/)
+  return []
+}
+
+function isFusionWrapper(node: Element): boolean {
+  if (node.tagName !== 'div' && node.tagName !== 'span') return false
+  const list = classes(node)
+  return list.some((c) => FUSION_WRAPPERS.some((w) => c.startsWith(w)))
+}
+
+/** Flatten the builder scaffolding. */
+function unwrapFusion() {
+  return (tree: Root) => {
+    visit(tree, 'element', (node, index, parent) => {
+      if (!parent || index === undefined) return
+      if (!isFusionWrapper(node)) return
+
+      parent.children.splice(index, 1, ...node.children)
+      // Revisit from the same index so the lifted children, which are often
+      // wrappers themselves, get checked too.
+      return index
+    })
+  }
+}
+
+function cleanAttributes() {
+  return (tree: Root) => {
+    visit(tree, 'element', (node: Element) => {
+      const props = node.properties
+
+      // Avada puts the page title in the body as an h1, and the page already
+      // has one.
+      if (node.tagName === 'h1') node.tagName = 'h2'
+
+      // Avada's inline custom properties. Nothing outside Avada reads them.
+      if (typeof props.style === 'string' && props.style.includes('--awb-')) {
+        delete props.style
+      }
+
+      const kept = classes(node).filter(
+        (c) => !c.startsWith('fusion-') && !c.startsWith('awb-'),
+      )
+      if (kept.length) props.className = kept
+      else delete props.className
+
+      if (node.tagName === 'img') {
+        // Fusion's lazyloader puts a base64 GIF in src and the real URL in
+        // data-orig-src. Miss this and every image on a recent post is blank.
+        if (typeof props.dataOrigSrc === 'string' && props.dataOrigSrc) {
+          props.src = props.dataOrigSrc
+        }
+
+        delete props.dataOrigSrc
+        delete props.srcSet
+        delete props.sizes
+
+        props.loading = 'lazy'
+        props.decoding = 'async'
+      }
+
+      if (typeof props.src === 'string') props.src = rewriteHost(props.src)
+      if (typeof props.href === 'string') props.href = rewriteHost(props.href)
+    })
+  }
+}
+
+function rewriteHost(url: string): string {
+  for (const host of WP_HOSTS) {
+    if (url.includes(`//${host}/wp-content/`)) {
+      return url.replace(`//${host}/`, `//${WP_HOST}/`)
+    }
+  }
+  return url
+}
+
+/**
+ * Take out <style> and friends, contents and all.
+ *
+ * rehype-sanitize drops the tag but keeps its text children, so an Avada FAQ
+ * block was printing its own stylesheet into the middle of the page. Forms go
+ * the same way: Avada's post back to a WordPress page that no longer exists,
+ * and sanitized they came out as a row of disabled checkboxes.
+ */
+const NOISE = new Set(['style', 'script', 'noscript', 'link', 'meta', 'form'])
+
+// Avada's FAQ accordion writes its schema.org markup as real spans and hides
+// them in CSS. We drop the CSS, so without this the questions print twice with
+// the author login and an ISO timestamp between them.
+const HIDDEN = ['rich-snippet-hidden', 'screen-reader-text', 'fusion-meta-hidden']
+
+function isNoise(el: Element): boolean {
+  if (NOISE.has(el.tagName)) return true
+  if (classes(el).some((c) => HIDDEN.includes(c))) return true
+
+  // Avada's spacer images are a data: GIF with nothing lazy-loaded behind
+  // them. Sanitize strips the data: URL and leaves an img with no src.
+  if (el.tagName !== 'img' || el.properties.dataOrigSrc) return false
+  const src = el.properties.src
+  return typeof src !== 'string' || src === '' || src.startsWith('data:')
+}
+
+function dropNoise() {
+  return (tree: Root) => {
+    visit(tree, 'element', (node, index, parent) => {
+      if (!parent || index === undefined) return
+      if (isNoise(node)) {
+        parent.children.splice(index, 1)
+        // The three hidden spans are siblings; without rewinding, visit skips
+        // whichever one slides into the gap.
+        return index
+      }
+    })
+  }
+}
+
+/** Drop wrappers left holding nothing after the passes above. */
+function dropEmpty() {
+  return (tree: Root) => {
+    visit(tree, 'element', (node, index, parent) => {
+      if (!parent || index === undefined) return
+      if (node.tagName !== 'div' && node.tagName !== 'p' && node.tagName !== 'span') return
+
+      const hasContent = node.children.some(
+        (c) =>
+          (c.type === 'text' && c.value.trim() !== '') ||
+          (c.type === 'element' && c.tagName !== 'br'),
+      )
+      if (!hasContent) {
+        parent.children.splice(index, 1)
+        // Same rewind as dropNoise — empty wrappers come in runs, and without
+        // it every second one survives.
+        return index
+      }
+    })
+  }
+}
+
+const schema = {
+  ...defaultSchema,
+  attributes: {
+    ...defaultSchema.attributes,
+    img: [
+      ...(defaultSchema.attributes?.img ?? []),
+      'loading',
+      'decoding',
+      'width',
+      'height',
+    ],
+    iframe: ['src', 'title', 'allow', 'allowFullScreen', 'width', 'height'],
+    video: ['controls', 'poster', 'width', 'height'],
+    source: ['src', 'type'],
+    '*': [...(defaultSchema.attributes?.['*'] ?? []), 'className', 'id'],
+  },
+  // YouTube embeds are all over the older posts, and the pickleball page has
+  // a self-hosted video.
+  tagNames: [
+    ...(defaultSchema.tagNames ?? []),
+    'iframe',
+    'video',
+    'source',
+    'figure',
+    'figcaption',
+  ],
+}
+
+const processor = unified()
+  .use(rehypeParse, { fragment: true })
+  .use(dropNoise)
+  .use(unwrapFusion)
+  .use(cleanAttributes)
+  .use(dropEmpty)
+  .use(rehypeSanitize, schema)
+
+export function renderContent(html: string) {
+  if (!html?.trim()) return null
+
+  const tree = processor.runSync(processor.parse(html)) as Root
+
+  return toJsxRuntime(tree, { Fragment, jsx, jsxs })
+}
+
+const parser = unified().use(rehypeParse, { fragment: true })
+
+/**
+ * The text of a snippet of WordPress HTML, entities decoded. Goes through the
+ * real parser because the hand-kept entity table it replaced kept missing
+ * ones — `&quot;` was printing as-is in excerpts.
+ */
+function textOf(html: string, separator: string): string {
+  const parts: string[] = []
+  visit(parser.parse(html), 'text', (node) => {
+    parts.push(node.value)
+  })
+  return parts.join(separator)
+}
+
+/** Excerpts come with a "Continue reading" link and entities baked in. */
+export function plainExcerpt(html: string, limit = 180): string {
+  const text = textOf(html, ' ')
+    .replace(/\s*Continue reading.*$/i, '')
+    .replace(/\s+/g, ' ')
+    .trim()
+
+  if (text.length <= limit) return text
+  const cut = text.lastIndexOf(' ', limit)
+  return text.slice(0, cut > 0 ? cut : limit).trimEnd() + '…'
+}
+
+export function decodeTitle(html: string): string {
+  return textOf(html, '').trim()
+}
