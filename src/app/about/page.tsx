@@ -6,13 +6,14 @@ import { Figure } from '@/components/ui/Figure'
 import { BandDivider } from '@/components/ui/BandDivider'
 import { Reveal } from '@/components/ui/Reveal'
 import { Parallax } from '@/components/ui/Parallax'
-import { CountUp } from '@/components/ui/CountUp'
+import { Stats } from '@/components/ui/Stats'
 import { DotBurst } from '@/components/brand/DotBurst'
 import { getPage } from '@/lib/wp/queries'
 import { renderContent } from '@/lib/wp/renderContent'
 import { clinicJsonLd, JsonLd } from '@/lib/jsonld'
 import { buildMetadata } from '@/lib/seo'
-import { site, yearsPractising } from '@/lib/site'
+import { site } from '@/lib/site'
+import { home } from '@/lib/content/home'
 import { photos } from '@/lib/content/photos'
 
 export const revalidate = 3600
@@ -52,30 +53,7 @@ export default async function AboutPage() {
                   />
                 </Parallax>
 
-                <dl className="relative z-10 -mt-11 ml-4 flex gap-7 rounded-lg bg-teal-700 px-6 py-5 text-canvas shadow-lg sm:ml-7">
-                  <div>
-                    <dt className="sr-only">Years serving Richmond</dt>
-                    <dd>
-                      <span className="font-display block text-[clamp(2rem,3.6vw,2.6rem)] leading-none">
-                        <CountUp value={yearsPractising} />
-                      </span>
-                      <span className="mt-2 block max-w-[14ch] text-[0.85rem] opacity-80">
-                        Years serving Richmond
-                      </span>
-                    </dd>
-                  </div>
-                  <div>
-                    <dt className="sr-only">Patients helped</dt>
-                    <dd>
-                      <span className="font-display block text-[clamp(2rem,3.6vw,2.6rem)] leading-none">
-                        <CountUp value={5000} suffix="+" />
-                      </span>
-                      <span className="mt-2 block max-w-[14ch] text-[0.85rem] opacity-80">
-                        Patients helped
-                      </span>
-                    </dd>
-                  </div>
-                </dl>
+                <Stats stats={home.empathy.stats} />
               </Reveal>
 
               <Reveal>

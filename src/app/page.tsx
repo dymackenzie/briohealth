@@ -11,7 +11,7 @@ import { Reveal } from '@/components/ui/Reveal'
 import { HeroHeading } from '@/components/ui/HeroHeading'
 import { Parallax, ScrollZoom } from '@/components/ui/Parallax'
 import { ScrollProgress } from '@/components/ui/ScrollProgress'
-import { CountUp } from '@/components/ui/CountUp'
+import { Stats } from '@/components/ui/Stats'
 import { emphasize } from '@/components/ui/Mark'
 import { DotBurst, DotRule } from '@/components/brand/DotBurst'
 import { StepTrail } from '@/components/brand/StepTrail'
@@ -236,21 +236,7 @@ export default function HomePage() {
                 </ScrollZoom>
 
                 {/* Only overlap on the page, so it reads as deliberate. */}
-                <dl className="relative z-10 -mt-11 ml-4 flex gap-7 rounded-lg bg-teal-700 px-6 py-5 text-canvas shadow-lg sm:ml-7">
-                  {home.empathy.stats.map((stat) => (
-                    <div key={stat.label}>
-                      <dt className="sr-only">{stat.label}</dt>
-                      <dd>
-                        <span className="font-display block text-[clamp(2rem,3.6vw,2.6rem)] leading-none">
-                          <CountUp value={stat.numeric} suffix={stat.suffix} />
-                        </span>
-                        <span className="mt-2 block max-w-[14ch] text-[0.85rem] opacity-80">
-                          {stat.label}
-                        </span>
-                      </dd>
-                    </div>
-                  ))}
-                </dl>
+                <Stats stats={home.empathy.stats} />
               </Reveal>
 
               <div>
