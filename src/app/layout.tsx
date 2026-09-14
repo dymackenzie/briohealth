@@ -2,6 +2,7 @@ import type { Metadata } from 'next'
 import { Fraunces, Hanken_Grotesk } from 'next/font/google'
 import { Analytics } from '@vercel/analytics/next'
 
+import { siteOpenGraph } from '@/lib/seo'
 import { site } from '@/lib/site'
 import './globals.css'
 
@@ -28,12 +29,7 @@ export const metadata: Metadata = {
   },
   description:
     'Integrative and naturopathic care in Richmond, BC. Custom treatment plans that target root causes, not symptoms.',
-  openGraph: {
-    type: 'website',
-    siteName: site.name,
-    locale: 'en_CA',
-    images: [{ url: '/brio_social_2.png', width: 1081, height: 1081, alt: site.name }],
-  },
+  openGraph: { ...siteOpenGraph, type: 'website' },
   twitter: { card: 'summary_large_image' },
   robots: { index: true, follow: true },
 }
