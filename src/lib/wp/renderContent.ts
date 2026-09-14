@@ -204,10 +204,20 @@ const schema = {
       'height',
     ],
     iframe: ['src', 'title', 'allow', 'allowFullScreen', 'width', 'height'],
+    video: ['controls', 'poster', 'width', 'height'],
+    source: ['src', 'type'],
     '*': [...(defaultSchema.attributes?.['*'] ?? []), 'className', 'id'],
   },
-  // YouTube embeds are all over the older posts.
-  tagNames: [...(defaultSchema.tagNames ?? []), 'iframe', 'figure', 'figcaption'],
+  // YouTube embeds are all over the older posts, and the pickleball page has
+  // a self-hosted video.
+  tagNames: [
+    ...(defaultSchema.tagNames ?? []),
+    'iframe',
+    'video',
+    'source',
+    'figure',
+    'figcaption',
+  ],
 }
 
 const processor = unified()
