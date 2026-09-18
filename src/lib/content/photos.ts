@@ -1,47 +1,49 @@
 /**
- * Photos that already exist in the client's own WordPress library.
+ * Photos for the image slots.
  *
- * Every slot on the site still carries its brief. The ones that spread an
- * entry from here show a real picture in the meantime, which makes the mockup
- * a lot more convincing without pretending the shoot has happened.
+ * Most come from the clinic's own shoot and live in `public/photos` as
+ * web-sized copies, capped at 2400px on the long edge. The full-size camera
+ * files are 10–16 MB each and stay out of the repo, in the gitignored
+ * `photo-originals/`.
  *
- * Only the clinic's own pictures of their own people are in here. The library
- * also holds a pile of licensed stock: acupuncture models, an IV drip macro,
- * the mortar-and-pestle-with-a-stethoscope shot. None of it is used. The brief
- * rules that look out, one of the files is named `depositphotos-...` and may
- * never have been licensed at all, and a stock treatment room tells a patient
- * the clinic looks like something it doesn't.
+ * The shoot didn't cover pickleball, so those two still come from the
+ * client's WordPress library. next.config.ts allows the apex and cms. hosts
+ * they'll move to at cutover.
  *
- * Slots left without one stay as labelled placeholders on purpose. The gaps
- * are the shot list, and they make the case for the shoot better than an
- * email does.
- *
- * URLs point at the apex today and move to cms. with everything else at
- * cutover; next.config.ts allows both hosts.
+ * Every slot still carries its brief as `subject`. Anything not wired up here
+ * renders as a labelled placeholder, which doubles as the shot list.
  */
 
 const WP = 'https://yourbriohealth.com/wp-content/uploads'
 
 export const photos = {
-  leePortrait: {
-    src: `${WP}/2023/10/drjefflee.jpeg`,
-    alt: 'Dr. Jeffrey Lee',
-  },
-  leePortraitAlt: {
-    src: `${WP}/2020/01/drjefflee.jpg`,
-    alt: 'Dr. Jeffrey Lee',
-  },
-  leeCoat: {
-    src: `${WP}/2024/02/dr_jeff_lee-scaled-e1706829079893.jpeg`,
-    alt: 'Dr. Jeffrey Lee at the clinic',
-  },
-  leeTeaching: {
-    src: `${WP}/2024/02/dr-jeff-lee-teaching.jpeg`,
-    alt: 'Dr. Jeffrey Lee talking with a small group',
-  },
   leeMarket: {
-    src: `${WP}/2024/05/BRIO-Jeff-scaled-e1715974860745.jpeg`,
-    alt: 'Dr. Jeffrey Lee at a farmers market',
+    src: '/photos/lee-market.jpg',
+    alt: 'Dr. Jeffrey Lee handing over green beans at a farmers market stall',
+  },
+  lobby: {
+    src: '/photos/lobby.jpg',
+    alt: 'The Brio Health waiting area',
+  },
+  leeConsultation: {
+    src: '/photos/lee-consultation-tall.jpg',
+    alt: 'Dr. Jeffrey Lee using an anatomy model to explain a treatment to a patient',
+  },
+  consultRoom: {
+    src: '/photos/consult-room.jpg',
+    alt: 'A quiet consultation room at the clinic',
+  },
+  leeReviewingPlan: {
+    src: '/photos/lee-reviewing-plan.jpg',
+    alt: 'Dr. Jeffrey Lee going over a supplement with a patient',
+  },
+  leePortraitClinic: {
+    src: '/photos/lee-portrait-clinic.jpg',
+    alt: 'Dr. Jeffrey Lee in the clinic',
+  },
+  leePortraitWindow: {
+    src: '/photos/lee-portrait-window.jpg',
+    alt: 'Dr. Jeffrey Lee',
   },
   pickleballGroup: {
     src: `${WP}/2025/11/pickleball-1-rotated.jpg`,
@@ -50,5 +52,58 @@ export const photos = {
   pickleballCourt: {
     src: `${WP}/2025/11/pickleball2.jpg`,
     alt: 'Players on the pickleball court',
+  },
+} as const
+
+/** In step order, one per `home.plan.steps` entry. */
+export const planPhotos = [
+  {
+    src: '/photos/lee-first-visit.jpg',
+    alt: 'Dr. Jeffrey Lee listening to a couple at their first visit',
+  },
+  {
+    src: '/photos/lee-treatment.jpg',
+    alt: 'Dr. Jeffrey Lee treating a patient on the table',
+  },
+  {
+    src: '/photos/lee-outdoors-family.jpg',
+    alt: 'Dr. Jeffrey Lee outdoors on a picnic blanket with a family',
+  },
+] as const
+
+/**
+ * Each service shows in a wide slot (home, /services) and a tall one (its
+ * own page). A single crop loses too much of one or the other.
+ */
+export const servicePhotos = {
+  naturopathic: {
+    wide: {
+      src: '/photos/naturopathic-wide.jpg',
+      alt: 'Dr. Jeffrey Lee in a naturopathic consultation with a patient',
+    },
+    tall: {
+      src: '/photos/naturopathic-tall.jpg',
+      alt: 'Dr. Jeffrey Lee checking a patient’s blood pressure',
+    },
+  },
+  acupuncture: {
+    wide: {
+      src: '/photos/acupuncture-wide.jpg',
+      alt: 'Dr. Jeffrey Lee giving an acupuncture treatment',
+    },
+    tall: {
+      src: '/photos/acupuncture-tall.jpg',
+      alt: 'Dr. Jeffrey Lee treating a patient’s neck',
+    },
+  },
+  'iv-therapy': {
+    wide: {
+      src: '/photos/iv-wide.jpg',
+      alt: 'Dr. Jeffrey Lee setting up an I.V. for a patient',
+    },
+    tall: {
+      src: '/photos/iv-tall.jpg',
+      alt: 'Dr. Jeffrey Lee adjusting an I.V. drip',
+    },
   },
 } as const

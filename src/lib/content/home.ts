@@ -121,6 +121,7 @@ export const home = {
     // A view of the service list, not a second copy of it. The blurbs were
     // duplicated word-for-word and would have drifted on the first edit.
     items: services.map((service) => ({
+      slug: service.slug,
       title: service.title,
       href: `/services/${service.slug}`,
       body: service.summary,

@@ -12,6 +12,7 @@ import { Reveal } from '@/components/ui/Reveal'
 import { Parallax } from '@/components/ui/Parallax'
 import { DotRule } from '@/components/brand/DotBurst'
 import { getService, services } from '@/lib/content/services'
+import { servicePhotos } from '@/lib/content/photos'
 import { getPage } from '@/lib/wp/queries'
 import { renderContent } from '@/lib/wp/renderContent'
 import { buildMetadata } from '@/lib/seo'
@@ -90,6 +91,7 @@ export default async function ServicePage(props: {
                 <Parallax speed={0.06}>
                   <Figure
                     subject={service.image}
+                    {...servicePhotos[service.slug].tall}
                     shape="archSoft"
                     tone="sand"
                     aspect="4 / 5"
