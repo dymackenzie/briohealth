@@ -46,7 +46,7 @@ export default async function AboutPage() {
                 <Parallax speed={0.05}>
                   <Figure
                     subject="Dr. Jeffrey Lee — portrait, clinic setting"
-                    {...photos.leePortraitAlt}
+                    {...photos.leePortraitWindow}
                     shape="archSoft"
                     tone="sand"
                     aspect="3 / 4"

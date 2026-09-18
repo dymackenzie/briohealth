@@ -11,6 +11,7 @@ import { Reveal } from '@/components/ui/Reveal'
 import { Parallax } from '@/components/ui/Parallax'
 import { DotBurst } from '@/components/brand/DotBurst'
 import { services } from '@/lib/content/services'
+import { servicePhotos } from '@/lib/content/photos'
 import { buildMetadata } from '@/lib/seo'
 import { site } from '@/lib/site'
 
@@ -40,6 +41,7 @@ export default function ServicesPage() {
                       <Parallax speed={0.07}>
                         <Figure
                           subject={service.image}
+                          {...servicePhotos[service.slug].wide}
                           shape={i % 2 === 1 ? 'leafAlt' : 'leaf'}
                           tone={i % 2 === 1 ? 'sandLight' : 'sand'}
                           aspect="3 / 2"

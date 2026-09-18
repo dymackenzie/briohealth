@@ -17,7 +17,7 @@ import { DotBurst, DotRule } from '@/components/brand/DotBurst'
 import { StepTrail } from '@/components/brand/StepTrail'
 import { home } from '@/lib/content/home'
 import { site } from '@/lib/site'
-import { photos } from '@/lib/content/photos'
+import { photos, planPhotos, servicePhotos } from '@/lib/content/photos'
 
 export default function HomePage() {
   return (
@@ -82,7 +82,7 @@ export default function HomePage() {
             <Parallax speed={0.05}>
               <Figure
                 subject={home.hero.images.primary}
-                {...photos.leeTeaching}
+                {...photos.leeMarket}
                 preload
                 shape="blob"
                 tone="deep"
@@ -97,6 +97,7 @@ export default function HomePage() {
             >
               <Figure
                 subject={home.hero.images.secondary}
+                {...photos.lobby}
                 shape="archSoft"
                 tone="teal"
                 aspect="3 / 4"
@@ -149,6 +150,7 @@ export default function HomePage() {
                 <Parallax speed={0.08}>
                   <Figure
                     subject={home.stakes.images.tall}
+                    {...photos.leeConsultation}
                     shape="leaf"
                     tone="sand"
                     aspect="4 / 5"
@@ -157,6 +159,7 @@ export default function HomePage() {
                 <Parallax speed={-0.1} className="ml-7">
                   <Figure
                     subject={home.stakes.images.wide}
+                    {...photos.consultRoom}
                     shape="soft"
                     tone="sandLight"
                     aspect="3 / 2"
@@ -190,7 +193,7 @@ export default function HomePage() {
                   <ScrollZoom className="mt-8">
                     <Figure
                       subject={home.value.image}
-                      {...photos.leeCoat}
+                      {...photos.leeReviewingPlan}
                       shape="leafAlt"
                       tone="deep"
                       aspect="16 / 9"
@@ -228,7 +231,7 @@ export default function HomePage() {
                 <ScrollZoom from={1.06}>
                   <Figure
                     subject={home.empathy.images.portrait}
-                    {...photos.leePortrait}
+                    {...photos.leePortraitClinic}
                     shape="archSoft"
                     tone="sand"
                     aspect="4 / 5"
@@ -297,6 +300,7 @@ export default function HomePage() {
                     <Parallax speed={0.06 + i * 0.04}>
                       <Figure
                         subject={step.image}
+                        {...planPhotos[i]}
                         shape={i === 1 ? 'blobAlt' : 'blob'}
                         tone="deep"
                         aspect="4 / 3"
@@ -342,6 +346,7 @@ export default function HomePage() {
                       <Parallax speed={0.07}>
                         <Figure
                           subject={service.image}
+                          {...servicePhotos[service.slug].wide}
                           shape={i % 2 === 1 ? 'leafAlt' : 'leaf'}
                           tone={i % 2 === 1 ? 'sandLight' : 'sand'}
                           aspect="3 / 2"
