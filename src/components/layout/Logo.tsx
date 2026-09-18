@@ -5,9 +5,10 @@ import Link from 'next/link'
  *
  * Both were derived from the social tiles we were given: those are traced SVGs
  * with the tile background baked in, and the letter counters painted in that
- * same background colour instead of left as holes — on teal the b and o showed
- * as bright #00919D discs. Both are stripped out here. Replace outright if a
- * clean vector original ever turns up.
+ * same background colour instead of left as holes. Here the background is gone
+ * and the counters of the b, o and A are cut out with a mask, so whatever band
+ * the logo sits on shows through. Replace outright if a clean vector original
+ * ever turns up.
  */
 
 const ASPECT = 778 / 650
