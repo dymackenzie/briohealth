@@ -18,8 +18,8 @@ const WP = 'https://yourbriohealth.com/wp-content/uploads'
 
 export const photos = {
   leeMarket: {
-    src: '/photos/lee-market.jpg',
-    alt: 'Dr. Jeffrey Lee handing over green beans at a farmers market stall',
+    src: '/photos/lee-market-stall.jpg',
+    alt: 'Dr. Jeffrey Lee smiling at a farmers market stall',
   },
   lobby: {
     src: '/photos/lobby.jpg',
