@@ -5,7 +5,6 @@ import { Button } from '@/components/ui/Button'
 import { Figure } from '@/components/ui/Figure'
 import { BandDivider } from '@/components/ui/BandDivider'
 import { Reveal } from '@/components/ui/Reveal'
-import { Parallax } from '@/components/ui/Parallax'
 import { Stats } from '@/components/ui/Stats'
 import { DotBurst } from '@/components/brand/DotBurst'
 import { getPage } from '@/lib/wp/queries'
@@ -43,15 +42,13 @@ export default async function AboutPage() {
           <Container>
             <div className="grid gap-10 lg:grid-cols-[0.85fr_1.15fr] lg:gap-14">
               <Reveal from="left" className="relative">
-                <Parallax speed={0.05}>
-                  <Figure
-                    subject="Dr. Jeffrey Lee — portrait, clinic setting"
-                    {...photos.leePortraitWindow}
-                    shape="archSoft"
-                    tone="sand"
-                    aspect="3 / 4"
-                  />
-                </Parallax>
+                <Figure
+                  subject="Dr. Jeffrey Lee — portrait, clinic setting"
+                  {...photos.leePortraitWindow}
+                  shape="archSoft"
+                  tone="sand"
+                  aspect="3 / 4"
+                />
 
                 <Stats stats={home.empathy.stats} />
               </Reveal>

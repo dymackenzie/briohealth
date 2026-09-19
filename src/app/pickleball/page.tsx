@@ -4,7 +4,6 @@ import { Band, Container } from '@/components/ui/Container'
 import { Button } from '@/components/ui/Button'
 import { Figure } from '@/components/ui/Figure'
 import { Reveal } from '@/components/ui/Reveal'
-import { Parallax } from '@/components/ui/Parallax'
 import { getPage } from '@/lib/wp/queries'
 import { renderContent } from '@/lib/wp/renderContent'
 import { buildMetadata } from '@/lib/seo'
@@ -54,16 +53,14 @@ export default async function PickleballPage() {
               </Reveal>
 
               <Reveal from="right" className="flex flex-col gap-4 lg:pt-6">
-                <Parallax speed={0.07}>
-                  <Figure
-                    subject="Pickleball — Dr. Lee playing, or a community game"
-                    {...photos.pickleballCourt}
-                    shape="leaf"
-                    tone="sand"
-                    aspect="4 / 3"
-                  />
-                </Parallax>
-                <Parallax speed={-0.09} className="ml-7">
+                <Figure
+                  subject="Pickleball — Dr. Lee playing, or a community game"
+                  {...photos.pickleballCourt}
+                  shape="leaf"
+                  tone="sand"
+                  aspect="4 / 3"
+                />
+                <div className="ml-7">
                   <Figure
                     subject="Community group shot — post-game, outdoors"
                     {...photos.pickleballGroup}
@@ -71,7 +68,7 @@ export default async function PickleballPage() {
                     tone="sandLight"
                     aspect="1 / 1"
                   />
-                </Parallax>
+                </div>
               </Reveal>
             </div>
           </Container>

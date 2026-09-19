@@ -29,10 +29,6 @@ export const photos = {
     src: '/photos/lee-consultation-tall.jpg',
     alt: 'Dr. Jeffrey Lee using an anatomy model to explain a treatment to a patient',
   },
-  consultRoom: {
-    src: '/photos/consult-room.jpg',
-    alt: 'A quiet consultation room at the clinic',
-  },
   leeReviewingPlan: {
     src: '/photos/lee-reviewing-plan.jpg',
     alt: 'Dr. Jeffrey Lee going over a supplement with a patient',

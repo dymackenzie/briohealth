@@ -34,10 +34,7 @@ export const home = {
       'Do you experience brain fog or anxiety?',
       'Have quick fixes left you more frustrated than when you started?',
     ],
-    images: {
-      tall: 'Patient in consultation — listening, mid-conversation',
-      wide: 'Quiet clinic detail — natural light, plants, calm surface',
-    },
+    image: 'Patient in consultation — listening, mid-conversation',
   },
 
   value: {

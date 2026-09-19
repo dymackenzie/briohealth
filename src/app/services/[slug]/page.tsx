@@ -9,7 +9,6 @@ import { Button } from '@/components/ui/Button'
 import { Figure } from '@/components/ui/Figure'
 import { VideoPlaceholder } from '@/components/ui/VideoPlaceholder'
 import { Reveal } from '@/components/ui/Reveal'
-import { Parallax } from '@/components/ui/Parallax'
 import { DotRule } from '@/components/brand/DotBurst'
 import { getService, services } from '@/lib/content/services'
 import { servicePhotos } from '@/lib/content/photos'
@@ -88,15 +87,13 @@ export default async function ServicePage(props: {
               </Reveal>
 
               <Reveal from="right" className="lg:pt-4">
-                <Parallax speed={0.06}>
-                  <Figure
-                    subject={service.image}
-                    {...servicePhotos[service.slug].tall}
-                    shape="archSoft"
-                    tone="sand"
-                    aspect="4 / 5"
-                  />
-                </Parallax>
+                <Figure
+                  subject={service.image}
+                  {...servicePhotos[service.slug].tall}
+                  shape="archSoft"
+                  tone="sand"
+                  aspect="4 / 5"
+                />
 
                 <div className="mt-7">
                   <h2 className="font-body text-[0.95rem] font-semibold text-ink-500">

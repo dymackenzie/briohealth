@@ -8,7 +8,6 @@ import { Button } from '@/components/ui/Button'
 import { Figure } from '@/components/ui/Figure'
 import { BandDivider } from '@/components/ui/BandDivider'
 import { Reveal } from '@/components/ui/Reveal'
-import { Parallax } from '@/components/ui/Parallax'
 import { DotBurst } from '@/components/brand/DotBurst'
 import { services } from '@/lib/content/services'
 import { servicePhotos } from '@/lib/content/photos'
@@ -38,15 +37,13 @@ export default function ServicesPage() {
                 <Reveal as="li" key={service.slug}>
                   <div className="grid items-center gap-7 md:grid-cols-2 md:gap-11">
                     <div className={i % 2 === 1 ? 'md:order-2' : ''}>
-                      <Parallax speed={0.07}>
-                        <Figure
-                          subject={service.image}
-                          {...servicePhotos[service.slug].wide}
-                          shape={i % 2 === 1 ? 'leafAlt' : 'leaf'}
-                          tone={i % 2 === 1 ? 'sandLight' : 'sand'}
-                          aspect="3 / 2"
-                        />
-                      </Parallax>
+                      <Figure
+                        subject={service.image}
+                        {...servicePhotos[service.slug].wide}
+                        shape={i % 2 === 1 ? 'leafAlt' : 'leaf'}
+                        tone={i % 2 === 1 ? 'sandLight' : 'sand'}
+                        aspect="3 / 2"
+                      />
                     </div>
 
                     <div className={i % 2 === 1 ? 'md:order-1 md:pr-6' : 'md:pl-4'}>

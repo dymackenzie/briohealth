@@ -9,7 +9,6 @@ import { Figure } from '@/components/ui/Figure'
 import { BandDivider } from '@/components/ui/BandDivider'
 import { Reveal } from '@/components/ui/Reveal'
 import { HeroHeading } from '@/components/ui/HeroHeading'
-import { Parallax, ScrollZoom } from '@/components/ui/Parallax'
 import { ScrollProgress } from '@/components/ui/ScrollProgress'
 import { Stats } from '@/components/ui/Stats'
 import { emphasize } from '@/components/ui/Mark'
@@ -79,22 +78,17 @@ export default function HomePage() {
             className="rise-in relative lg:-mr-[5vw]"
             style={{ animationDelay: '240ms' }}
           >
-            <Parallax speed={0.05}>
-              <Figure
-                subject={home.hero.images.primary}
-                {...photos.leeMarket}
-                preload
-                shape="blob"
-                tone="deep"
-                aspect="1 / 1"
-                className="w-full"
-              />
-            </Parallax>
+            <Figure
+              subject={home.hero.images.primary}
+              {...photos.leeMarket}
+              preload
+              shape="blob"
+              tone="deep"
+              aspect="1 / 1"
+              className="w-full"
+            />
 
-            <Parallax
-              speed={-0.16}
-              className="absolute -bottom-14 -left-6 w-[34%] sm:-left-12 lg:-left-24"
-            >
+            <div className="absolute -bottom-6 -left-10 hidden w-[34%] sm:block">
               <Figure
                 subject={home.hero.images.secondary}
                 {...photos.lobby}
@@ -103,7 +97,7 @@ export default function HomePage() {
                 aspect="3 / 4"
                 className="shadow-lg"
               />
-            </Parallax>
+            </div>
           </div>
         </Container>
 
@@ -146,25 +140,14 @@ export default function HomePage() {
                 </ul>
               </div>
 
-              <Reveal from="right" className="flex flex-col gap-4 lg:pt-11">
-                <Parallax speed={0.08}>
-                  <Figure
-                    subject={home.stakes.images.tall}
-                    {...photos.leeConsultation}
-                    shape="leaf"
-                    tone="sand"
-                    aspect="4 / 5"
-                  />
-                </Parallax>
-                <Parallax speed={-0.1} className="ml-7">
-                  <Figure
-                    subject={home.stakes.images.wide}
-                    {...photos.consultRoom}
-                    shape="soft"
-                    tone="sandLight"
-                    aspect="3 / 2"
-                  />
-                </Parallax>
+              <Reveal from="right">
+                <Figure
+                  subject={home.stakes.image}
+                  {...photos.leeConsultation}
+                  shape="leaf"
+                  tone="sand"
+                  aspect="4 / 5"
+                />
               </Reveal>
             </div>
           </Container>
@@ -190,7 +173,7 @@ export default function HomePage() {
                   <p className="mt-4 opacity-70">{emphasize(home.value.lead)}</p>
                   <DotRule className="mt-7 h-2.5 w-32 text-teal-300/50" />
 
-                  <ScrollZoom className="mt-8">
+                  <div className="mt-8">
                     <Figure
                       subject={home.value.image}
                       {...photos.leeReviewingPlan}
@@ -198,7 +181,7 @@ export default function HomePage() {
                       tone="deep"
                       aspect="16 / 9"
                     />
-                  </ScrollZoom>
+                  </div>
                 </Reveal>
 
                 {/* Hairlines, not boxes. */}
@@ -228,15 +211,13 @@ export default function HomePage() {
           <Container>
             <div className="grid gap-11 lg:grid-cols-[0.85fr_1.15fr] lg:gap-14">
               <Reveal from="left" className="relative">
-                <ScrollZoom from={1.06}>
-                  <Figure
-                    subject={home.empathy.images.portrait}
-                    {...photos.leePortraitClinic}
-                    shape="archSoft"
-                    tone="sand"
-                    aspect="4 / 5"
-                  />
-                </ScrollZoom>
+                <Figure
+                  subject={home.empathy.images.portrait}
+                  {...photos.leePortraitClinic}
+                  shape="archSoft"
+                  tone="sand"
+                  aspect="4 / 5"
+                />
 
                 {/* Only overlap on the page, so it reads as deliberate. */}
                 <Stats stats={home.empathy.stats} />
@@ -295,18 +276,15 @@ export default function HomePage() {
                     as="li"
                     key={step.title}
                     delay={i * 130}
-                    className={i === 1 ? 'md:mt-10' : i === 2 ? 'md:mt-20' : ''}
                   >
-                    <Parallax speed={0.06 + i * 0.04}>
-                      <Figure
-                        subject={step.image}
-                        {...planPhotos[i]}
-                        shape={i === 1 ? 'blobAlt' : 'blob'}
-                        tone="deep"
-                        aspect="4 / 3"
-                        className="w-full"
-                      />
-                    </Parallax>
+                    <Figure
+                      subject={step.image}
+                      {...planPhotos[i]}
+                      shape={i === 1 ? 'blobAlt' : 'blob'}
+                      tone="deep"
+                      aspect="4 / 3"
+                      className="w-full"
+                    />
                     <span
                       data-trail-anchor
                       className="font-display mt-6 inline-block text-3xl leading-none text-teal-300/40 tabular-nums"
@@ -343,16 +321,14 @@ export default function HomePage() {
                     className="media-hover group grid items-center gap-7 md:grid-cols-2 md:gap-11"
                   >
                     <div className={`overflow-hidden ${i % 2 === 1 ? 'md:order-2' : ''}`}>
-                      <Parallax speed={0.07}>
-                        <Figure
-                          subject={service.image}
-                          {...servicePhotos[service.slug].wide}
-                          shape={i % 2 === 1 ? 'leafAlt' : 'leaf'}
-                          tone={i % 2 === 1 ? 'sandLight' : 'sand'}
-                          aspect="3 / 2"
-                          className="media-zoom w-full"
-                        />
-                      </Parallax>
+                      <Figure
+                        subject={service.image}
+                        {...servicePhotos[service.slug].wide}
+                        shape={i % 2 === 1 ? 'leafAlt' : 'leaf'}
+                        tone={i % 2 === 1 ? 'sandLight' : 'sand'}
+                        aspect="3 / 2"
+                        className="media-zoom w-full"
+                      />
                     </div>
 
                     <div className={i % 2 === 1 ? 'md:order-1 md:pr-6' : 'md:pl-4'}>
