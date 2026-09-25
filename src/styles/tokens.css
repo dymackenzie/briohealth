@@ -60,7 +60,14 @@
   --font-display: var(--font-fraunces), ui-serif, Georgia, serif;
   --font-body: var(--font-hanken), ui-sans-serif, system-ui, sans-serif;
 
-  /* Radii */
+  /* `text-base` is the body size, so nothing labelled base comes out at the
+   * old 16px. The rest of the scale is below, in :root. */
+  --text-base: 1.125rem;
+  --text-base--line-height: 1.6;
+
+  /* Radii. Every photo takes the same one — the organic masks read as a
+   * page-builder template to the client. */
+  --radius-photo: 0.75rem;
   --radius-md: 1rem;
   --radius-lg: 1.5rem;
   --radius-xl: 2rem;
@@ -76,4 +83,19 @@
   --container: 1200px;
   --container-prose: 680px;
   --gutter: clamp(1.15rem, 3vw, 2.5rem);
+
+  /* Type scale. Utilities for these are in globals.css. Fraunces only from h2
+   * up — below ~1.25rem it goes wobbly and reads as a third font. */
+  --text-small: 0.9375rem;
+  --text-body: 1.125rem;
+  --text-lede: clamp(1.25rem, 1.1rem + 0.6vw, 1.5rem);
+  --text-h3: 1.375rem;
+  --text-h2: clamp(2rem, 1.4rem + 2.6vw, 3.25rem);
+  --text-display: clamp(2.75rem, 1.6rem + 4.6vw, 5.25rem);
+
+  /* Motion. Expo-out for anything arriving or answering a hover — fast off the
+   * mark, long settle. In-out only for ambient movement. */
+  --ease-out-expo: cubic-bezier(0.16, 1, 0.3, 1);
+  --ease-out-quart: cubic-bezier(0.25, 1, 0.5, 1);
+  --ease-in-out-expo: cubic-bezier(0.87, 0, 0.13, 1);
 }

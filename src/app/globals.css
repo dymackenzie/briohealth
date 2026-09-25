@@ -21,40 +21,91 @@ html {
   }
 }
 
-body {
-  background: var(--color-canvas);
-  color: var(--color-ink-900);
-  font-family: var(--font-body);
-  /* 16px base. The audience skews older, so this is the floor. */
-  font-size: 1rem;
-  line-height: 1.6;
-  -webkit-font-smoothing: antialiased;
-  text-rendering: optimizeLegibility;
+/* In the base layer so a utility on the element — `font-body` on an h2, say —
+ * still wins. */
+@layer base {
+  body {
+    background: var(--color-canvas);
+    color: var(--color-ink-900);
+    font-family: var(--font-body);
+    /* 18px. The audience skews older and the client found 16px small, so this
+     * is the floor for reading copy — --text-small is the floor for anything. */
+    font-size: var(--text-body);
+    line-height: 1.6;
+    -webkit-font-smoothing: antialiased;
+    text-rendering: optimizeLegibility;
+    /* Reveals start translated sideways, and a full-width block shifted 1.5rem
+     * gives a phone a horizontal scrollbar until it has scrolled into view. */
+    overflow-x: clip;
+  }
+
+  /* Two voices. Fraunces only where it's big enough to hold its shape; from h3
+   * down it's Hanken, because small Fraunces is what read as extra fonts. */
+  :is(h1, h2) {
+    font-family: var(--font-display);
+    font-weight: 500;
+    line-height: 1.05;
+    letter-spacing: -0.025em;
+    text-wrap: balance;
+  }
+
+  :is(h3, h4) {
+    font-family: var(--font-body);
+    font-weight: 600;
+    line-height: 1.25;
+    letter-spacing: -0.01em;
+    text-wrap: balance;
+  }
+
+  p {
+    text-wrap: pretty;
+  }
+
+  :is(.band-teal, .band-teal-deep) :is(h1, h2, h3, h4) {
+    color: var(--color-paper);
+  }
+
+  /* Clay, because it's the accent — the ring lands where the action is. In
+   * the base layer so a utility can recolour it: the header dropdown is a
+   * cream panel inside a teal band, and the inputs draw a ring instead. */
+  :focus-visible {
+    outline: 2px solid var(--color-clay-600);
+    outline-offset: 3px;
+    border-radius: 2px;
+  }
+
+  :is(.band-teal, .band-teal-deep) :focus-visible {
+    outline-color: var(--color-clay-300);
+  }
 }
 
-/* A little WONK so headings read warm, not institutional. */
-:is(h1, h2, h3, h4) {
-  font-family: var(--font-display);
-  font-variation-settings: 'SOFT' 0, 'WONK' 1;
-  line-height: 1.1;
-  letter-spacing: -0.015em;
-  text-wrap: balance;
+/* Type scale — the tokens are in tokens.css. Utilities rather than plain
+ * classes so they take breakpoint variants. */
+@utility text-display {
+  font-size: var(--text-display);
+  letter-spacing: -0.03em;
+  line-height: 1.02;
 }
 
-p {
-  text-wrap: pretty;
+@utility text-h2 {
+  font-size: var(--text-h2);
 }
 
-:focus-visible {
-  outline: 2px solid var(--color-teal-500);
-  outline-offset: 3px;
-  border-radius: 2px;
+@utility text-h3 {
+  font-size: var(--text-h3);
 }
 
-/* The teal ring vanishes on teal bands. */
-.band-teal :focus-visible,
-.band-teal-deep :focus-visible {
-  outline-color: var(--color-canvas);
+@utility text-lede {
+  font-size: var(--text-lede);
+  line-height: 1.45;
+}
+
+@utility text-body {
+  font-size: var(--text-body);
+}
+
+@utility text-small {
+  font-size: var(--text-small);
 }
 
 ::selection {
@@ -101,10 +152,6 @@ p {
 .band-teal-deep {
   background: var(--color-teal-900);
   color: var(--color-canvas);
-}
-
-:is(.band-teal, .band-teal-deep) :is(h1, h2, h3, h4) {
-  color: var(--color-paper);
 }
 
 /* Motion
