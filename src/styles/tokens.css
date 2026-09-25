@@ -73,8 +73,12 @@
   --radius-xl: 2rem;
   --radius-pill: 999px;
 
-  /* Soft — this isn't a card-based design, so there's only the one. */
-  --shadow-lg: 0 18px 48px rgb(12 74 79 / 0.10);
+  /* Depth comes from layering, not shadows. The header dropdown is the only
+   * user, because it floats over content it has to be read against. */
+  --shadow-lg: 0 18px 48px rgb(0 61 66 / 0.12);
+
+  /* So a bare `transition-*` utility never falls back to Tailwind's ease. */
+  --default-transition-timing-function: var(--ease-out-expo);
 }
 
 :root {
