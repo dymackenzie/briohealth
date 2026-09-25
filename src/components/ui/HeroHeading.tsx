@@ -15,7 +15,7 @@
  * it would stop being a moment and start being a tic.
  */
 
-const PER_WORD = 55
+const PER_WORD = 70
 const AFTER_WORDS = 320
 
 export function HeroHeading({
@@ -43,7 +43,7 @@ export function HeroHeading({
                 preserveAspectRatio="none"
                 aria-hidden="true"
                 focusable="false"
-                className="hero-underline absolute bottom-0 left-0 h-[0.2em] w-full text-teal-300"
+                className="hero-underline absolute bottom-0 left-0 h-[0.14em] w-full text-clay-300"
               >
                 {/* One sag, not a wave. The earlier S-curve read as a stray
                     squiggle at this size rather than a drawn line.

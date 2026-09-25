@@ -108,7 +108,7 @@ export function StepTrail({
           height={box.h}
           aria-hidden="true"
           focusable="false"
-          className="pointer-events-none absolute inset-0 z-0 hidden text-teal-300 md:block"
+          className="pointer-events-none absolute inset-0 z-0 hidden text-clay-300 md:block"
         >
           <path ref={probe} d={d} fill="none" stroke="none" />
           {dots.map((dot, i) => (
