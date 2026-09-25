@@ -372,10 +372,11 @@ html {
 /* Inline highlight, written as **like this** in the copy.
  *
  * A gradient stop rather than a solid background, so it sits under the text
- * like a marker pass instead of boxing the words in. --mark is redefined per
- * band because a cream wash disappears on teal. */
+ * like a marker pass instead of boxing the words in. Clay on the light
+ * grounds, since it's the accent; --mark is redefined per band because a
+ * light wash disappears on teal. */
 .mark {
-  --mark: var(--color-teal-100);
+  --mark: var(--color-clay-100);
   background: linear-gradient(to top, var(--mark) 0 38%, transparent 38%);
   padding-inline: 0.1em;
   color: inherit;
@@ -383,7 +384,7 @@ html {
 }
 
 .band-sand .mark {
-  --mark: color-mix(in srgb, var(--color-teal-300) 55%, transparent);
+  --mark: color-mix(in srgb, var(--color-clay-300) 55%, transparent);
 }
 
 :is(.band-teal, .band-teal-deep) .mark {
