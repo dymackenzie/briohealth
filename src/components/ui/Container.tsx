@@ -18,7 +18,11 @@ export function Container({
   )
 }
 
-/** Full-bleed colour block. Colour separates the sections, so no cards or borders. */
+/**
+ * Full-bleed colour block. Colour separates the sections, so no cards or
+ * borders. Cream is the ground, with paper and tint to alternate against it;
+ * teal is punctuation, for the few bands that should stop you.
+ */
 export function Band({
   tone = 'cream',
   as: Tag = 'section',
@@ -27,7 +31,7 @@ export function Band({
   children,
   ...rest
 }: {
-  tone?: 'cream' | 'sand' | 'teal' | 'teal-deep'
+  tone?: 'cream' | 'paper' | 'tint' | 'sand' | 'teal' | 'teal-deep'
   as?: ElementType
   /** Skip the vertical rhythm when the band handles its own spacing. */
   flush?: boolean
@@ -37,6 +41,8 @@ export function Band({
 }) {
   const tones = {
     cream: 'band-cream',
+    paper: 'band-paper',
+    tint: 'band-tint',
     sand: 'band-sand',
     teal: 'band-teal',
     'teal-deep': 'band-teal-deep',

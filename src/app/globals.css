@@ -131,11 +131,23 @@ html {
   padding-block: var(--section-y);
 }
 
-/* Full-bleed colour blocks alternating down the page. Colour carries the
- * hierarchy, so nothing needs a card or a border. */
+/* Full-bleed colour blocks down the page, meeting on straight edges. Cream,
+ * paper and tint carry most of it; teal is saved for the few bands that
+ * should stop you. Colour carries the hierarchy, so nothing needs a card or a
+ * border. */
 
 .band-cream {
   background: var(--color-canvas);
+  color: var(--color-ink-900);
+}
+
+.band-paper {
+  background: var(--color-paper);
+  color: var(--color-ink-900);
+}
+
+.band-tint {
+  background: var(--color-teal-50);
   color: var(--color-ink-900);
 }
 
