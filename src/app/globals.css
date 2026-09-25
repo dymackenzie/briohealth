@@ -196,11 +196,14 @@ html {
   }
 }
 
-/* Don't hide anything from print. */
+/* Don't hide anything from print — a paused entrance prints as a blank. */
 @media print {
-  .js [data-reveal] {
+  .js [data-reveal],
+  .js .hero-word > span,
+  .rise-in {
     opacity: 1;
     transform: none;
+    animation-name: none;
   }
 }
 
