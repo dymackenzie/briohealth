@@ -6,19 +6,24 @@ import { siteOpenGraph } from '@/lib/seo'
 import { site } from '@/lib/site'
 import './globals.css'
 
-/** Display only — Fraunces goes soft at small sizes. */
+/**
+ * Display — h1, h2, pull quotes and big numerals, nothing smaller. SOFT and
+ * WONK made the headings read as a third typeface, so only optical size stays.
+ */
 const fraunces = Fraunces({
   subsets: ['latin'],
   display: 'swap',
   variable: '--font-fraunces',
-  axes: ['SOFT', 'WONK', 'opsz'],
+  weight: 'variable',
+  axes: ['opsz'],
 })
 
-/** Body. High x-height, holds up at 16px. */
+/** Everything else, h3 down. High x-height, which matters now body is 18px. */
 const hanken = Hanken_Grotesk({
   subsets: ['latin'],
   display: 'swap',
   variable: '--font-hanken',
+  weight: 'variable',
 })
 
 export const metadata: Metadata = {
