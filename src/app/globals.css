@@ -275,7 +275,31 @@ html {
 }
 
 .media-zoom {
-  transition: transform 0.7s cubic-bezier(0.22, 1, 0.36, 1);
+  transition: transform 0.7s var(--ease-out-expo);
+}
+
+/* A line that draws in under the link, instead of an underline blinking on.
+ * Colour and opacity ride along in the same transition, because this rule is
+ * unlayered and would otherwise flatten a `transition-colors` beside it. */
+.link-draw {
+  background-image: linear-gradient(currentColor, currentColor);
+  background-position: 0 calc(100% - 0.05em);
+  background-repeat: no-repeat;
+  background-size: 0% 1px;
+  transition:
+    background-size 0.5s var(--ease-out-expo),
+    color 0.3s var(--ease-out-expo),
+    opacity 0.3s var(--ease-out-expo);
+}
+
+/* Also when the line is a span inside a padded link or a whole card, so it
+ * answers the thing you're actually pointing at. */
+.link-draw:hover,
+.link-draw:focus-visible,
+:is(a, button):is(:hover, :focus-visible) > .link-draw,
+.media-hover:hover .link-draw,
+.media-hover:focus-within .link-draw {
+  background-size: 100% 1px;
 }
 
 /* Post bodies. Twenty years of WordPress output, so this has to hold up for
