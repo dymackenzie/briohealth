@@ -308,22 +308,37 @@ html {
 /* Post bodies. Twenty years of WordPress output, so this has to hold up for
  * classic editor markup, Gutenberg blocks and unwrapped Avada alike. */
 .post-body {
-  font-size: 1.05rem;
+  font-size: var(--text-body);
   line-height: 1.7;
 }
 
-.post-body > * + * {
+/* Vertical rhythm, as a sibling rule at any depth rather than `> * + *`.
+ *
+ * Avada nests its copy several wrappers deep, and renderContent can only lift
+ * out the ones it recognises. Anything left below the top level got no spacing
+ * at all under the child rule, which is how the service pages ended up with
+ * whole FAQ answers set solid. */
+.post-body
+  :is(p, div, ul, ol, dl, blockquote, table, figure, pre, img, iframe, hr, h2, h3, h4)
+  + :is(p, div, ul, ol, dl, blockquote, table, figure, pre, img, iframe, hr) {
   margin-top: 1.2em;
 }
 
-.post-body :is(h2, h3, h4) {
+/* Headings want more air above them than the rhythm gives. The second selector
+ * repeats the shape above so the two carry equal specificity — as a bare
+ * `.post-body :is(h2, h3, h4)` this rule loses to it and headings came out with
+ * the same 1.2em as body copy. */
+.post-body :is(h2, h3, h4),
+.post-body
+  :is(p, div, ul, ol, dl, blockquote, table, figure, pre, img, iframe, hr, h2, h3, h4)
+  + :is(h2, h3, h4) {
   margin-top: 1.9em;
   margin-bottom: 0.5em;
 }
 
 .post-body h2 { font-size: clamp(1.45rem, 2.6vw, 1.8rem); }
 .post-body h3 { font-size: clamp(1.2rem, 2vw, 1.4rem); }
-.post-body h4 { font-size: 1.08rem; }
+.post-body h4 { font-size: 1em; }
 
 .post-body a {
   color: var(--color-teal-700);
