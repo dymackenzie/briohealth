@@ -225,25 +225,41 @@ function dropNoise() {
   }
 }
 
-/** Drop wrappers left holding nothing after the passes above. */
+/**
+ * Drop wrappers left holding nothing after the passes above.
+ *
+ * `i` is here for Avada's icons — Font Awesome glyphs drawn from a stylesheet
+ * we don't serve, so they take up a slot in the markup and draw nothing.
+ */
+const PRUNE_EMPTY = new Set(['div', 'p', 'span', 'i'])
+
 function dropEmpty() {
   return (tree: Root) => {
-    visit(tree, 'element', (node, index, parent) => {
-      if (!parent || index === undefined) return
-      if (node.tagName !== 'div' && node.tagName !== 'p' && node.tagName !== 'span') return
+    // Emptying a node can empty its parent, and visit runs top-down, so by then
+    // the parent has already been walked past. Repeat until a pass is quiet.
+    let changed = true
 
-      const hasContent = node.children.some(
-        (c) =>
-          (c.type === 'text' && c.value.trim() !== '') ||
-          (c.type === 'element' && c.tagName !== 'br'),
-      )
-      if (!hasContent) {
-        parent.children.splice(index, 1)
-        // Same rewind as dropNoise — empty wrappers come in runs, and without
-        // it every second one survives.
-        return index
-      }
-    })
+    while (changed) {
+      changed = false
+
+      visit(tree, 'element', (node, index, parent) => {
+        if (!parent || index === undefined) return
+        if (!PRUNE_EMPTY.has(node.tagName)) return
+
+        const hasContent = node.children.some(
+          (c) =>
+            (c.type === 'text' && c.value.trim() !== '') ||
+            (c.type === 'element' && c.tagName !== 'br'),
+        )
+        if (!hasContent) {
+          parent.children.splice(index, 1)
+          changed = true
+          // Same rewind as dropNoise — empty wrappers come in runs, and without
+          // it every second one survives.
+          return index
+        }
+      })
+    }
   }
 }
 
