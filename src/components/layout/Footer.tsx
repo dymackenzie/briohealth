@@ -8,48 +8,56 @@ import { addressLine, footerLegal, formatDays, formatTime, site } from '@/lib/si
 import { services } from '@/lib/content/services'
 
 const quickLinks = [
-  { label: 'About', href: '/about' },
+  { label: 'About Dr. Lee', href: '/about' },
   { label: 'Blog', href: '/blog' },
-  { label: 'Pickleball', href: '/pickleball' },
+  { label: 'Pickleball & Community', href: '/pickleball' },
   { label: 'Contact', href: '/contact' },
-  { label: 'Book Now', href: site.bookingUrl },
+  { label: 'Book an appointment', href: site.bookingUrl },
 ]
+
+const link = 'link-draw text-canvas/80 hover:text-canvas'
+
+// Column headings in the body face at body size — weight and colour carry the
+// hierarchy, so no tracked caps.
+const heading = 'font-body text-base font-semibold'
 
 export function Footer() {
   return (
     <footer className="band-teal-deep">
-      <div className="container-x py-14">
-        <div className="grid gap-8 md:grid-cols-2 lg:grid-cols-[1.4fr_1fr_1fr]">
-          <div>
-            <Logo />
+      <div className="container-x pt-16 pb-10 lg:pt-24 lg:pb-12">
+        <div className="grid gap-12 md:grid-cols-2 lg:grid-cols-[1.5fr_1fr_1fr] lg:gap-10">
+          <div className="md:col-span-2 lg:col-span-1">
+            <Logo height={44} />
+            <p className="mt-5 max-w-[30ch] text-canvas/80">{site.tagline}</p>
 
             {/* Live links — on mobile this is the main conversion path. */}
-            <address className="mt-5 space-y-1.5 text-[0.95rem] not-italic opacity-80">
-              <p>{site.legalName}</p>
+            <address className="mt-8 space-y-1 not-italic">
               <p>{addressLine}</p>
               <p>
-                <a href={site.phoneHref} className="hover:underline">
+                <a href={site.phoneHref} className={link}>
                   {site.phone}
                 </a>
               </p>
               <p>
-                <a href={`mailto:${site.email}`} className="hover:underline">
+                <a href={`mailto:${site.email}`} className={link}>
                   {site.email}
                 </a>
               </p>
             </address>
 
-            <div className="mt-5 space-y-1.5 text-[0.95rem] opacity-80">
+            <div className="mt-6 space-y-1">
               {site.hours.map((row) => (
                 <p key={row.days.join()}>
-                  {formatDays(row.days)}, {formatTime(row.opens)} –{' '}
-                  {formatTime(row.closes)}
+                  {formatDays(row.days)}
+                  <span className="block text-canvas/80">
+                    {formatTime(row.opens)} – {formatTime(row.closes)}
+                  </span>
                 </p>
               ))}
-              <p className="opacity-75">{site.hoursNote}</p>
+              <p className="pt-2 text-small text-canvas/70">{site.hoursNote}</p>
             </div>
 
-            <ul className="mt-5 flex items-center gap-2">
+            <ul className="mt-8 flex items-center gap-2">
               {site.social.map((channel) => {
                 const Icon = socialIcons[channel.label]
                 return (
@@ -59,7 +67,7 @@ export function Footer() {
                       target="_blank"
                       rel="noopener noreferrer"
                       aria-label={`Brio Health on ${channel.label}`}
-                      className="flex h-10 w-10 items-center justify-center rounded-pill border border-current/25 transition-colors hover:border-current/60 hover:bg-current/10"
+                      className="flex h-11 w-11 items-center justify-center rounded-pill border border-canvas/25 transition-colors duration-300 hover:border-canvas/70 hover:bg-canvas/10"
                     >
                       <Icon className="h-[1.15rem] w-[1.15rem]" />
                     </a>
@@ -70,63 +78,66 @@ export function Footer() {
           </div>
 
           <nav aria-label="Services">
-            <h2 className="font-body text-[0.7rem] font-semibold tracking-[0.2em] uppercase opacity-55">
-              Services
-            </h2>
-            <ul className="mt-4 space-y-2.5 text-[0.95rem]">
+            <h2 className={heading}>Services</h2>
+            <ul className="mt-5 space-y-3">
               {services.map((service) => (
                 <li key={service.slug}>
-                  <Link
-                    href={`/services/${service.slug}`}
-                    className="opacity-80 hover:opacity-100"
-                  >
+                  <Link href={`/services/${service.slug}`} className={link}>
                     {service.title}
                   </Link>
                 </li>
               ))}
+              <li>
+                <Link href="/services" className={link}>
+                  All services
+                </Link>
+              </li>
             </ul>
           </nav>
 
-          <nav aria-label="Quick links">
-            <h2 className="font-body text-[0.7rem] font-semibold tracking-[0.2em] uppercase opacity-55">
-              Quick Links
-            </h2>
-            <ul className="mt-4 space-y-2.5 text-[0.95rem]">
-              {quickLinks.map((link) => (
-                <li key={link.href}>
-                  <Link href={link.href} className="opacity-80 hover:opacity-100">
-                    {link.label}
-                  </Link>
+          <nav aria-label="The clinic">
+            <h2 className={heading}>The clinic</h2>
+            <ul className="mt-5 space-y-3">
+              {quickLinks.map((item) => (
+                <li key={item.href}>
+                  {/^https?:\/\//.test(item.href) ? (
+                    <a href={item.href} target="_blank" rel="noopener noreferrer" className={link}>
+                      {item.label}
+                    </a>
+                  ) : (
+                    <Link href={item.href} className={link}>
+                      {item.label}
+                    </Link>
+                  )}
                 </li>
               ))}
             </ul>
           </nav>
         </div>
 
-        <div className="mt-11 border-t border-current/15 pt-8">
-          <div className="grid gap-6 md:grid-cols-[1fr_1.2fr] md:items-center">
-            <div>
-              <h2 className="text-base">Stay in touch</h2>
-              <p className="mt-2 text-[0.95rem] opacity-70">
-                Occasional notes on health, recipes and what&rsquo;s happening at the
-                clinic. No spam.
-              </p>
-            </div>
-            <NewsletterForm />
+        <div className="mt-16 grid gap-8 border-t border-canvas/15 pt-12 lg:mt-20 lg:grid-cols-[1fr_1.15fr] lg:items-end lg:gap-16">
+          <div>
+            <h2 className="text-[clamp(1.75rem,1.4rem+1.2vw,2.25rem)]">Stay in touch</h2>
+            <p className="mt-3 max-w-[44ch] text-canvas/80">
+              Occasional notes on health, recipes and what&rsquo;s happening at the
+              clinic. No spam.
+            </p>
           </div>
+          <NewsletterForm />
         </div>
 
-        <DotRule className="mt-11 h-2 w-28 opacity-30" />
-
-        <div className="mt-4 flex flex-col gap-4 text-[0.85rem] opacity-60 sm:flex-row sm:items-center sm:justify-between">
-          <p>
-            © {new Date().getFullYear()} {site.legalName}
-          </p>
-          <ul className="flex gap-4">
-            {footerLegal.map((link) => (
-              <li key={link.href}>
-                <Link href={link.href} className="hover:underline">
-                  {link.label}
+        <div className="mt-16 flex flex-col gap-5 border-t border-canvas/15 pt-8 text-small text-canvas/70 sm:flex-row sm:items-center sm:justify-between">
+          <div className="flex items-center gap-5">
+            <DotRule className="h-2.5 w-24 shrink-0 text-clay-300" />
+            <p>
+              &copy; {new Date().getFullYear()} {site.legalName}
+            </p>
+          </div>
+          <ul className="flex gap-6">
+            {footerLegal.map((item) => (
+              <li key={item.href}>
+                <Link href={item.href} className="link-draw hover:text-canvas">
+                  {item.label}
                 </Link>
               </li>
             ))}
