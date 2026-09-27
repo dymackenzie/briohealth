@@ -162,6 +162,19 @@ function unwrapLayoutTables() {
   }
 }
 
+/**
+ * Avada leaves non-breaking spaces all through the copy — 26 on the pickleball
+ * page alone, mostly trailing a word inside <strong>, where they stop a line
+ * wrapping at the one place it needs to.
+ */
+function normalizeSpaces() {
+  return (tree: Root) => {
+    visit(tree, 'text', (node) => {
+      node.value = node.value.replace(/\u00a0/g, ' ')
+    })
+  }
+}
+
 function cleanAttributes() {
   return (tree: Root) => {
     visit(tree, 'element', (node: Element) => {
@@ -320,6 +333,7 @@ const schema = {
 
 const processor = unified()
   .use(rehypeParse, { fragment: true })
+  .use(normalizeSpaces)
   .use(dropNoise)
   .use(flattenToggles)
   .use(unwrapFusion)
