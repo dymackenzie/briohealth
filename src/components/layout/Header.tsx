@@ -1,7 +1,7 @@
 'use client'
 
 import Link from 'next/link'
-import { useState } from 'react'
+import { useEffect, useRef, useState } from 'react'
 import { ChevronDown, Menu, X } from 'lucide-react'
 
 import { Logo } from './Logo'
@@ -15,6 +15,20 @@ import { primaryNav, site } from '@/lib/site'
  */
 export function Header() {
   const [mobileOpen, setMobileOpen] = useState(false)
+  const toggle = useRef<HTMLButtonElement>(null)
+
+  useEffect(() => {
+    if (!mobileOpen) return
+    const onKey = (event: KeyboardEvent) => {
+      if (event.key !== 'Escape') return
+      setMobileOpen(false)
+      toggle.current?.focus()
+    }
+    document.addEventListener('keydown', onKey)
+    return () => document.removeEventListener('keydown', onKey)
+  }, [mobileOpen])
+
+  const close = () => setMobileOpen(false)
 
   return (
     <header className="relative z-40">
@@ -69,6 +83,7 @@ export function Header() {
           </Button>
 
           <button
+            ref={toggle}
             type="button"
             onClick={() => setMobileOpen((open) => !open)}
             aria-expanded={mobileOpen}
