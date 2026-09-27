@@ -35,7 +35,36 @@ const FUSION_WRAPPERS = [
   'fusion-title',
   'fusion-text',
   'fusion-builder-module-element',
+  'fusion-faq',
+  'fusion-accordian',
+  'fusion-panel',
+  'fusion-toggle',
 ]
+
+/**
+ * Avada's older shortcodes emit Bootstrap class names with no prefix at all,
+ * so the fusion-/awb- filter in cleanAttributes never sees them and they came
+ * through as a stack of bare divs. Matched exactly rather than by prefix —
+ * `title` and `collapse` are too generic to prefix-match safely.
+ */
+const BARE_WRAPPERS = new Set([
+  'fullwidth-box',
+  'accordian',
+  'panel-group',
+  'panel-default',
+  'panel-heading',
+  'panel-collapse',
+  'panel-body',
+  'collapse',
+  'toggle-content',
+  'post-content',
+  'person-shortcode-image-wrapper',
+  'person-image-container',
+  'person-desc',
+  'person-author',
+  'icon-wrapper',
+  'title',
+])
 
 function classes(node: Element): string[] {
   // hast types className as an array, but the parser hands back a string for
@@ -49,7 +78,9 @@ function classes(node: Element): string[] {
 function isFusionWrapper(node: Element): boolean {
   if (node.tagName !== 'div' && node.tagName !== 'span') return false
   const list = classes(node)
-  return list.some((c) => FUSION_WRAPPERS.some((w) => c.startsWith(w)))
+  return list.some(
+    (c) => BARE_WRAPPERS.has(c) || FUSION_WRAPPERS.some((w) => c.startsWith(w)),
+  )
 }
 
 /** Flatten the builder scaffolding. */
@@ -63,6 +94,43 @@ function unwrapFusion() {
       // Revisit from the same index so the lifted children, which are often
       // wrappers themselves, get checked too.
       return index
+    })
+  }
+}
+
+/** All the text under a node, tags ignored. */
+function innerText(node: Element): string {
+  const parts: string[] = []
+  visit(node, 'text', (child) => {
+    parts.push(child.value)
+  })
+  return parts.join('').replace(/\s+/g, ' ').trim()
+}
+
+/**
+ * Avada's FAQ accordion is a Bootstrap collapse: the question is an anchor
+ * that toggles a panel, and the panel is hidden in CSS until it fires.
+ *
+ * We serve neither Avada's CSS nor its JS, so the anchor was a dead link and
+ * the answer was never hidden in the first place — every question rendered as
+ * body-sized text with a pair of empty icon divs in front of it. The service
+ * pages carry 15 to 19 of these each, so it was most of the page.
+ *
+ * Flattened to a heading with the answer beneath it. A <details> element would
+ * also work, but the FAQ reads as prose here and the site's own sections don't
+ * collapse either.
+ */
+function flattenToggles() {
+  return (tree: Root) => {
+    visit(tree, 'element', (node: Element) => {
+      if (!classes(node).includes('panel-title')) return
+
+      const question = innerText(node)
+      if (!question) return
+
+      node.tagName = 'h3'
+      node.properties = {}
+      node.children = [{ type: 'text', value: question }]
     })
   }
 }
@@ -210,6 +278,7 @@ const schema = {
 const processor = unified()
   .use(rehypeParse, { fragment: true })
   .use(dropNoise)
+  .use(flattenToggles)
   .use(unwrapFusion)
   .use(cleanAttributes)
   .use(dropEmpty)
