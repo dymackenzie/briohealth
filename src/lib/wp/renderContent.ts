@@ -240,9 +240,36 @@ const NOISE = new Set(['style', 'script', 'noscript', 'link', 'meta', 'form'])
 // the author login and an ISO timestamp between them.
 const HIDDEN = ['rich-snippet-hidden', 'screen-reader-text', 'fusion-meta-hidden']
 
+/**
+ * Blocks whose content the templates already render themselves.
+ *
+ * `fusion-person` is Avada's person card — portrait, name, credentials, and
+ * nothing else. About shows all three in its own Figure and PageHero, so the
+ * card came out as a second portrait of Dr. Lee under the first.
+ *
+ * `reading-box` is Avada's pull-quote. The only page with one is About, where
+ * it quotes the sentence the template already sets as its blockquote directly
+ * above — and a bordered box is not a device this design uses anyway.
+ */
+const DUPLICATED = ['fusion-person', 'reading-box']
+
+/**
+ * Avada's responsive visibility classes.
+ *
+ * The builder duplicates a block and hides one copy per breakpoint in CSS we
+ * don't serve, so both copies rendered — About printed Dr. Lee's entire
+ * biography twice, and two of the service pages did the same. Keeping the
+ * large-viewport copy means dropping whatever is marked hidden there; it's the
+ * fuller of the two, and the layout here is responsive enough to carry it down
+ * to a phone on its own.
+ */
+const HIDDEN_AT_LARGE = 'fusion-no-large-visibility'
+
 function isNoise(el: Element): boolean {
   if (NOISE.has(el.tagName)) return true
   if (classes(el).some((c) => HIDDEN.includes(c))) return true
+  if (classes(el).includes(HIDDEN_AT_LARGE)) return true
+  if (classes(el).some((c) => DUPLICATED.some((d) => c.startsWith(d)))) return true
 
   // Avada's spacer images are a data: GIF with nothing lazy-loaded behind
   // them. Sanitize strips the data: URL and leaves an img with no src.
