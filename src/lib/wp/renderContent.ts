@@ -175,6 +175,58 @@ function normalizeSpaces() {
   }
 }
 
+/**
+ * Hosts an <iframe> may point at.
+ *
+ * Across all 419 posts the only embeds are YouTube (15), Facebook (8) and one
+ * self-hosted video, so this covers the content as it stands. Without it the
+ * sanitize schema took any src at all, which let anyone who can publish a post
+ * frame an arbitrary site and — via `allow` — hand it the camera and mic.
+ */
+const EMBED_HOSTS = new Set([
+  'youtube.com',
+  'www.youtube.com',
+  'youtube-nocookie.com',
+  'www.youtube-nocookie.com',
+  'player.vimeo.com',
+  'www.facebook.com',
+  ...WP_HOSTS,
+  WP_HOST,
+])
+
+/**
+ * Drops frames pointing anywhere else, rather than letting sanitize strip the
+ * src and leave an empty 16:9 box on the page.
+ *
+ * Runs after cleanAttributes so it sees the promoted data-orig-src, and it is
+ * the only place the host rule lives — the schema below allows `src` outright
+ * on the strength of this pass.
+ */
+function dropForeignFrames() {
+  return (tree: Root) => {
+    visit(tree, 'element', (node, index, parent) => {
+      if (!parent || index === undefined || node.tagName !== 'iframe') return
+
+      const src = node.properties.src
+      if (typeof src === 'string' && isAllowedEmbed(src)) return
+
+      parent.children.splice(index, 1)
+      return index
+    })
+  }
+}
+
+function isAllowedEmbed(src: string): boolean {
+  let url: URL
+  try {
+    url = new URL(src, `https://${WP_HOST}`)
+  } catch {
+    return false
+  }
+
+  return url.protocol === 'https:' && EMBED_HOSTS.has(url.host)
+}
+
 function cleanAttributes() {
   return (tree: Root) => {
     visit(tree, 'element', (node: Element) => {
@@ -341,6 +393,9 @@ const schema = {
       'width',
       'height',
     ],
+    // `src` is unqualified here because dropForeignFrames has already thrown
+    // out every frame not pointing at EMBED_HOSTS. The host rule is stated in
+    // one place so the two cannot drift.
     iframe: ['src', 'title', 'allow', 'allowFullScreen', 'width', 'height'],
     video: ['controls', 'poster', 'width', 'height'],
     source: ['src', 'type'],
@@ -366,6 +421,7 @@ const processor = unified()
   .use(unwrapFusion)
   .use(unwrapLayoutTables)
   .use(cleanAttributes)
+  .use(dropForeignFrames)
   .use(dropEmpty)
   .use(rehypeSanitize, schema)
 
