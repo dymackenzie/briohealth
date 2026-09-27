@@ -36,30 +36,32 @@ export function Header() {
         <Logo />
 
         <nav aria-label="Primary" className="hidden lg:block">
-          <ul className="flex items-center gap-1">
+          <ul className="flex items-center gap-1 xl:gap-2">
             {primaryNav.map((item) => (
               <li key={item.href} className="group relative">
                 <Link
                   href={item.href}
-                  className="inline-flex items-center gap-1 rounded-md px-3.5 py-2 text-[0.95rem] opacity-85 transition-opacity hover:opacity-100"
+                  className="inline-flex items-center gap-1.5 px-3 py-2.5 text-base font-medium text-canvas/90 transition-colors hover:text-canvas"
                 >
-                  {item.label}
+                  <span className="link-draw">{item.label}</span>
                   {item.children && (
                     <ChevronDown
-                      className="h-3.5 w-3.5 opacity-60 transition-transform duration-200 group-hover:rotate-180 group-focus-within:rotate-180"
+                      className="h-4 w-4 opacity-70 transition-transform duration-500 group-hover:rotate-180 group-focus-within:rotate-180"
                       aria-hidden
                     />
                   )}
                 </Link>
 
                 {item.children && (
-                  <div className="invisible absolute top-full left-0 pt-2 opacity-0 transition-[opacity,visibility] duration-200 group-hover:visible group-hover:opacity-100 group-focus-within:visible group-focus-within:opacity-100">
-                    <ul className="min-w-60 rounded-lg bg-canvas p-2 shadow-lg">
+                  <div className="invisible absolute top-full left-0 translate-y-1 pt-2 opacity-0 transition-[opacity,visibility,translate] duration-500 group-hover:visible group-hover:translate-y-0 group-hover:opacity-100 group-focus-within:visible group-focus-within:translate-y-0 group-focus-within:opacity-100">
+                    <ul className="min-w-64 rounded-photo bg-canvas p-2 shadow-lg">
                       {item.children.map((child) => (
                         <li key={child.href}>
+                          {/* The panel is cream, so the ring goes back to the
+                              cream-ground clay. */}
                           <Link
                             href={child.href}
-                            className="block rounded-md px-3.5 py-2.5 text-[0.925rem] text-ink-700 transition-colors hover:bg-teal-50 hover:text-teal-700"
+                            className="block rounded-[0.5rem] px-4 py-3 text-base text-ink-700 transition-colors duration-300 hover:bg-teal-50 hover:text-teal-700 focus-visible:outline-clay-600"
                           >
                             {child.label}
                           </Link>
@@ -77,7 +79,7 @@ export function Header() {
           <Button
             href={site.bookingUrl}
             variant="onTeal"
-            className="hidden px-4 py-3 text-[0.925rem] sm:inline-flex"
+            className="px-5 py-3 max-sm:hidden"
           >
             Book Now
           </Button>
