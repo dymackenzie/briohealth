@@ -52,8 +52,7 @@
   --color-sand-300: #E7DCC9;
   --color-paper: #FFFFFF;
 
-  /* State. Both are form-validation colours and nothing else uses them. */
-  --color-coral-300: #F3B39E;
+  /* Form validation only. */
   --color-error: #C7493A;
 
   /* Type */
