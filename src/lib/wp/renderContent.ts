@@ -135,6 +135,33 @@ function flattenToggles() {
   }
 }
 
+/**
+ * A one-cell table is a text box, not data. The table rules in globals.css are
+ * for real tables, so the pickleball page's opening paragraphs came out inside
+ * a full-width bordered box.
+ *
+ * Any <th>, or more than one cell, and it's left alone.
+ */
+function unwrapLayoutTables() {
+  return (tree: Root) => {
+    visit(tree, 'element', (node, index, parent) => {
+      if (!parent || index === undefined || node.tagName !== 'table') return
+
+      const cells: Element[] = []
+      let hasHeader = false
+      visit(node, 'element', (el: Element) => {
+        if (el.tagName === 'th') hasHeader = true
+        if (el.tagName === 'td') cells.push(el)
+      })
+
+      if (hasHeader || cells.length !== 1) return
+
+      parent.children.splice(index, 1, ...cells[0].children)
+      return index
+    })
+  }
+}
+
 function cleanAttributes() {
   return (tree: Root) => {
     visit(tree, 'element', (node: Element) => {
@@ -296,6 +323,7 @@ const processor = unified()
   .use(dropNoise)
   .use(flattenToggles)
   .use(unwrapFusion)
+  .use(unwrapLayoutTables)
   .use(cleanAttributes)
   .use(dropEmpty)
   .use(rehypeSanitize, schema)
