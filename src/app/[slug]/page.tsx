@@ -38,14 +38,19 @@ export default async function CmsPage(props: { params: Promise<{ slug: string }>
   const page = await getPage(slug)
   if (!page) notFound()
 
+  const title = decodeTitle(page.title.rendered)
+
   return (
     <>
-      <PageHero title={decodeTitle(page.title.rendered)} />
+      <PageHero title={title} />
 
       <main id="main">
-        <Band tone="cream" className="pt-4">
+        <Band tone="cream">
           <Container prose>
-            <div className="post-body">{renderContent(page.content.rendered)}</div>
+            {/* Title passed so the body doesn't repeat the hero's heading. */}
+            <div className="post-body">
+              {renderContent(page.content.rendered, { title })}
+            </div>
           </Container>
         </Band>
       </main>

@@ -4,7 +4,7 @@ import rehypeParse from 'rehype-parse'
 import rehypeSanitize, { defaultSchema } from 'rehype-sanitize'
 import { unified } from 'unified'
 import { visit } from 'unist-util-visit'
-import type { Element, Root } from 'hast'
+import type { Element, Root, RootContent } from 'hast'
 
 import { WP_HOST } from './client'
 
@@ -227,6 +227,65 @@ function isAllowedEmbed(src: string): boolean {
   return url.protocol === 'https:' && EMBED_HOSTS.has(url.host)
 }
 
+/**
+ * Drops the heading Avada put at the top of the body when the template already
+ * shows it. Every one of these pages opened by repeating its own title —
+ * "Pickleball" under "Pickleball & community", and About said the doctor's name
+ * three times before the first sentence.
+ *
+ * Only headings ahead of the first line of copy are considered, and only when
+ * every word in one already appears in the hero above. That direction matters:
+ * "What is Acupuncture?" on the page titled "Acupuncture" is a real heading
+ * and has to survive,
+ * while "Naturopathic Physician & Registered Acupuncturist" over a hero
+ * reading "Naturopathic Physician and Registered Acupuncturist, serving
+ * Richmond since 2006" is the same line twice.
+ */
+function dropLeadingTitle(hero: string) {
+  const wanted = new Set(words(hero))
+
+  return (tree: Root) => {
+    // Walks the front of the document rather than visiting every heading, so
+    // only headings the copy hasn't started yet are candidates. Avada writes a
+    // title and its subtitle as adjacent siblings — About opened with the
+    // doctor's name and then his credentials, both already in the hero — so
+    // this keeps going while they match and stops at the first real line.
+    let parent: Root | Element = tree
+
+    for (;;) {
+      const children = parent.children as RootContent[]
+      const index = children.findIndex(
+        (c) => c.type === 'element' || (c.type === 'text' && c.value.trim() !== ''),
+      )
+
+      const node = index === -1 ? undefined : children[index]
+      if (!node || node.type !== 'element') return
+
+      if (/^h[1-3]$/.test(node.tagName)) {
+        const heading = words(innerText(node))
+        if (!heading.length || !heading.every((w) => wanted.has(w))) return
+
+        children.splice(index, 1)
+        continue
+      }
+
+      // Not a heading. A wrapper may still have the title inside it; anything
+      // else means the copy has started.
+      if (node.tagName !== 'div') return
+      parent = node
+    }
+  }
+}
+
+function words(value: string): string[] {
+  return value
+    .toLowerCase()
+    .replace(/[^a-z0-9]+/g, ' ')
+    .trim()
+    .split(' ')
+    .filter(Boolean)
+}
+
 function cleanAttributes() {
   return (tree: Root) => {
     visit(tree, 'element', (node: Element) => {
@@ -413,22 +472,55 @@ const schema = {
   ],
 }
 
-const processor = unified()
-  .use(rehypeParse, { fragment: true })
-  .use(normalizeSpaces)
-  .use(dropNoise)
-  .use(flattenToggles)
-  .use(unwrapFusion)
-  .use(unwrapLayoutTables)
-  .use(cleanAttributes)
-  .use(dropForeignFrames)
-  .use(dropEmpty)
-  .use(rehypeSanitize, schema)
+/**
+ * Order matters. flattenToggles has to see the accordion before unwrapFusion
+ * takes its scaffolding apart, dropForeignFrames has to run after
+ * cleanAttributes has promoted data-orig-src, and dropEmpty has to see what
+ * every other pass left behind.
+ */
+function build(hero?: string) {
+  const processor = unified()
+    .use(rehypeParse, { fragment: true })
+    .use(normalizeSpaces)
+    .use(dropNoise)
+    .use(flattenToggles)
+    .use(unwrapFusion)
+    .use(unwrapLayoutTables)
+    .use(cleanAttributes)
+    .use(dropForeignFrames)
+    .use(dropEmpty)
 
-export function renderContent(html: string) {
+  // dropEmpty first, or the walk stops on the empty <p> wpautop leaves in front
+  // of a builder page and never reaches the title. Then again afterwards, since
+  // lifting a heading out can leave the wrapper it sat in empty.
+  if (hero) processor.use(dropLeadingTitle, hero).use(dropEmpty)
+
+  return processor.use(rehypeSanitize, schema)
+}
+
+const processor = build()
+
+export interface RenderOptions {
+  /**
+   * What the template already shows above this content — the hero's title, and
+   * its lead where there is one. Avada wrote a page title into the body too,
+   * so passing these stops the page opening by repeating itself.
+   *
+   * See dropLeadingTitle.
+   */
+  title?: string
+  lead?: string
+}
+
+export function renderContent(html: string, options: RenderOptions = {}) {
   if (!html?.trim()) return null
 
-  const tree = processor.runSync(processor.parse(html)) as Root
+  const hero = [options.title, options.lead].filter(Boolean).join(' ')
+
+  // Registering plugins is cheap and these renders are cached by the hour, so
+  // a per-page pipeline costs nothing worth naming.
+  const active = hero ? build(hero) : processor
+  const tree = active.runSync(active.parse(html)) as Root
 
   return toJsxRuntime(tree, { Fragment, jsx, jsxs })
 }
