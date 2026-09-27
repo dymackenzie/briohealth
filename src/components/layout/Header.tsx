@@ -89,49 +89,69 @@ export function Header() {
             aria-expanded={mobileOpen}
             aria-controls="mobile-nav"
             aria-label={mobileOpen ? 'Close menu' : 'Open menu'}
-            className="rounded-md p-2 lg:hidden"
+            className="-mr-2 inline-flex h-11 w-11 items-center justify-center rounded-pill lg:hidden"
           >
-            {mobileOpen ? <X className="h-6 w-6" /> : <Menu className="h-6 w-6" />}
+            {mobileOpen ? (
+              <X className="h-6 w-6" aria-hidden />
+            ) : (
+              <Menu className="h-6 w-6" aria-hidden />
+            )}
           </button>
         </div>
       </div>
 
-      {mobileOpen && (
-        <nav id="mobile-nav" aria-label="Primary" className="container-x pb-6 lg:hidden">
-          <ul className="flex flex-col gap-1 border-t border-current/15 pt-4">
-            {primaryNav.map((item) => (
-              <li key={item.href}>
-                <Link
-                  href={item.href}
-                  onClick={() => setMobileOpen(false)}
-                  className="block py-2.5 text-base"
-                >
-                  {item.label}
-                </Link>
-                {item.children && (
-                  <ul className="mb-2 ml-4 flex flex-col gap-0.5 border-l border-current/15 pl-4">
-                    {item.children.map((child) => (
-                      <li key={child.href}>
-                        <Link
-                          href={child.href}
-                          onClick={() => setMobileOpen(false)}
-                          className="block py-1.5 text-[0.95rem] opacity-80"
-                        >
-                          {child.label}
-                        </Link>
-                      </li>
-                    ))}
-                  </ul>
-                )}
-              </li>
-            ))}
-          </ul>
+      {/* Always rendered so it can open on a transition: the row animates from
+          0fr to 1fr, which is a height animation to the content's own size
+          without measuring it. `inert` keeps the closed menu out of the tab
+          order and the accessibility tree. */}
+      <div
+        id="mobile-nav"
+        inert={!mobileOpen}
+        className={`grid transition-[grid-template-rows,opacity] duration-700 lg:hidden ${
+          mobileOpen ? 'grid-rows-[1fr] opacity-100' : 'grid-rows-[0fr] opacity-0'
+        }`}
+      >
+        <div className="min-h-0 overflow-hidden">
+          <nav aria-label="Primary" className="container-x pb-8">
+            <ul className="border-t border-canvas/15">
+              {primaryNav.map((item) => (
+                <li key={item.href} className="border-b border-canvas/15 py-2">
+                  <Link
+                    href={item.href}
+                    onClick={close}
+                    className="block py-2.5 text-h3 font-medium"
+                  >
+                    {item.label}
+                  </Link>
+                  {item.children && (
+                    <ul className="mb-2 flex flex-col border-l border-canvas/20 pl-4">
+                      {item.children.map((child) => (
+                        <li key={child.href}>
+                          <Link
+                            href={child.href}
+                            onClick={close}
+                            className="block py-2 text-base text-canvas/85"
+                          >
+                            {child.label}
+                          </Link>
+                        </li>
+                      ))}
+                    </ul>
+                  )}
+                </li>
+              ))}
+            </ul>
 
-          <Button href={site.bookingUrl} variant="onTeal" className="mt-4 w-full sm:hidden">
-            Book Now
-          </Button>
-        </nav>
-      )}
+            <Button
+              href={site.bookingUrl}
+              variant="onTeal"
+              className="mt-6 w-full sm:hidden"
+            >
+              Book Now
+            </Button>
+          </nav>
+        </div>
+      </div>
     </header>
   )
 }
