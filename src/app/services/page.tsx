@@ -6,9 +6,9 @@ import { Footer } from '@/components/layout/Footer'
 import { Band, Container } from '@/components/ui/Container'
 import { Button } from '@/components/ui/Button'
 import { Figure } from '@/components/ui/Figure'
-import { BandDivider } from '@/components/ui/BandDivider'
 import { Reveal } from '@/components/ui/Reveal'
 import { DotBurst } from '@/components/brand/DotBurst'
+import { ForYouList } from '@/components/services/ForYouList'
 import { services } from '@/lib/content/services'
 import { servicePhotos } from '@/lib/content/photos'
 import { buildMetadata } from '@/lib/seo'
@@ -30,89 +30,87 @@ export default function ServicesPage() {
       />
 
       <main id="main">
-        <Band tone="cream" className="pt-4">
+        <Band tone="cream">
           <Container>
-            <ul className="flex flex-col gap-12 lg:gap-16">
-              {services.map((service, i) => (
-                <Reveal as="li" key={service.slug}>
-                  <div className="grid items-center gap-7 md:grid-cols-2 md:gap-11">
-                    <div className={i % 2 === 1 ? 'md:order-2' : ''}>
-                      <Figure
-                        subject={service.image}
-                        {...servicePhotos[service.slug].wide}
-                        shape={i % 2 === 1 ? 'leafAlt' : 'leaf'}
-                        tone={i % 2 === 1 ? 'sandLight' : 'sand'}
-                        aspect="3 / 2"
-                      />
-                    </div>
+            <ul className="flex flex-col gap-16 lg:gap-24">
+              {services.map((service, i) => {
+                const flip = i % 2 === 1
+                const href = `/services/${service.slug}`
 
-                    <div className={i % 2 === 1 ? 'md:order-1 md:pr-6' : 'md:pl-4'}>
-                      <h2 className="text-[clamp(1.35rem,2.3vw,1.7rem)]">
-                        {service.title}
-                      </h2>
-                      <p className="mt-4 max-w-[42ch] text-base text-ink-500">
-                        {service.summary}
-                      </p>
-
-                      <ul className="mt-5 flex flex-wrap gap-2">
-                        {service.treats.slice(0, 4).map((item) => (
-                          <li
-                            key={item}
-                            className="rounded-pill bg-sand-200 px-3.5 py-1.5 text-[0.85rem] text-ink-700"
-                          >
-                            {item}
-                          </li>
-                        ))}
-                      </ul>
-
-                      <Link
-                        href={`/services/${service.slug}`}
-                        className="group mt-6 inline-flex items-center gap-2 font-medium text-teal-700"
-                      >
-                        More about {service.title.toLowerCase()}
-                        <ArrowRight
-                          className="h-4 w-4 transition-transform duration-200 group-hover:translate-x-1.5"
-                          aria-hidden
+                return (
+                  <li
+                    key={service.slug}
+                    className="grid items-center gap-8 md:grid-cols-12 md:gap-10"
+                  >
+                    <Reveal
+                      className={`md:col-span-5 ${flip ? 'md:order-2 md:col-start-8' : ''}`}
+                    >
+                      {/* Same destination as the text link, so it stays out of
+                          the tab order and away from screen readers. 4/5, not
+                          square: any wider and Dr. Lee comes back into frame. */}
+                      <Link href={href} tabIndex={-1} aria-hidden className="media-hover block">
+                        <Figure
+                          subject={service.image}
+                          {...(servicePhotos[service.slug].wide ?? {})}
+                          aspect="4 / 5"
+                          offset={i === 0 ? 'teal' : 'none'}
+                          tone={flip ? 'sandLight' : 'sand'}
+                          sizes="(min-width: 1200px) 460px, (min-width: 768px) 40vw, 100vw"
+                          preload={i === 0}
+                          className={i === 0 ? 'mr-4 md:mr-0' : ''}
                         />
                       </Link>
-                    </div>
-                  </div>
-                </Reveal>
-              ))}
+                    </Reveal>
+
+                    <Reveal
+                      delay={90}
+                      className={`md:col-span-6 ${flip ? 'md:order-1 md:col-start-1' : 'md:col-start-7'}`}
+                    >
+                      <h2 className="text-[clamp(1.75rem,1.3rem+1.6vw,2.5rem)]">
+                        {service.title}
+                      </h2>
+                      <p className="mt-4 max-w-[36ch] text-lede text-ink-700">
+                        {service.outcome}
+                      </p>
+
+                      <p className="mt-7 font-semibold">This is for you if&hellip;</p>
+                      <ForYouList items={service.forYou.slice(0, 3)} className="mt-3" />
+
+                      <Link
+                        href={href}
+                        className="mt-7 inline-flex items-center gap-2 font-medium text-teal-700"
+                      >
+                        <span className="link-draw">More about {service.title}</span>
+                        <ArrowRight className="h-4 w-4" aria-hidden />
+                      </Link>
+                    </Reveal>
+                  </li>
+                )
+              })}
             </ul>
           </Container>
         </Band>
 
-        <div className="relative">
-          <BandDivider curve="swell" fill="text-teal-900" className="bg-canvas -mb-px" />
-
-          <Band tone="teal-deep" className="relative overflow-hidden pt-4">
-            <DotBurst
-              droplet={false}
-              className="drift pointer-events-none absolute -right-40 -bottom-64 h-[40rem] w-[40rem] text-teal-400/8"
-            />
-            <Container prose className="relative text-center">
-              <Reveal from="scale">
-                <DotBurst className="mx-auto h-11 w-11 text-teal-300" />
-                <h2 className="mt-6 text-[clamp(1.6rem,3.2vw,2.15rem)]">
-                  Not sure where to start?
-                </h2>
-                <p className="mx-auto mt-4 max-w-[44ch] text-base opacity-80">
-                  That&rsquo;s what the first appointment is for. We&rsquo;ll work out
-                  together what makes sense for you.
-                </p>
-                <div className="mt-7 flex flex-wrap justify-center gap-4">
-                  <Button href={site.bookingUrl} variant="onTeal">
-                    Book an appointment
-                  </Button>
-                  <Button href="/contact" variant="outline">
-                    Ask us a question
-                  </Button>
-                </div>
-              </Reveal>
-            </Container>
-          </Band>
-        </div>
+        <Band tone="teal-deep">
+          <Container prose className="text-center">
+            <Reveal from="scale">
+              <DotBurst className="mx-auto h-12 w-12 text-teal-500" />
+              <h2 className="mt-6 text-h2">Not sure where to start?</h2>
+              <p className="mx-auto mt-5 max-w-[40ch] text-lede opacity-85">
+                That&rsquo;s what the first appointment is for. We&rsquo;ll work out
+                together what makes sense for you.
+              </p>
+              <div className="mt-8 flex flex-wrap justify-center gap-3">
+                <Button href={site.bookingUrl} variant="onTeal">
+                  Book an appointment
+                </Button>
+                <Button href="/contact" variant="outline">
+                  Ask us a question
+                </Button>
+              </div>
+            </Reveal>
+          </Container>
+        </Band>
       </main>
 
       <Footer />
