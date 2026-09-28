@@ -376,6 +376,14 @@ html {
   width: 100%;
 }
 
+/* The pickleball page embeds a logo exported on a full A4 artboard, so at
+ * column width it was 840px of nothing. Cap vector images; photos are never
+ * SVGs here. Client has been asked for a cropped export (docs/client-inputs). */
+.post-body img[src$='.svg'] {
+  max-height: 12rem;
+  width: auto;
+}
+
 .post-body blockquote {
   border-left: 3px solid var(--color-teal-300);
   padding-left: 1.4em;
