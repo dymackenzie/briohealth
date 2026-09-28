@@ -9,7 +9,9 @@ import { Button } from '@/components/ui/Button'
 import { Figure } from '@/components/ui/Figure'
 import { VideoPlaceholder } from '@/components/ui/VideoPlaceholder'
 import { Reveal } from '@/components/ui/Reveal'
-import { DotRule } from '@/components/brand/DotBurst'
+import { DotBurst } from '@/components/brand/DotBurst'
+import { ForYouList } from '@/components/services/ForYouList'
+import { FeeList, VisitSteps } from '@/components/services/VisitSteps'
 import { getService, services } from '@/lib/content/services'
 import { servicePhotos } from '@/lib/content/photos'
 import { getPage } from '@/lib/wp/queries'
@@ -43,42 +45,41 @@ export default async function ServicePage(props: {
   if (!service) notFound()
 
   // Copy still lives on the WordPress page. Absent or empty is fine — the
-  // summary and treats list carry the page on their own.
+  // summary, the list and the steps carry the page on their own.
   const page = await getPage(service.wpSlug)
-  const body = page ? renderContent(page.content.rendered) : null
+  // Passed the hero so the WordPress copy doesn't open by repeating it.
+  const body = page
+    ? renderContent(page.content.rendered, {
+        title: service.title,
+        lead: service.lead,
+      })
+    : null
 
   const others = services.filter((s) => s.slug !== service.slug)
 
   return (
     <>
-      {/* The video sits in the hero rather than at the foot of the page.
-          Someone deciding whether to book wants to hear what the appointment
-          involves before they read the detail, not after. */}
       <PageHero
         parent={{ label: 'All services', href: '/services' }}
         title={service.title}
         lead={service.lead}
-      >
-        <div className="rise-in mt-8 max-w-3xl" style={{ animationDelay: '240ms' }}>
-          <h2 className="font-body text-[0.95rem] font-semibold opacity-80">
-            What to expect
-          </h2>
-          <VideoPlaceholder subject={service.video} className="mt-4" />
-        </div>
-      </PageHero>
+      />
 
       <main id="main">
-        <Band tone="cream" className="pt-4">
+        {/* Who it's for and the way in, before any of the detail. The photo
+            hangs over the hero's edge — the page's one grid break. */}
+        <Band tone="cream">
           <Container>
-            <div className="grid gap-10 lg:grid-cols-[1.1fr_0.9fr] lg:gap-14">
-              <Reveal>
-                <p className="max-w-[46ch] text-base text-ink-500">{service.summary}</p>
+            <div className="grid gap-12 lg:grid-cols-12 lg:gap-10">
+              <Reveal className="lg:col-span-7 lg:pr-8">
+                <p className="max-w-[40ch] text-lede text-ink-700">{service.summary}</p>
 
-                {body && <div className="post-body mt-7">{body}</div>}
+                <h2 className="mt-10 font-body text-h3 font-semibold tracking-[-0.01em]">
+                  This is for you if&hellip;
+                </h2>
+                <ForYouList items={service.forYou} className="mt-4" />
 
-                <DotRule className="mt-8 h-2.5 w-28 text-teal-500/40" />
-
-                <div className="mt-7 flex flex-wrap gap-3">
+                <div className="mt-9 flex flex-wrap gap-3">
                   <Button href={site.bookingUrl}>Book an appointment</Button>
                   <Button href="/contact" variant="outline">
                     Ask a question
@@ -86,58 +87,93 @@ export default async function ServicePage(props: {
                 </div>
               </Reveal>
 
-              <Reveal from="right" className="lg:pt-4">
+              <Reveal from="right" delay={120} className="lg:col-span-5 lg:-mt-44">
                 <Figure
-                  subject={service.image}
-                  {...servicePhotos[service.slug].tall}
-                  shape="archSoft"
-                  tone="sand"
+                  subject={service.tallImage}
+                  {...(servicePhotos[service.slug].tall ?? {})}
                   aspect="4 / 5"
+                  offset="teal"
+                  sizes="(min-width: 1200px) 460px, (min-width: 1024px) 38vw, 100vw"
+                  preload
+                  className="mr-4 lg:mr-0"
                 />
-
-                <div className="mt-7">
-                  <h2 className="font-body text-[0.95rem] font-semibold text-ink-500">
-                    Commonly helps with
-                  </h2>
-                  <ul className="mt-4">
-                    {service.treats.map((item) => (
-                      <li
-                        key={item}
-                        className="flex items-start gap-4 border-b border-ink-900/10 py-3.5"
-                      >
-                        <span
-                          className="mt-2.5 h-1.5 w-1.5 shrink-0 rounded-pill bg-teal-500"
-                          aria-hidden
-                        />
-                        <span className="text-ink-700">{item}</span>
-                      </li>
-                    ))}
-                  </ul>
-                </div>
               </Reveal>
             </div>
           </Container>
         </Band>
 
-        <Band tone="sand">
+        <Band tone="paper">
           <Container>
-            <h2 className="text-[clamp(1.35rem,2.3vw,1.7rem)]">Other services</h2>
-            <ul className="mt-7 grid gap-6 sm:grid-cols-2">
+            <Reveal>
+              <h2 className="text-h2">What to expect</h2>
+            </Reveal>
+            <div className="mt-10 lg:mt-12">
+              <VisitSteps steps={service.steps} />
+            </div>
+            <Reveal>
+              <FeeList fees={service.fees} note={service.feesNote} className="mt-14 lg:mt-16" />
+            </Reveal>
+          </Container>
+        </Band>
+
+        {/* The clinic's own long copy, FAQs included. The video is a slot
+            beside it, not a hero: an empty frame above the fold was the
+            weakest thing on the page. */}
+        <Band tone="tint">
+          <Container>
+            <div className="grid gap-12 lg:grid-cols-12 lg:gap-10">
+              <aside className="lg:order-2 lg:col-span-4">
+                <div className="lg:sticky lg:top-8">
+                  <h3 className="text-h3">Hear it from Dr. Lee</h3>
+                  <VideoPlaceholder subject={service.video} className="mt-4" />
+                </div>
+              </aside>
+
+              {body && (
+                <div className="post-body max-w-[68ch] lg:order-1 lg:col-span-8">{body}</div>
+              )}
+            </div>
+          </Container>
+        </Band>
+
+        <Band tone="teal" className="relative overflow-hidden">
+          <DotBurst
+            droplet={false}
+            className="pointer-events-none absolute -right-28 -bottom-44 h-[30rem] w-[30rem] text-teal-500"
+          />
+          <Container className="relative">
+            <Reveal className="max-w-2xl">
+              <h2 className="text-h2">Ready to book your first {service.short} visit?</h2>
+              <p className="mt-5 max-w-[44ch] text-lede opacity-90">
+                It starts with a 30-minute virtual assessment with Dr. Lee. Book
+                online, or call and we&rsquo;ll find you a time.
+              </p>
+              <div className="mt-8 flex flex-wrap gap-3">
+                <Button href={site.bookingUrl} variant="onTeal">
+                  Book an appointment
+                </Button>
+                <Button href={site.phoneHref} variant="outline">
+                  Call {site.phone}
+                </Button>
+              </div>
+            </Reveal>
+          </Container>
+        </Band>
+
+        <Band tone="cream">
+          <Container>
+            <h2 className="text-[clamp(1.75rem,1.3rem+1.6vw,2.5rem)]">Other services</h2>
+            <ul className="mt-8 grid gap-x-12 md:grid-cols-2">
               {others.map((other) => (
-                <li key={other.slug}>
+                <li key={other.slug} className="border-t border-ink-900/12 py-7">
+                  <h3 className="text-h3">{other.title}</h3>
+                  <p className="mt-2 max-w-[44ch] text-ink-700">{other.summary}</p>
                   <Link
                     href={`/services/${other.slug}`}
-                    className="group flex h-full flex-col rounded-lg bg-canvas p-6 transition-colors hover:bg-paper"
+                    className="mt-4 inline-flex items-center gap-2 font-medium text-teal-700"
                   >
-                    <h3 className="text-base">{other.title}</h3>
-                    <p className="mt-3 grow text-ink-500">{other.summary}</p>
-                    <span className="mt-4 inline-flex items-center gap-2 font-medium text-teal-700">
-                      Learn more
-                      <ArrowRight
-                        className="h-4 w-4 transition-transform duration-200 group-hover:translate-x-1.5"
-                        aria-hidden
-                      />
-                    </span>
+                    <span className="link-draw">More about {other.title}</span>
+                    <ArrowRight className="h-4 w-4" aria-hidden />
                   </Link>
                 </li>
               ))}
