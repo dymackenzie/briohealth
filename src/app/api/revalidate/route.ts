@@ -1,7 +1,22 @@
+import { createHash, timingSafeEqual } from 'node:crypto'
 import { revalidateTag } from 'next/cache'
 import { NextResponse } from 'next/server'
 
 import { tags } from '@/lib/wp/client'
+
+/**
+ * Constant-time compare. Both sides are hashed first so the comparison is over
+ * two 32-byte buffers — timingSafeEqual throws on a length mismatch, and
+ * checking the length to avoid that would leak the secret's length.
+ */
+function secretMatches(provided: string | null, expected: string): boolean {
+  if (!provided) return false
+
+  return timingSafeEqual(
+    createHash('sha256').update(provided).digest(),
+    createHash('sha256').update(expected).digest(),
+  )
+}
 
 /**
  * WordPress save_post webhook.
@@ -20,7 +35,7 @@ export async function POST(request: Request) {
     return NextResponse.json({ error: 'Not configured' }, { status: 500 })
   }
 
-  if (request.headers.get('x-revalidate-secret') !== secret) {
+  if (!secretMatches(request.headers.get('x-revalidate-secret'), secret)) {
     return NextResponse.json({ error: 'Unauthorized' }, { status: 401 })
   }
 
