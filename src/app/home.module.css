@@ -1,0 +1,13 @@
+/* The hero photo's slab slides out from behind it once the headline has
+ * landed — the last beat of the one orchestrated entrance. Gated on `.js` like
+ * the rest of the motion, so no script means the slab is simply there. */
+:global(.js) .slabIn > span[aria-hidden] {
+  animation: slab-in 1s var(--ease-out-expo) 1.05s backwards;
+}
+
+@keyframes slab-in {
+  from {
+    translate: 0 0;
+    opacity: 0;
+  }
+}

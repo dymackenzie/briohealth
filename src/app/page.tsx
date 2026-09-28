@@ -6,383 +6,459 @@ import { Footer } from '@/components/layout/Footer'
 import { Band, Container } from '@/components/ui/Container'
 import { Button } from '@/components/ui/Button'
 import { Figure } from '@/components/ui/Figure'
-import { BandDivider } from '@/components/ui/BandDivider'
 import { Reveal } from '@/components/ui/Reveal'
 import { HeroHeading } from '@/components/ui/HeroHeading'
 import { ScrollProgress } from '@/components/ui/ScrollProgress'
 import { Stats } from '@/components/ui/Stats'
 import { emphasize } from '@/components/ui/Mark'
-import { DotBurst, DotRule } from '@/components/brand/DotBurst'
+import { DotBurst } from '@/components/brand/DotBurst'
 import { StepTrail } from '@/components/brand/StepTrail'
+import { Faq } from '@/components/home/Faq'
 import { home } from '@/lib/content/home'
-import { site } from '@/lib/site'
+import { formatDays, formatTime, site } from '@/lib/site'
 import { photos, planPhotos, servicePhotos } from '@/lib/content/photos'
 
+import styles from './home.module.css'
+
+// How far the hero photo hangs into the band below it. The next band pads by
+// the same amount (plus the 1rem slab) so nothing collides at either size.
+const HANG = '-mb-10 lg:-mb-16'
+const AFTER_HANG =
+  'pt-[calc(var(--section-y)_+_3.5rem)] pb-[var(--section-y)] lg:pt-[var(--section-y)]'
+
 export default function HomePage() {
+  const decision = home.decision
+
   return (
     <>
       <ScrollProgress />
 
-      {/* Hero — two images at different scales, the larger breaking the
-          container edge. Each drifts at its own rate on scroll. A third one
-          sat behind the main photo and only ever showed as a sliver. */}
-      <Band tone="teal" as="div" flush className="relative overflow-hidden">
-        <DotBurst
-          droplet={false}
-          className="drift pointer-events-none absolute -top-56 -right-40 h-[46rem] w-[46rem] text-teal-400/10"
-        />
+      {/* Hero — what the patient wants. The photo hangs over the seam into
+          the cream below, which is the page's first bit of depth. */}
+      {/* Clipped on x only: the burst crops at the page edge while the photo
+          is still free to hang out of the bottom. */}
+      <Band tone="teal" as="div" flush className="relative overflow-x-clip">
+        {/* Small screens have no room above the photo, so the burst sits in
+            the corner of the band instead. */}
+        <div aria-hidden className="pointer-events-none absolute inset-0 overflow-hidden lg:hidden">
+          <DotBurst
+            droplet={false}
+            className="absolute -top-[6rem] -right-[15rem] h-[30rem] w-[30rem] text-teal-500 opacity-55"
+          />
+        </div>
 
         <Header />
 
-        <Container className="relative grid gap-11 pt-7 pb-16 lg:grid-cols-[1fr_1fr] lg:items-center lg:gap-6 lg:pt-10 lg:pb-16">
-          <div className="lg:pr-6">
+        <Container className="relative grid gap-12 pt-6 lg:grid-cols-[7fr_5fr] lg:items-end lg:gap-16 lg:pt-12">
+          <div className="lg:pb-24">
             <HeroHeading
               text={home.hero.heading}
               accent={home.hero.headingAccent}
-              className="text-[clamp(2.15rem,5vw,3.5rem)]"
+              className="text-display max-w-[12ch]"
             />
             <p
-              className="rise-in mt-5 max-w-[32ch] text-lg opacity-85 lg:text-[1.2rem]"
+              className="rise-in mt-6 max-w-[30ch] text-lede opacity-90"
               style={{ animationDelay: '430ms' }}
             >
               {home.hero.body}
             </p>
             <div
-              className="rise-in mt-8 flex flex-wrap items-center gap-4"
+              className="rise-in mt-9 flex flex-wrap items-center gap-4"
               style={{ animationDelay: '530ms' }}
             >
               <Button href={site.bookingUrl} variant="onTeal">
                 {home.hero.cta}
               </Button>
-              <Button href="/services" variant="outline">
-                Explore our services
+              <Button href="#plan" variant="outline">
+                {home.hero.secondaryCta}
               </Button>
             </div>
 
-            {/* Award goes up here, not mid-page — it's the strongest thing
-                they can say about themselves. */}
-            <div
-              className="rise-in mt-8 flex items-center gap-3 text-[0.9rem] opacity-75"
+            {/* The strongest thing they can say about themselves, so it goes
+                up here rather than mid-page. */}
+            <p
+              className="rise-in mt-9 flex items-center gap-3 text-small opacity-85"
               style={{ animationDelay: '630ms' }}
             >
-              <DotBurst className="h-5 w-5 shrink-0 text-teal-300" />
+              <span className="h-px w-8 shrink-0 bg-clay-300" aria-hidden />
               <span>
-                <span className="font-medium">{home.empathy.award.title}</span>
-                <span className="mx-2 opacity-40">·</span>
+                <span className="font-semibold">{home.empathy.award.title}</span>
+                <span className="mx-2 opacity-50">·</span>
                 {home.empathy.award.detail}
               </span>
-            </div>
+            </p>
           </div>
 
           <div
-            className="rise-in relative lg:-mr-[5vw]"
+            className={`rise-in relative z-10 w-[88%] sm:w-3/4 lg:w-full ${HANG}`}
             style={{ animationDelay: '240ms' }}
           >
-            <Figure
-              subject={home.hero.images.primary}
-              {...photos.leeMarket}
-              preload
-              shape="blob"
-              tone="deep"
-              aspect="1 / 1"
-              className="w-full"
+            {/* The logo's burst, read at scale: it fans out from behind the
+                photo's corner, so it looks like the mark and not confetti. */}
+            <DotBurst
+              droplet={false}
+              className="pointer-events-none absolute -top-[19.84rem] left-[calc(100%-16rem)] hidden h-[32rem] w-[32rem] text-teal-500 opacity-55 lg:block"
             />
-
-            <div className="absolute -bottom-6 -left-10 hidden w-[34%] sm:block">
-              <Figure
-                subject={home.hero.images.secondary}
-                {...photos.lobby}
-                shape="archSoft"
-                tone="teal"
-                aspect="3 / 4"
-                className="shadow-lg"
-              />
-            </div>
+            <Figure
+              subject={home.hero.image}
+              {...photos.patientsConsult}
+              preload
+              offset="teal"
+              tone="deep"
+              aspect="4 / 5"
+              sizes="(min-width: 1200px) 460px, (min-width: 1024px) 40vw, 88vw"
+              className={styles.slabIn}
+            />
           </div>
         </Container>
-
-        <BandDivider curve="swell" fill="text-canvas" className="-mb-px" />
       </Band>
 
       <main id="main">
-        {/* Stakes */}
-        <Band tone="cream" className="pt-4">
-          <Container>
-            <div className="grid gap-11 lg:grid-cols-[1.15fr_0.85fr] lg:gap-16">
-              <div>
-                <Reveal>
-                  <h2 className="max-w-[16ch] text-[clamp(1.6rem,3.2vw,2.3rem)]">
-                    {home.stakes.heading}
-                  </h2>
-                  <p className="mt-4 max-w-[40ch] text-base text-ink-500">
-                    {emphasize(home.stakes.body)}
-                  </p>
-                </Reveal>
-
-                <ul className="mt-8 space-y-1">
-                  {home.stakes.items.map((item, i) => (
-                    <Reveal
-                      as="li"
-                      key={item}
-                      delay={i * 70}
-                      from="left"
-                      className="flex items-start gap-4 border-t border-ink-900/10 py-4"
-                    >
-                      <span
-                        className="mt-3 h-1.5 w-1.5 shrink-0 rounded-pill bg-teal-500"
-                        aria-hidden
-                      />
-                      <span className="font-display text-[clamp(1.05rem,1.7vw,1.25rem)] leading-snug text-ink-700">
-                        {item}
-                      </span>
-                    </Reveal>
-                  ))}
-                </ul>
-              </div>
-
-              <Reveal from="right">
-                <Figure
-                  subject={home.stakes.image}
-                  {...photos.leeConsultation}
-                  shape="leaf"
-                  tone="sand"
-                  aspect="4 / 5"
-                />
-              </Reveal>
-            </div>
-          </Container>
-        </Band>
-
-        {/* Value */}
-        <div className="relative">
-          <BandDivider
-            curve="drift"
-            fill="text-teal-700"
-            flip
-            className="bg-canvas -mb-px"
-          />
-
-          <Band tone="teal" className="pt-0">
-            <Container>
-              <div className="grid gap-11 lg:grid-cols-[0.95fr_1.05fr] lg:gap-14">
-                <Reveal from="left">
-                  <h2 className="text-[clamp(1.6rem,3.2vw,2.3rem)]">
-                    {home.value.heading}
-                  </h2>
-                  <p className="mt-4 text-base opacity-85">{home.value.body}</p>
-                  <p className="mt-4 opacity-70">{emphasize(home.value.lead)}</p>
-                  <DotRule className="mt-7 h-2.5 w-32 text-teal-300/50" />
-
-                  <div className="mt-8">
-                    <Figure
-                      subject={home.value.image}
-                      {...photos.leeReviewingPlan}
-                      shape="leafAlt"
-                      tone="deep"
-                      aspect="16 / 9"
-                    />
-                  </div>
-                </Reveal>
-
-                {/* Hairlines, not boxes. */}
-                <ul className="lg:pt-4">
-                  {home.value.items.map((item, i) => (
-                    <Reveal
-                      as="li"
-                      key={item}
-                      delay={i * 90}
-                      className="border-b border-canvas/15 py-5 first:border-t"
-                    >
-                      <span className="text-[1.05rem] leading-snug opacity-90">
-                        {item}
-                      </span>
-                    </Reveal>
-                  ))}
-                </ul>
-              </div>
-            </Container>
-          </Band>
-
-          <BandDivider curve="swell" fill="text-canvas" className="-mt-px" />
-        </div>
-
-        {/* Proof */}
-        <Band tone="cream" className="pt-0">
-          <Container>
-            <div className="grid gap-11 lg:grid-cols-[0.85fr_1.15fr] lg:gap-14">
-              <Reveal from="left" className="relative">
-                <Figure
-                  subject={home.empathy.images.portrait}
-                  {...photos.leePortraitClinic}
-                  shape="archSoft"
-                  tone="sand"
-                  aspect="4 / 5"
-                />
-
-                {/* Only overlap on the page, so it reads as deliberate. */}
-                <Stats stats={home.empathy.stats} />
-              </Reveal>
-
-              <div>
-                <Reveal>
-                  <h2 className="max-w-[18ch] text-[clamp(1.6rem,3.2vw,2.3rem)]">
-                    {home.empathy.heading}
-                  </h2>
-                  <p className="mt-4 max-w-[42ch] text-base text-ink-500">
-                    {emphasize(home.empathy.body)}
-                  </p>
-                </Reveal>
-
-                <div className="mt-10 flex flex-col gap-7">
-                  {home.testimonials.map((testimonial, i) => (
-                    <Reveal as="figure" key={testimonial.name} delay={i * 110}>
-                      <blockquote className="font-display text-[clamp(1.1rem,1.6vw,1.3rem)] leading-[1.42] text-ink-900">
-                        <span className="mr-1 text-teal-700">&ldquo;</span>
-                        {testimonial.quote}
-                        <span className="ml-0.5 text-teal-700">&rdquo;</span>
-                      </blockquote>
-                      <figcaption className="mt-4 flex items-center gap-3 text-[0.9rem] text-ink-500">
-                        <span className="h-px w-8 bg-ink-300" aria-hidden />
-                        <span className="font-medium text-ink-700">
-                          {testimonial.name}
-                        </span>
-                        <span className="opacity-40">·</span>
-                        {testimonial.date}
-                      </figcaption>
-                    </Reveal>
-                  ))}
-                </div>
-              </div>
-            </div>
-          </Container>
-        </Band>
-
-        {/* Plan — steps descend diagonally so the sequence reads before you do. */}
-        <div className="relative">
-          <BandDivider curve="drift" fill="text-teal-700" className="bg-canvas -mb-px" />
-
-          <Band tone="teal" className="pt-0">
-            <Container>
+        {/* The problem — "we know what you're living with." Text starts lower
+            than the photo so it clears the hero photo hanging above it. */}
+        <Band tone="cream" flush className={AFTER_HANG}>
+          <Container className="grid gap-12 lg:grid-cols-[5fr_7fr] lg:gap-20">
+            <div className="lg:col-start-2 lg:row-start-1 lg:pt-16">
               <Reveal>
-                <h2 className="max-w-[20ch] text-[clamp(1.6rem,3.2vw,2.3rem)]">
-                  {home.plan.heading}
-                </h2>
+                <h2 className="max-w-[18ch] text-h2">{home.problem.heading}</h2>
+                <p className="mt-5 max-w-[40ch] text-lede text-ink-700">
+                  {emphasize(home.problem.body)}
+                </p>
               </Reveal>
 
-              <StepTrail className="mt-11">
-                <ol className="grid gap-10 md:grid-cols-3 md:gap-6">
+              <ul className="mt-8">
+                {home.problem.items.map((item, i) => (
+                  <Reveal
+                    as="li"
+                    key={item}
+                    delay={i * 80}
+                    className="flex items-baseline gap-4 border-t border-ink-900/12 py-3.5 last:border-b"
+                  >
+                    <span
+                      className="h-2 w-2 shrink-0 -translate-y-1 rounded-pill bg-teal-500"
+                      aria-hidden
+                    />
+                    <span className="text-lede leading-snug text-ink-900">{item}</span>
+                  </Reveal>
+                ))}
+              </ul>
+            </div>
+
+            <Reveal from="left" className="lg:col-start-1 lg:row-start-1">
+              <Figure subject={home.problem.image} tone="sand" aspect="4 / 5" />
+            </Reveal>
+          </Container>
+        </Band>
+
+        {/* The guide — Dr. Lee, once. Empathy first, in his words, then the
+            authority. */}
+        <Band tone="paper">
+          <Container className="grid gap-14 lg:grid-cols-[7fr_5fr] lg:items-center lg:gap-20">
+            <div>
+              <Reveal>
+                <h2 className="max-w-[18ch] text-h2">{home.guide.heading}</h2>
+              </Reveal>
+
+              <Reveal as="figure" delay={90} className="mt-8 border-l-2 border-teal-500 pl-6">
+                <blockquote className="font-display max-w-[34ch] text-lede leading-snug text-ink-900">
+                  &ldquo;{home.guide.quote}&rdquo;
+                </blockquote>
+                <figcaption className="mt-3 text-small text-ink-500">
+                  {home.guide.attribution}
+                </figcaption>
+              </Reveal>
+
+              <ul className="mt-10 max-w-[56ch]">
+                {home.guide.credentials.map((item, i) => (
+                  <Reveal
+                    as="li"
+                    key={item}
+                    delay={180 + i * 80}
+                    className="border-t border-ink-900/12 py-3.5 text-ink-700 last:border-b"
+                  >
+                    {item}
+                  </Reveal>
+                ))}
+              </ul>
+
+              <Reveal delay={200}>
+                <Link
+                  href="/about"
+                  className="mt-8 inline-flex items-center gap-2 font-medium text-teal-700"
+                >
+                  <span className="link-draw">{home.guide.link}</span>
+                  <ArrowRight className="h-4 w-4" aria-hidden />
+                </Link>
+              </Reveal>
+            </div>
+
+            <Reveal from="right" className="mx-auto w-full max-w-md lg:max-w-none">
+              <Figure
+                subject={home.guide.image}
+                {...photos.guidePortrait}
+                offset="clay"
+                aspect="4 / 5"
+                sizes="(min-width: 1200px) 460px, (min-width: 1024px) 40vw, 90vw"
+              />
+              <Stats stats={home.empathy.stats} />
+            </Reveal>
+          </Container>
+        </Band>
+
+        {/* The plan — the signature. Steps step down the page so the sequence
+            reads before you do, and the trail draws between the numerals. */}
+        <Band tone="teal" id="plan" className="scroll-mt-4">
+          <Container>
+            <Reveal>
+              <h2 className="max-w-[18ch] text-h2">{home.plan.heading}</h2>
+            </Reveal>
+
+            <StepTrail className="mt-12">
+              <ol className="grid gap-14 md:grid-cols-3 md:gap-8 lg:gap-16">
                 {home.plan.steps.map((step, i) => (
                   <Reveal
                     as="li"
                     key={step.title}
-                    delay={i * 130}
+                    delay={i * 100}
+                    className={['', 'md:mt-8', 'md:mt-16'][i]}
                   >
                     <Figure
                       subject={step.image}
-                      {...planPhotos[i]}
-                      shape={i === 1 ? 'blobAlt' : 'blob'}
+                      {...(planPhotos[i] ?? {})}
                       tone="deep"
-                      aspect="4 / 3"
-                      className="w-full"
+                      aspect="4 / 5"
+                      sizes="(min-width: 1200px) 360px, (min-width: 768px) 30vw, 100vw"
                     />
+                    {/* Inline, not block — StepTrail measures this box. */}
                     <span
                       data-trail-anchor
-                      className="font-display mt-6 inline-block text-3xl leading-none text-teal-300/40 tabular-nums"
+                      className="font-display mt-6 inline-block text-[3.25rem] leading-none tracking-tight text-clay-300 tabular-nums"
                       aria-hidden
                     >
                       {String(i + 1).padStart(2, '0')}
                     </span>
-                    <h3 className="mt-4 text-base">{step.title}</h3>
-                    <p className="mt-3 opacity-80">{step.body}</p>
+                    <h3 className="mt-4 text-h3">{step.title}</h3>
+                    <p className="mt-3 opacity-85">{step.body}</p>
+                    <p className="mt-5 border-t border-canvas/20 pt-4 font-medium">
+                      {step.detail}
+                    </p>
                   </Reveal>
                 ))}
-                </ol>
-              </StepTrail>
-            </Container>
-          </Band>
+              </ol>
+            </StepTrail>
+          </Container>
+        </Band>
 
-          <BandDivider curve="swell" fill="text-canvas" flip className="-mt-px" />
-        </div>
-
-        {/* Services — alternating rows. Cards read as a template here. */}
-        <Band tone="cream" className="pt-0">
-          <Container>
+        {/* The decision — the ask, and beside it exactly what saying yes
+            involves, so nobody has to book blind. */}
+        <Band tone="cream">
+          <Container className="grid gap-14 lg:grid-cols-[5fr_6fr] lg:gap-24">
             <Reveal>
-              <h2 className="text-[clamp(1.6rem,3.2vw,2.3rem)]">
-                {home.services.heading}
-              </h2>
+              <h2 className="max-w-[14ch] text-h2">{decision.heading}</h2>
+              <p className="mt-5 max-w-[34ch] text-lede text-ink-700">{decision.body}</p>
+              <div className="mt-9 flex flex-wrap items-center gap-4">
+                <Button href={site.bookingUrl} variant="onCream">
+                  {decision.cta}
+                </Button>
+                <Button href={site.phoneHref} variant="outline" className="text-ink-900">
+                  {decision.call}
+                </Button>
+              </div>
+
+              <div className="mt-12">
+                <h3 className="text-base">{decision.hoursHeading}</h3>
+                {site.hours.map((row) => (
+                  <p key={row.opens + row.days.join()} className="mt-2 text-ink-700">
+                    {formatDays(row.days)}, {formatTime(row.opens)}–{formatTime(row.closes)}
+                  </p>
+                ))}
+                <p className="mt-1 text-small text-ink-500">{site.hoursNote}</p>
+              </div>
             </Reveal>
 
-            <ul className="mt-11 flex flex-col gap-12 lg:gap-16">
-              {home.services.items.map((service, i) => (
-                <Reveal as="li" key={service.href}>
-                  <Link
-                    href={service.href}
-                    className="media-hover group grid items-center gap-7 md:grid-cols-2 md:gap-11"
+            <div>
+              <Reveal>
+                <h3 className="text-h3">{decision.firstHeading}</h3>
+              </Reveal>
+              <ol className="mt-5">
+                {decision.first.map((item, i) => (
+                  <Reveal
+                    as="li"
+                    key={item}
+                    delay={i * 90}
+                    className="flex gap-5 border-t border-ink-900/12 py-4 last:border-b"
                   >
-                    <div className={`overflow-hidden ${i % 2 === 1 ? 'md:order-2' : ''}`}>
-                      <Figure
-                        subject={service.image}
-                        {...servicePhotos[service.slug].wide}
-                        shape={i % 2 === 1 ? 'leafAlt' : 'leaf'}
-                        tone={i % 2 === 1 ? 'sandLight' : 'sand'}
-                        aspect="3 / 2"
-                        className="media-zoom w-full"
-                      />
-                    </div>
+                    <span
+                      className="font-display w-6 shrink-0 text-[1.75rem] leading-[1.1] text-clay-600 tabular-nums"
+                      aria-hidden
+                    >
+                      {i + 1}
+                    </span>
+                    <span className="max-w-[52ch] text-ink-700">{item}</span>
+                  </Reveal>
+                ))}
+              </ol>
 
-                    <div className={i % 2 === 1 ? 'md:order-1 md:pr-6' : 'md:pl-4'}>
-                      <h3 className="text-[clamp(1.35rem,2.3vw,1.7rem)]">
-                        {service.title}
-                      </h3>
-                      <p className="mt-4 max-w-[40ch] text-base text-ink-500">
-                        {service.body}
-                      </p>
-                      <span className="mt-4 inline-flex items-center gap-2 font-medium text-teal-700">
-                        Learn more
-                        <ArrowRight
-                          className="h-4 w-4 transition-transform duration-200 group-hover:translate-x-1.5"
-                          aria-hidden
-                        />
-                      </span>
+              <Reveal delay={200} className="mt-10">
+                <h3 className="text-base">{decision.feesHeading}</h3>
+                <dl className="mt-2">
+                  {decision.fees.map((fee) => (
+                    <div
+                      key={fee.label}
+                      className="flex items-baseline justify-between gap-4 border-b border-ink-900/12 py-2"
+                    >
+                      <dt className="text-ink-700">{fee.label}</dt>
+                      <dd className="font-semibold tabular-nums">{fee.price}</dd>
                     </div>
-                  </Link>
-                </Reveal>
-              ))}
+                  ))}
+                </dl>
+                <p className="mt-2 text-small text-ink-500">{decision.feesNote}</p>
+              </Reveal>
+            </div>
+          </Container>
+        </Band>
+
+        {/* How we help — outcomes first, service names second. Alternating
+            rows; cards read as a template. */}
+        <Band tone="paper">
+          <Container>
+            <Reveal>
+              <h2 className="max-w-[18ch] text-h2">{home.services.heading}</h2>
+            </Reveal>
+
+            <ul className="mt-10 flex flex-col gap-10">
+              {home.services.items.map((service, i) => {
+                const flip = i % 2 === 1
+                return (
+                  <Reveal as="li" key={service.href}>
+                    <Link
+                      href={service.href}
+                      className={`media-hover group grid items-center gap-7 md:gap-14 ${
+                        flip ? 'md:grid-cols-[7fr_2fr]' : 'md:grid-cols-[2fr_7fr]'
+                      }`}
+                    >
+                      {/* 4/5, not square: the shared naturopathic crop only
+                          keeps Dr. Lee out of frame at portrait ratios. */}
+                      <div className={`w-full max-w-xs md:max-w-none ${flip ? 'md:order-2' : ''}`}>
+                        <Figure
+                          subject={service.image}
+                          {...(servicePhotos[service.slug].wide ?? {})}
+                          tone={flip ? 'sandLight' : 'sand'}
+                          aspect="4 / 5"
+                          sizes="(min-width: 1024px) 260px, (min-width: 768px) 25vw, 100vw"
+                        />
+                      </div>
+
+                      <div className={flip ? 'md:order-1 md:pl-[8%]' : ''}>
+                        <h3 className="text-h3">{service.title}</h3>
+                        <p className="mt-3 max-w-[36ch] text-lede leading-snug text-ink-900">
+                          {service.outcome}
+                        </p>
+                        <p className="mt-4 max-w-[52ch] text-ink-500">{service.body}</p>
+                        <span className="mt-5 inline-flex items-center gap-2 font-medium text-teal-700">
+                          <span className="link-draw group-hover:bg-[length:100%_1px]!">
+                            About {service.title}
+                          </span>
+                          <ArrowRight
+                            className="h-4 w-4 transition-transform duration-500 group-hover:translate-x-1"
+                            aria-hidden
+                          />
+                        </span>
+                      </div>
+                    </Link>
+                  </Reveal>
+                )
+              })}
             </ul>
           </Container>
         </Band>
 
-        {/* Close */}
-        <div className="relative">
-          <BandDivider curve="swell" fill="text-teal-900" className="bg-canvas -mb-px" />
+        {/* Proof — the first review runs wide; the other two stack beside it.
+            That's the section's one break from the grid. */}
+        <Band tone="cream">
+          <Container>
+            <Reveal>
+              <h2 className="max-w-[18ch] text-h2">{home.proof.heading}</h2>
+            </Reveal>
 
-          <Band tone="teal-deep" className="relative overflow-hidden pt-4">
-            <DotBurst
-              droplet={false}
-              className="drift pointer-events-none absolute -bottom-64 -left-40 h-[40rem] w-[40rem] text-teal-400/8"
-            />
-            <Container prose className="relative text-center">
-              <Reveal from="scale">
-                <DotBurst className="mx-auto h-12 w-12 text-teal-300" />
-                <h2 className="mt-6 text-[clamp(1.6rem,3.2vw,2.3rem)]">
-                  {home.close.heading}
-                </h2>
-                <p className="mx-auto mt-4 max-w-[46ch] text-base opacity-80">
-                  {emphasize(home.close.body)}
-                </p>
-                <div className="mt-8 flex flex-wrap justify-center gap-4">
-                  <Button href={site.bookingUrl} variant="onTeal">
-                    {home.close.cta}
-                  </Button>
-                  <Button href="/contact" variant="outline">
-                    Ask us a question
-                  </Button>
-                </div>
-              </Reveal>
-            </Container>
-          </Band>
-        </div>
+            <div className="mt-12 grid gap-12 lg:grid-cols-[7fr_5fr] lg:gap-20">
+              {home.testimonials.map((testimonial, i) => (
+                <Reveal
+                  as="figure"
+                  key={testimonial.name}
+                  delay={i * 100}
+                  className={i === 0 ? 'lg:row-span-2' : ''}
+                >
+                  <blockquote
+                    className={`font-display text-ink-900 ${
+                      i === 0
+                        ? 'text-[clamp(1.5rem,1.2rem+1vw,1.875rem)] leading-[1.3]'
+                        : 'text-lede leading-[1.4]'
+                    }`}
+                  >
+                    <span
+                      aria-hidden
+                      className={`block leading-none text-clay-600 ${
+                        i === 0 ? 'mb-2 text-[4.5rem] h-[2.75rem]' : 'mb-1 text-[3rem] h-[1.75rem]'
+                      }`}
+                    >
+                      &ldquo;
+                    </span>
+                    {testimonial.quote}
+                  </blockquote>
+                  <figcaption className="mt-4 text-small text-ink-500">
+                    <span className="font-semibold text-ink-700">{testimonial.name}</span>
+                    <span className="mx-2 opacity-50">·</span>
+                    Google review, {testimonial.date}
+                  </figcaption>
+                </Reveal>
+              ))}
+            </div>
+          </Container>
+        </Band>
+
+        {/* Reassurance — the questions people ask on the phone before they
+            book. */}
+        <Band tone="tint">
+          <Container className="grid gap-10 lg:grid-cols-[4fr_7fr] lg:gap-20">
+            <Reveal>
+              <h2 className="max-w-[12ch] text-h2">{home.faq.heading}</h2>
+              <p className="mt-5 text-ink-700">
+                {home.faq.body}{' '}
+                <a href={site.phoneHref} className="link-draw font-medium whitespace-nowrap text-teal-700">
+                  {site.phone}
+                </a>
+                .
+              </p>
+            </Reveal>
+
+            <Reveal delay={90}>
+              <Faq items={home.faq.items} />
+            </Reveal>
+          </Container>
+        </Band>
+
+        {/* Close */}
+        <Band tone="teal-deep">
+          <Container prose className="text-center">
+            <Reveal from="scale">
+              {/* No burst here — the hero, the step trail and the footer's
+                  rule already make three, and a fourth reads as wallpaper. */}
+              <h2 className="mx-auto max-w-[18ch] text-h2">{home.close.heading}</h2>
+              <p className="mx-auto mt-5 max-w-[46ch] opacity-85">
+                {emphasize(home.close.body)}
+              </p>
+              <div className="mt-9 flex flex-wrap justify-center gap-4">
+                <Button href={site.bookingUrl} variant="onTeal">
+                  {home.close.cta}
+                </Button>
+                <Button href="/contact" variant="outline">
+                  {home.close.secondaryCta}
+                </Button>
+              </div>
+            </Reveal>
+          </Container>
+        </Band>
       </main>
 
       <Footer />
