@@ -1,4 +1,4 @@
-import type { Metadata } from 'next'
+import type { Metadata, Viewport } from 'next'
 import { Fraunces, Hanken_Grotesk } from 'next/font/google'
 import { Analytics } from '@vercel/analytics/next'
 
@@ -37,6 +37,12 @@ export const metadata: Metadata = {
   openGraph: { ...siteOpenGraph, type: 'website' },
   twitter: { card: 'summary_large_image' },
   robots: { index: true, follow: true },
+}
+
+// Lives on `viewport`, not `metadata`, in Next 16. teal-700, so the browser
+// chrome on a phone runs straight into the hero band.
+export const viewport: Viewport = {
+  themeColor: '#006C75',
 }
 
 export default function RootLayout({
