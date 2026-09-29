@@ -1,10 +1,17 @@
+import Link from 'next/link'
+
 import { Header } from '@/components/layout/Header'
 import { Footer } from '@/components/layout/Footer'
 import { Band, Container } from '@/components/ui/Container'
 import { Button } from '@/components/ui/Button'
-import { BandDivider } from '@/components/ui/BandDivider'
 import { DotBurst } from '@/components/brand/DotBurst'
 import { site } from '@/lib/site'
+
+const ELSEWHERE = [
+  { label: 'Our services', href: '/services' },
+  { label: 'About Dr. Lee', href: '/about' },
+  { label: 'Book an appointment', href: '/book' },
+] as const
 
 export default function NotFound() {
   return (
@@ -12,20 +19,19 @@ export default function NotFound() {
       <Band tone="teal" as="div" flush className="relative overflow-hidden">
         <DotBurst
           droplet={false}
-          className="drift pointer-events-none absolute -top-52 -right-36 h-[34rem] w-[34rem] text-teal-400/10"
+          className="drift pointer-events-none absolute -top-52 -right-36 h-[34rem] w-[34rem] text-teal-500 opacity-40"
         />
         <Header />
 
-        <Container prose className="relative pt-11 pb-16 text-center">
-          <DotBurst className="mx-auto h-12 w-12 text-teal-300" />
-          <h1 className="mt-6 text-[clamp(1.9rem,4vw,2.6rem)]">
+        <Container prose className="relative pt-10 pb-20 text-center lg:pt-14 lg:pb-24">
+          <h1 className="text-[clamp(2.25rem,1.5rem+3vw,3.75rem)]">
             We can&rsquo;t find that page
           </h1>
-          <p className="mx-auto mt-4 max-w-[44ch] text-base opacity-85">
+          <p className="mx-auto mt-5 max-w-[40ch] text-lede opacity-90">
             It may have moved when we rebuilt the site. The blog archive is all
             still here.
           </p>
-          <div className="mt-7 flex flex-wrap justify-center gap-4">
+          <div className="mt-9 flex flex-wrap justify-center gap-4">
             <Button href="/blog" variant="onTeal">
               Browse the blog
             </Button>
@@ -34,16 +40,23 @@ export default function NotFound() {
             </Button>
           </div>
         </Container>
-
-        <BandDivider curve="drift" fill="text-canvas" className="-mb-px" />
       </Band>
 
       <main id="main">
-        <Band tone="cream" className="pt-4">
+        <Band tone="cream">
           <Container className="text-center">
-            <p className="text-ink-500">
+            <ul className="flex flex-wrap justify-center gap-x-8 gap-y-3">
+              {ELSEWHERE.map((link) => (
+                <li key={link.href}>
+                  <Link href={link.href} className="link-draw font-semibold text-teal-700">
+                    {link.label}
+                  </Link>
+                </li>
+              ))}
+            </ul>
+            <p className="mt-6 text-ink-500">
               Or call us on{' '}
-              <a href={site.phoneHref} className="text-teal-700 underline">
+              <a href={site.phoneHref} className="link-draw text-ink-900">
                 {site.phone}
               </a>
               .
