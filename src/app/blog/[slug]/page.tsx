@@ -6,7 +6,6 @@ import { ArrowLeft } from 'lucide-react'
 import { Header } from '@/components/layout/Header'
 import { Footer } from '@/components/layout/Footer'
 import { Band, Container } from '@/components/ui/Container'
-import { BandDivider } from '@/components/ui/BandDivider'
 import { Button } from '@/components/ui/Button'
 import { DotRule } from '@/components/brand/DotBurst'
 import { formatDate } from '@/components/blog/PostCard'
@@ -54,6 +53,7 @@ export default async function PostPage(props: { params: Promise<{ slug: string }
   const categories = postCategories(post)
   const title = decodeTitle(post.title.rendered)
   const url = absoluteUrl(`/blog/${post.slug}`)
+  const hangs = !!image && (image.width ?? 0) >= 560
 
   return (
     <>
@@ -78,27 +78,29 @@ export default async function PostPage(props: { params: Promise<{ slug: string }
       <Band tone="teal" as="div" flush className="relative overflow-hidden">
         <Header />
 
-        <Container prose className="relative pt-6 pb-14 lg:pt-8 lg:pb-16">
+        <Container prose className={`relative pt-6 pb-14 lg:pt-8 ${hangs ? 'lg:pb-36' : 'lg:pb-16'}`}>
           <Link
             href="/blog"
-            className="inline-flex items-center gap-2 text-[0.9rem] opacity-70 transition-opacity hover:opacity-100"
+            className="inline-flex items-center gap-2 text-small text-canvas/80 transition-colors hover:text-canvas"
           >
             <ArrowLeft className="h-4 w-4" aria-hidden />
-            All posts
+            <span className="link-draw">All posts</span>
           </Link>
 
-          <h1 className="rise-in mt-6 text-[clamp(1.6rem,3.2vw,2.3rem)]">{title}</h1>
+          <h1 className="rise-in mt-6 text-h2">{title}</h1>
 
-          <div className="mt-5 flex flex-wrap items-center gap-3 text-[0.9rem] opacity-75">
+          <div className="mt-6 flex flex-wrap items-center gap-x-3 gap-y-1 text-small text-canvas/80">
             <time dateTime={post.date}>{formatDate(post.date)}</time>
             {categories.length > 0 && (
               <>
-                <span className="opacity-40">·</span>
+                <span aria-hidden className="opacity-50">
+                  ·
+                </span>
                 {categories.map((category) => (
                   <Link
                     key={category.id}
                     href={`/blog/category/${category.slug}`}
-                    className="underline underline-offset-4 hover:no-underline"
+                    className="underline decoration-canvas/40 underline-offset-4 transition-[text-decoration-color] duration-300 hover:decoration-canvas"
                   >
                     {decodeTitle(category.name)}
                   </Link>
@@ -107,14 +109,17 @@ export default async function PostPage(props: { params: Promise<{ slug: string }
             )}
           </div>
         </Container>
-
-        <BandDivider curve="drift" fill="text-canvas" className="-mb-px" />
       </Band>
 
       <main id="main">
-        <Band tone="cream" className="pt-4">
+        <Band tone="cream">
           {image && (
-            <Container className="mb-10">
+            // On desktop a wide cover hangs over the seam into the hero — the
+            // one grid break on the page. Small covers from the old posts stay
+            // below it; a 300px thumbnail straddling the band looks like a slip.
+            <Container
+              className={`mb-12 lg:mb-16 ${hangs ? 'relative lg:-mt-[calc(var(--section-y)+6rem)]' : ''}`}
+            >
               {/* Capped at its own width — plenty of these are 800px and
                   upscaling them to the container just looks soft. */}
               <Image
@@ -123,30 +128,35 @@ export default async function PostPage(props: { params: Promise<{ slug: string }
                 width={image.width ?? 1600}
                 height={image.height ?? 900}
                 preload
-                sizes="(min-width: 1200px) 1200px, 100vw"
-                style={{ maxWidth: image.width ? `${image.width}px` : undefined }}
-                className="mx-auto w-full rounded-lg object-cover"
+                sizes="(min-width: 1200px) 1040px, 100vw"
+                style={{ maxWidth: image.width ? `min(${image.width}px, 1040px)` : '1040px' }}
+                className="mx-auto w-full rounded-photo object-cover"
               />
             </Container>
           )}
 
           <Container prose>
-            <div className="post-body">{renderContent(post.content.rendered)}</div>
+            {/* Title passed so recent posts, which carry an Avada title block
+                in the body, don't repeat the heading above. */}
+            <div className="post-body">
+              {renderContent(post.content.rendered, { title })}
+            </div>
 
-            <DotRule className="mt-11 h-2.5 w-28 text-teal-500/40" />
-
-            <div className="mt-7 rounded-lg bg-sand-200 px-6 py-6">
-              <h2 className="text-base">Have a question about your health?</h2>
-              <p className="mt-3 text-ink-500">
+            <aside aria-labelledby="post-cta" className="mt-16">
+              <DotRule className="h-2.5 w-28 text-teal-500/60" />
+              <h2 id="post-cta" className="mt-8 text-h3">
+                Have a question about your health?
+              </h2>
+              <p className="mt-2 text-ink-700">
                 Book an appointment and we&rsquo;ll work through it together.
               </p>
-              <div className="mt-5 flex flex-wrap gap-3">
+              <div className="mt-6 flex flex-wrap gap-3">
                 <Button href={site.bookingUrl}>Book an appointment</Button>
                 <Button href="/contact" variant="outline">
                   Contact us
                 </Button>
               </div>
-            </div>
+            </aside>
           </Container>
         </Band>
       </main>
