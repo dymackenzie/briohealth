@@ -1,11 +1,10 @@
-import Link from 'next/link'
 import { notFound } from 'next/navigation'
-import { ArrowLeft } from 'lucide-react'
 
 import { PageHero } from '@/components/layout/PageHero'
 import { Footer } from '@/components/layout/Footer'
 import { Band, Container } from '@/components/ui/Container'
 import { Reveal } from '@/components/ui/Reveal'
+import { CategoryNav } from '@/components/blog/CategoryNav'
 import { PostCard } from '@/components/blog/PostCard'
 import { Pagination } from '@/components/blog/Pagination'
 import { getCategories, getCategory, getPosts } from '@/lib/wp/queries'
@@ -42,7 +41,8 @@ export default async function CategoryPage(props: {
     props.searchParams,
   ])
 
-  const category = await getCategory(slug)
+  // getCategory reads the same cached list, so this is one request, not two.
+  const [category, categories] = await Promise.all([getCategory(slug), getCategories()])
   if (!category) notFound()
 
   const page = Math.max(1, Number(pageParam) || 1)
@@ -52,6 +52,7 @@ export default async function CategoryPage(props: {
   return (
     <>
       <PageHero
+        parent={{ label: 'All posts', href: '/blog' }}
         title={decodeTitle(category.name)}
         lead={
           plainExcerpt(category.description ?? '', 200) ||
@@ -60,22 +61,18 @@ export default async function CategoryPage(props: {
       />
 
       <main id="main">
-        <Band tone="cream" className="pt-4">
+        <Band tone="cream">
           <Container>
-            <Link
-              href="/blog"
-              className="inline-flex items-center gap-2 text-[0.9rem] text-ink-500 hover:text-ink-900"
-            >
-              <ArrowLeft className="h-4 w-4" aria-hidden />
-              All posts
-            </Link>
+            <Reveal>
+              <CategoryNav categories={categories} active={category.slug} />
+            </Reveal>
 
             {posts.length === 0 ? (
-              <p className="mt-10 text-ink-500">Nothing filed here yet.</p>
+              <p className="mt-12 text-ink-500">Nothing filed here yet.</p>
             ) : (
-              <ul className="mt-8 grid gap-x-7 gap-y-11 sm:grid-cols-2 lg:grid-cols-3">
+              <ul className="mt-12 grid gap-x-8 gap-y-14 sm:grid-cols-2 lg:grid-cols-3">
                 {posts.map((post, i) => (
-                  <Reveal as="li" key={post.id} delay={(i % 3) * 80}>
+                  <Reveal as="li" key={post.id} delay={(i % 3) * 90}>
                     <PostCard post={post} eager={i < 3} />
                   </Reveal>
                 ))}
