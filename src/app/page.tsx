@@ -1,3 +1,5 @@
+import { DotBurst } from '@/components/brand/DotBurst'
+import { Logo } from '@/components/brand/Logo'
 import { displayClass } from '@/lib/typography'
 
 const HEADING = 'Feel like yourself again.'
@@ -16,6 +18,13 @@ export default function HomePage() {
       <div data-surface="teal" className="mt-10 rounded-brand p-8">
         <h2 className="text-h2">Display type is paper on teal</h2>
         <p className="mt-3 max-w-[50ch]">Body text on a teal field is on-teal, 5.1:1.</p>
+      </div>
+      <div className="mt-10 flex items-end gap-10">
+        <Logo />
+        <DotBurst className="h-32 w-32 text-teal" />
+        <div data-surface="teal" className="rounded-brand p-6">
+          <DotBurst className="h-32 w-32 text-paper" />
+        </div>
       </div>
     </main>
   )
