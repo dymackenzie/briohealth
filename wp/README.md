@@ -1,27 +1,41 @@
 # WordPress side
 
 `brio-headless/` is the theme that turns the existing Avada install into a
-backend. Deploy it to a WP Toolkit staging clone first — deactivating Avada on
+backend. Deploy it to a WP Toolkit staging clone first; deactivating Avada on
 the live clinic site with no rollback is not a thing to do on a Thursday.
 
-Full context is in the design spec, §10.
+Content model: spec section 8 in
+`docs/superpowers/specs/2026-09-30-brio-signal-rebuild-design.md`.
 
-## What's in it
+## What is in it
 
 | | |
 |---|---|
 | `functions.php` | Wires up the rest and points SCF at `acf-json/` |
-| `inc/post-types.php` | `service`, `program`, `team_member`, `testimonial`, `faq` |
-| `inc/options.php` | Site settings page + `/wp-json/brio/v1/settings` |
-| `inc/revalidate.php` | Publish/update/trash → `POST /api/revalidate` on the Next site |
+| `inc/post-types.php` | `service`, `testimonial`, `faq` |
+| `inc/options.php` | Site settings page and `/wp-json/brio/v1/settings` |
+| `inc/revalidate.php` | Publish, update, trash: `POST /api/revalidate` on the Next site |
 | `inc/headless.php` | Front-end lockdown and hardening |
 | `inc/preview.php` | Renders post previews, which the lockdown would otherwise kill |
-| `acf-json/` | The field groups, in git |
+| `template-*.php` | Empty stubs that let a page pick its field group |
+| `acf-json/` | The field groups, generated from `../tools/field-groups.mjs` |
+
+## Editing the field groups
+
+The source of truth is `wp/tools/field-groups.mjs`. Change it, then:
+
+    node wp/tools/build-acf-json.mjs
+    node wp/tools/check-acf-json.mjs
+
+and commit both the source and the generated JSON. SCF reads `acf-json/` on
+load. If you edit a group in wp-admin instead, SCF writes the JSON back into
+`acf-json/`; copy the change into `field-groups.mjs` so the next build does
+not undo it.
 
 ## Install
 
-1. **Clone to staging.** Plesk → WordPress Toolkit → Clone. Everything below
-   happens on the clone until it's verified.
+1. **Clone to staging.** Plesk, WordPress Toolkit, Clone. Everything below
+   happens on the clone until it is verified.
 
 2. **Add the constants** to `wp-config.php`, above the
    `/* That's all, stop editing */` line:
@@ -32,100 +46,77 @@ Full context is in the design spec, §10.
    ```
 
    Generate the secret with `openssl rand -hex 32`. On staging, point
-   `BRIO_SITE_URL` at the Vercel preview URL instead.
+   `BRIO_SITE_URL` at the Vercel preview URL.
 
-3. **Install Secure Custom Fields** — Plugins → Add New → search "Secure Custom
-   Fields" (the WordPress.org one, not ACF). Activate.
+   On the Vercel side, set `WP_REVALIDATE_SECRET` to the same value, and
+   `WP_API_URL` to the clone's `/wp-json` while testing against staging.
+   Redeploy after changing either; Vercel only applies env changes to new
+   deployments.
 
-4. **Upload the theme.** Copy `brio-headless/` into `wp-content/themes/`, or zip
-   it and use Appearance → Themes → Add New → Upload. Don't activate yet.
+3. **Install Secure Custom Fields** (the WordPress.org plugin, not ACF).
+   Activate it.
 
-5. **Deactivate the Avada theme's extras — but leave Fusion Builder alone for
-   now.** The recent blog posts are built with Fusion, and without the plugin
-   they open in the editor as a wall of `[fusion_builder_container]`
-   shortcodes. The client asked specifically that whoever writes the blog can
-   keep working normally, so Fusion stays until you've checked, post by post,
-   that they don't need it.
+4. **Upload the theme.** Copy `brio-headless/` into `wp-content/themes/`, or
+   zip it and use Appearance, Themes, Add New, Upload. Do not activate yet.
 
-   Fusion Builder may refuse to load without the Avada theme active — several
-   versions check. **Test that on the staging clone before you touch the live
-   site**, because it decides which of two paths you're on:
+5. **Fusion Builder.** The recent blog posts are built with it. Test on the
+   clone whether it runs without the Avada theme active. If it runs, leave it
+   active and old posts stay editable as they are. If it will not, leave the
+   old posts alone (they render correctly on the public site; the normaliser
+   handles Fusion markup) and new posts are written in the block editor. Tell
+   the client before the switch, not after. Leave the cookie plugins alone.
 
-   - *It runs* → leave it active. Old posts stay editable as they are.
-   - *It won't run* → leave the old posts alone. They still render correctly on
-     the public site (`renderContent.ts` normalises Fusion markup), and new
-     posts get written in the block editor. Say so to the client before the
-     switch rather than after.
+6. **Activate Brio Headless.** The field groups appear on their own. If they
+   do not: Custom Fields, Field Groups, Sync.
 
-   Leave `complianz-gdpr` and `cookie-law-info` alone either way — the cookie
-   banner is a compliance decision, not a technical one.
-
-6. **Activate Brio Headless.** The field groups appear on their own; SCF reads
-   `acf-json/` on load. If they don't, Custom Fields → Field Groups → Sync.
-
-7. **Tag the pages.** Each page needs its template set under Page Attributes,
-   or its fields won't show:
+7. **Tag the pages.** Each needs its template set under Page Attributes, or
+   its fields will not show:
 
    | Page | Template |
    |---|---|
    | About | About |
-   | Services | Services overview |
    | Contact | Contact |
+   | Book | Book |
    | Pickleball | Pickleball |
 
-   The home page picks its group up automatically from Settings → Reading.
+   The home page picks its groups up from Settings, Reading (front page).
 
-8. **Fill in Site settings** — phone, address, hours, Jane link. Hours are the
-   one thing we don't have yet and the contact page and Google both want them.
+8. **Fill in Site settings**: phone, address, hours, the Saturday note, the
+   Jane link, the CTA label ("Book a consultation"), socials.
 
-9. **Check the API.** These should all return JSON:
+9. **Add the three services** (slugs `naturopathic`, `acupuncture`,
+   `iv-therapy`; the slug is the URL), the testimonials and the FAQs. The
+   copy to paste is in `src/lib/content/` on the Next side.
 
-   ```
-   /wp-json/brio/v1/settings
-   /wp-json/wp/v2/services
-   /wp-json/wp/v2/testimonials
-   /wp-json/wp/v2/pages?slug=about-2
-   ```
+10. **Check the API.** These should all return JSON:
 
-   And `/wp-json/wp/v2/users` should now 404 while
-   `/wp-json/wp/v2/posts?_embed=1` still comes back with an author name.
+    ```
+    /wp-json/brio/v1/settings
+    /wp-json/wp/v2/services
+    /wp-json/wp/v2/testimonials
+    /wp-json/wp/v2/faqs
+    /wp-json/wp/v2/pages?slug=about-2
+    ```
 
-10. **Test the webhook.** Publish anything, then check the Vercel function log
-    for a hit on `/api/revalidate`. A missing `BRIO_REVALIDATE_SECRET` shows as
-    an admin notice rather than failing quietly.
+    `/wp-json/wp/v2/users` should 404 while `/wp-json/wp/v2/posts?_embed=1`
+    still comes back with an author name.
 
-Steps 2–10 are all reversible. The only one-way step is the DNS change in §10.1
-step 7, and that's a separate day.
+11. **Test the webhook.** Publish anything, then check the Vercel function
+    log for a hit on `/api/revalidate`. A missing `BRIO_REVALIDATE_SECRET`
+    shows as an admin notice rather than failing quietly. The call goes out
+    after WordPress has answered the editor, so a failure only shows in the
+    PHP error log (`[brio] revalidate ...`), never as a failed save.
 
-## What the blog editor sees afterwards
+Steps 2 to 11 are reversible. The only one-way step is the DNS change in the
+2026-09-02 spec, section 10.1, and that is a separate day.
 
-The client's existing web person keeps working in wp-admin exactly as before.
-Worth being able to answer these when they ask:
+## What the editor sees afterwards
 
 | | |
 |---|---|
 | Writing and editing posts | Unchanged. Same editor, same media library. |
-| **Preview** | Works. WordPress renders it — a clean page with the post's own words, headings and images, not the live layout. `inc/preview.php` explains why. |
-| **View post** | Goes to the real page on the public site. |
-| Publishing | The webhook fires on save and the public page updates within seconds. No cache to clear by hand. |
-| Categories and tags | Unchanged, and editing one revalidates its archive. |
-| Featured images | Unchanged. |
-| The public front end of *this* install | Gone — every URL redirects to the Next site. That's the point of the switch. |
-
-The one honest gap is that Preview doesn't show the site's design. Closing it
-means Next draft mode: WordPress hands off to `/api/preview`, which reads the
-draft over the REST API and renders it in the real templates. That needs an
-application password stored on Vercel, so it waits for a staging endpoint.
-`inc/preview.php` has the note.
-
-## Editing the field groups
-
-Edit them in wp-admin. SCF writes the JSON back into `acf-json/`, so the change
-arrives as a diff — commit it like any other. Hand-editing the JSON works too,
-but then hit Sync in the admin afterwards.
-
-## Field group locations
-
-Groups bind to a **page template**, not a page ID, so they survive the staging
-clone and any future rebuild. That's what the `template-*.php` stubs are for;
-they never render anything.
+| Pages | Labelled forms instead of the Avada builder. Every field says what it is for and how long it should be. Empty fields fall back to the site's own copy. |
+| Preview | Works. WordPress renders a clean page with the post's words, not the live layout. |
+| View post | Goes to the real page on the public site. |
+| Publishing | The webhook fires on save; the public page updates within a minute. |
+| The public front end of this install | Gone. Every URL redirects to the Next site. |
