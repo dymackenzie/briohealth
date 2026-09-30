@@ -98,6 +98,16 @@
   padding-inline: var(--gutter);
 }
 
+/* A full-bleed section whose content still lines up with the header's
+ * container. The section becomes the query container and `--edge` is the
+ * distance from the viewport edge to the container's content edge, so a
+ * field can run off the page while its text sits where the logo does.
+ * `cqw` rather than `vw`, so the scrollbar doesn't skew it. */
+@utility container-edge {
+  container-type: inline-size;
+  --edge: calc(max(0px, (100cqw - var(--container)) / 2) + var(--gutter));
+}
+
 @utility section-y {
   padding-block: var(--section-y);
 }

@@ -17,7 +17,8 @@ import { displayClass } from '@/lib/typography'
  * drops below the field, and the field ends that far above the bottom of
  * the copy block. Widths are in `cqw` (the section is the query container),
  * so the geometry follows the viewport without the scrollbar skewing it,
- * and `--edge` lines the copy up with the header's container.
+ * and `--edge` (from the `container-edge` utility) lines the copy up with
+ * the header's container.
  *
  * Mobile: the field is full width and the photo hangs off its bottom edge.
  *
@@ -29,7 +30,7 @@ export function Hero({ content, settings }: { content: HomeContent['hero']; sett
   return (
     <section
       aria-labelledby="hero-heading"
-      className="@container relative overflow-x-clip [--edge:calc(max(0px,(100cqw-var(--container))/2)+var(--gutter))] [--hang:min(40cqw,17rem)] lg:[--hang:10cqw]"
+      className="container-edge relative overflow-x-clip [--hang:min(40cqw,17rem)] lg:[--hang:10cqw]"
     >
       <div className="relative lg:grid lg:grid-cols-12">
         {/* The field: columns 1-7. `hero-field` is the layer that wipes in. */}
