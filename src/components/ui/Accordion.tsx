@@ -1,14 +1,15 @@
 'use client'
 
 import { useId, useState } from 'react'
-import { AnimatePresence, motion, useReducedMotion } from 'motion/react'
 import { Plus } from '@phosphor-icons/react'
 
 /**
  * One open at a time. The first item is open by default so the section
  * reads without a click and the no-JavaScript render shows an answer.
- * Height and opacity animate (the one height transition the spec allows);
- * reduced motion snaps.
+ * Height and opacity animate (the one height transition the spec allows),
+ * as grid rows from 0fr to 1fr, so the panel needs no measuring; reduced
+ * motion snaps. A closed panel stays in the markup but is inert, so it is
+ * out of the tab order and the accessibility tree.
  */
 export function Accordion({
   items,
@@ -18,7 +19,6 @@ export function Accordion({
   defaultOpen?: number | null
 }) {
   const [open, setOpen] = useState<number | null>(defaultOpen)
-  const reduce = useReducedMotion()
   const baseId = useId()
 
   return (
@@ -48,23 +48,19 @@ export function Accordion({
               </button>
             </h3>
 
-            <AnimatePresence initial={false}>
-              {isOpen && (
-                <motion.div
-                  key="panel"
-                  id={panelId}
-                  role="region"
-                  aria-labelledby={buttonId}
-                  initial={reduce ? false : { height: 0, opacity: 0 }}
-                  animate={{ height: 'auto', opacity: 1 }}
-                  exit={reduce ? undefined : { height: 0, opacity: 0 }}
-                  transition={{ duration: 0.35, ease: [0.16, 1, 0.3, 1] }}
-                  className="overflow-hidden"
-                >
-                  <p className="max-w-[60ch] pb-6 text-ink-soft">{item.answer}</p>
-                </motion.div>
-              )}
-            </AnimatePresence>
+            <div
+              id={panelId}
+              role="region"
+              aria-labelledby={buttonId}
+              inert={!isOpen}
+              className={`grid transition-[grid-template-rows,opacity] duration-[350ms] ease-out-expo motion-reduce:transition-none ${
+                isOpen ? 'grid-rows-[1fr] opacity-100' : 'grid-rows-[0fr] opacity-0'
+              }`}
+            >
+              <div className="overflow-hidden">
+                <p className="max-w-[60ch] pb-6 text-ink-soft">{item.answer}</p>
+              </div>
+            </div>
           </div>
         )
       })}

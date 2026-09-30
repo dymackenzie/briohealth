@@ -2,7 +2,6 @@
 
 import Link from 'next/link'
 import { useState } from 'react'
-import { AnimatePresence, motion, useReducedMotion } from 'motion/react'
 import { ArrowRight } from '@phosphor-icons/react'
 
 import { Figure } from '@/components/ui/Figure'
@@ -21,13 +20,12 @@ export interface ServiceRowItem {
  * The three services as large type rows. On a fine pointer, hovering or
  * focusing a row swaps the 4/5 photo in the panel beside them (feedback,
  * the one job of this motion). On touch, and below lg, the photo sits inline
- * under each row, so nothing depends on hover. Reduced motion swaps without
+ * under each row, so nothing depends on hover. The panel stacks every photo
+ * in one cell and crossfades to the active one; reduced motion swaps without
  * the fade.
  */
 export function ServiceRows({ heading, items }: { heading: string; items: ServiceRowItem[] }) {
   const [active, setActive] = useState(0)
-  const reduce = useReducedMotion()
-  const current = items[active] ?? items[0]
 
   return (
     <section aria-labelledby="services-heading" className="container-x section-y">
@@ -65,27 +63,23 @@ export function ServiceRows({ heading, items }: { heading: string; items: Servic
           ))}
         </ul>
 
-        {current && (
+        {items.length > 0 && (
           <div
             aria-hidden
-            className="hidden lg:sticky lg:top-8 lg:col-span-4 lg:col-start-9 lg:pointer-fine:block"
+            className="hidden lg:sticky lg:top-8 lg:col-span-4 lg:col-start-9 lg:pointer-fine:grid"
           >
-            <AnimatePresence mode="wait" initial={false}>
-              <motion.div
-                key={current.slug}
-                initial={reduce ? false : { opacity: 0, scale: 0.98 }}
-                animate={{ opacity: 1, scale: 1 }}
-                exit={reduce ? undefined : { opacity: 0 }}
-                transition={{ duration: 0.3, ease: [0.16, 1, 0.3, 1] }}
-              >
-                <Figure
-                  subject={current.subject}
-                  photo={current.photo}
-                  aspect="4/5"
-                  sizes="(min-width: 1280px) 390px, 32vw"
-                />
-              </motion.div>
-            </AnimatePresence>
+            {items.map((item, i) => (
+              <Figure
+                key={item.slug}
+                subject={item.subject}
+                photo={item.photo}
+                aspect="4/5"
+                sizes="(min-width: 1280px) 390px, 32vw"
+                className={`[grid-area:1/1] transition-[opacity,scale] duration-300 ease-out-expo motion-reduce:transition-none ${
+                  i === active ? 'opacity-100' : 'scale-[0.98] opacity-0'
+                }`}
+              />
+            ))}
           </div>
         )}
       </div>

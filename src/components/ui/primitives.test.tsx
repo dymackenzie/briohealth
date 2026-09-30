@@ -1,6 +1,7 @@
 import { renderToStaticMarkup } from 'react-dom/server'
 import { describe, expect, it } from 'vitest'
 import type { SiteSettings } from '@/lib/site'
+import { Accordion } from './Accordion'
 import { Address } from './Address'
 import { Hours } from './Hours'
 import { StepList } from './StepList'
@@ -106,5 +107,29 @@ describe('Address', () => {
     expect(html).toContain('2168-3779 Sexsmith Road')
     expect(html).toContain('Richmond, BC V6X 3Z9')
     expect(html.indexOf('Sexsmith Road')).toBeLessThan(html.indexOf('Richmond, BC'))
+  })
+})
+
+describe('Accordion', () => {
+  const items = [
+    { question: 'First?', answer: 'One.' },
+    { question: 'Second?', answer: 'Two.' },
+  ]
+
+  it('server-renders the first answer open, so it reads without JavaScript', () => {
+    const html = renderToStaticMarkup(<Accordion items={items} />)
+    const panels = html.match(/<div id="[^"]*-panel-\d"[^>]*>/g) ?? []
+
+    expect(panels).toHaveLength(2)
+    expect(panels[0]).not.toContain('inert')
+    expect(panels[0]).toContain('grid-rows-[1fr]')
+    expect(panels[1]).toContain('inert')
+    expect(panels[1]).toContain('grid-rows-[0fr]')
+    expect(html.match(/aria-expanded="(true|false)"/g)).toEqual(['aria-expanded="true"', 'aria-expanded="false"'])
+  })
+
+  it('snaps instead of animating under reduced motion', () => {
+    const html = renderToStaticMarkup(<Accordion items={items} />)
+    expect(html).toContain('motion-reduce:transition-none')
   })
 })
