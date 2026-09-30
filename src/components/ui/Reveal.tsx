@@ -49,14 +49,11 @@ export function watchReveal(node: Element, show: () => void): () => void {
  */
 export function Reveal({
   as: Tag = 'div',
-  from = 'up',
   delay = 0,
   className = '',
   children,
 }: {
   as?: ElementType
-  /** `across` is the 24px slide for a photo straddling a field seam. */
-  from?: 'up' | 'across'
   delay?: number
   className?: string
   children: ReactNode
@@ -73,7 +70,7 @@ export function Reveal({
   return (
     <Tag
       ref={ref}
-      data-reveal={from}
+      data-reveal="up"
       data-shown={shown || undefined}
       style={delay ? ({ '--reveal-delay': `${delay}ms` } as CSSProperties) : undefined}
       className={className}

@@ -1,5 +1,4 @@
 import Link from 'next/link'
-import { notFound } from 'next/navigation'
 
 import { PageHero } from '@/components/layout/PageHero'
 import { Close } from '@/components/sections/Close'
@@ -16,6 +15,7 @@ import { getPosts, getSiteSettings } from '@/lib/wp/queries'
 import { decodeTitle } from '@/lib/wp/renderContent'
 
 export const revalidate = 3600
+// Any other slug 404s before the page runs, so every lookup below finds one.
 export const dynamicParams = false
 
 export function generateStaticParams() {
@@ -23,9 +23,7 @@ export function generateStaticParams() {
 }
 
 export async function generateMetadata(props: { params: Promise<{ slug: string }> }) {
-  const { slug } = await props.params
-  const service = getService(slug)
-  if (!service) return buildMetadata({ title: 'Not found', path: `/services/${slug}`, noindex: true })
+  const service = getService((await props.params).slug)!
 
   return buildMetadata({
     title: service.title,
@@ -40,9 +38,7 @@ export async function generateMetadata(props: { params: Promise<{ slug: string }
  * close. Two teal fields: the hero and the close. One dot burst, the close's.
  */
 export default async function ServicePage(props: { params: Promise<{ slug: string }> }) {
-  const { slug } = await props.params
-  const service = getService(slug)
-  if (!service) notFound()
+  const service = getService((await props.params).slug)!
 
   const [settings, related] = await Promise.all([
     getSiteSettings(),

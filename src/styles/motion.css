@@ -19,10 +19,6 @@
     transform: translateY(20px);
   }
 
-  .js [data-reveal='across'] {
-    transform: translateX(-24px);
-  }
-
   .js [data-reveal][data-shown] {
     opacity: 1;
     transform: none;

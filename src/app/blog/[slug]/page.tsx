@@ -150,7 +150,7 @@ export default async function PostPage(props: { params: Promise<{ slug: string }
 
           <aside className="mt-16 max-w-[68ch] border-t-2 border-teal pt-6">
             <h2 className="font-sans text-h3">Have a question about your health?</h2>
-            <p className="mt-2 text-ink-soft">Book a consultation and we will work through it together.</p>
+            <p className="mt-2 text-ink-soft">Book a first visit and we will work through it together.</p>
             <div className="mt-5">
               <Button href={settings.bookingUrl}>{settings.ctaLabel}</Button>
             </div>

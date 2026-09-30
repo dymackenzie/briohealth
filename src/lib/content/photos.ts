@@ -107,7 +107,6 @@ export const slots = {
     portrait: { subject: 'Dr. Jeffrey Lee, portrait', photo: photos.guidePortrait },
     explaining: { subject: 'Dr. Lee explaining a treatment', photo: photos.guideExplaining },
     community: { subject: 'Dr. Lee in the community', photo: photos.guideCommunity },
-    exterior: { subject: 'The clinic exterior on Sexsmith Road, daylight', photo: null },
   },
   pickleball: {
     court: { subject: 'A community game on the court', photo: photos.pickleballCourt },

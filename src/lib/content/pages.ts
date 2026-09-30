@@ -21,7 +21,6 @@ export const pages = {
     photos: slots.about,
   },
   book: {
-    title: 'Book a consultation',
     lead: 'New patients welcome. Appointments are handled through Jane, our booking system.',
     intro: "Choose a time that works for you. If you're not sure what to book, call us and we'll point you in the right direction.",
     firstHeading: 'What happens first',

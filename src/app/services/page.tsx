@@ -67,7 +67,11 @@ export default async function ServicesPage() {
             )
           })}
         </ul>
-        <p className="mt-4 text-small text-ink-soft">Fees subject to change.</p>
+        {[...new Set(services.map((s) => s.feesNote))].map((note) => (
+          <p key={note} className="mt-4 text-small text-ink-soft">
+            {note}
+          </p>
+        ))}
       </section>
 
       <Close
