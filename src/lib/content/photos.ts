@@ -15,7 +15,9 @@
  * clinic, lee-treatment, lee-outdoors-family, acupuncture-tall, iv-tall,
  * naturopathic-tall, iv-wide, lobby. He dominates each frame and no crop fixes
  * it; iv-wide puts his face at 41-56% of the width, inside any left-anchored
- * crop.
+ * crop. Also unused: the WP host's pickleball-1-rotated.jpg, a selfie he
+ * takes at the left edge; every crop that clears him cuts the face beside
+ * him.
  */
 
 const WP = 'https://yourbriohealth.com/wp-content/uploads'
@@ -67,19 +69,14 @@ export const photos = {
     position: '50% 40%',
   },
   /**
-   * The two pickleball photos stay on the WP host. Dr. Lee is at the left
-   * of both, so both crop to the right edge. The selfie only clears him at
-   * 4/5 (its right 60%); the indoor group clears him at 1/1 (its right 68%).
+   * On the WP host. Dr. Lee is second from the left; at 4/5 and 86% the
+   * frame starts past him and no face meets either edge. At 1/1 there is no
+   * position that clears him without halving someone else.
    */
-  pickleballGroup: {
-    src: `${WP}/2025/11/pickleball-1-rotated.jpg`,
-    alt: 'Four players from the Brio Health pickleball group on an outdoor court',
-    position: '100% 50%',
-  },
   pickleballCourt: {
     src: `${WP}/2025/11/pickleball2.jpg`,
-    alt: 'Players from a pickleball clinic holding their paddles on an indoor court',
-    position: '100% 50%',
+    alt: 'Pickleball players lined up with their paddles on an indoor court, one kneeling in front',
+    position: '86% 50%',
   },
 } as const satisfies Record<string, Photo>
 
@@ -114,6 +111,5 @@ export const slots = {
   },
   pickleball: {
     court: { subject: 'A community game on the court', photo: photos.pickleballCourt },
-    group: { subject: 'The group after a game, outdoors', photo: photos.pickleballGroup },
   },
 } as const satisfies Record<string, PhotoSlot | Record<string, PhotoSlot>>

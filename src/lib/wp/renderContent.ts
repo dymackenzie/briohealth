@@ -221,18 +221,6 @@ const processor = unified()
   .use(dropEmpty)
   .use(rehypeSanitize, schema)
 
-const MEDIA = new Set(['img', 'picture', 'video', 'audio', 'iframe', 'figure'])
-
-function dropMedia(tree: Root) {
-  visit(tree, 'element', (node, index, parent) => {
-    if (!parent || index === undefined || !MEDIA.has(node.tagName)) return
-    parent.children.splice(index, 1)
-    return index
-  })
-  // The frames and wrappers that held them are empty now.
-  pruneEmpty(tree)
-}
-
 function textContent(node: Root | Element): string {
   const parts: string[] = []
   visit(node, 'text', (text) => {
@@ -253,18 +241,14 @@ export function renderContent(
   html: string,
   {
     title,
-    media = true,
   }: {
     /** The page title, dropped when the body opens by repeating it. */
     title?: string
-    /** false strips images, video and embeds, for a page that places its own photos. */
-    media?: boolean
   } = {},
 ) {
   if (!html?.trim()) return null
   const tree = processor.runSync(processor.parse(html)) as Root
   if (title) dropLeadingTitle(tree, title)
-  if (!media) dropMedia(tree)
   return toJsxRuntime(tree, { Fragment, jsx, jsxs })
 }
 
