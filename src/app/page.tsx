@@ -1,11 +1,15 @@
 import { DotBurst } from '@/components/brand/DotBurst'
 import { Logo } from '@/components/brand/Logo'
 import { Accordion } from '@/components/ui/Accordion'
+import { Address } from '@/components/ui/Address'
 import { Button } from '@/components/ui/Button'
 import { Field } from '@/components/ui/Field'
 import { Figure } from '@/components/ui/Figure'
+import { Hours } from '@/components/ui/Hours'
 import { Reveal } from '@/components/ui/Reveal'
+import { StepList } from '@/components/ui/StepList'
 import { faqsFor } from '@/lib/content/faqs'
+import { home } from '@/lib/content/home'
 import { slots } from '@/lib/content/photos'
 import { site } from '@/lib/site'
 import { displayClass } from '@/lib/typography'
@@ -49,6 +53,16 @@ export default function HomePage() {
       </div>
       <div className="mt-10 max-w-2xl">
         <Accordion items={faqsFor('general')} />
+      </div>
+      <div className="mt-10 grid gap-6 lg:grid-cols-2">
+        <StepList steps={home.plan.steps} />
+        <Field className="p-8">
+          <StepList steps={home.plan.steps} surface="teal" />
+        </Field>
+      </div>
+      <div className="mt-10 flex flex-wrap gap-10">
+        <Address address={site.address} />
+        <Hours hours={site.hours} note={site.saturdayNote} />
       </div>
     </main>
   )
