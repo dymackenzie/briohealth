@@ -35,14 +35,30 @@ export function Header({ settings }: { settings: SiteSettings }) {
     document.documentElement.classList.add('js')
   }, [])
 
-  function closeMenuOnEscape(event: React.KeyboardEvent) {
-    if (event.key !== 'Escape' || !open) return
-    setOpen(false)
-    toggleRef.current?.focus()
-  }
+  // On the document, not the header: a dropdown opened by hover has to close
+  // on Escape wherever focus happens to be.
+  useEffect(() => {
+    function onKeyDown(event: KeyboardEvent) {
+      if (event.key !== 'Escape') return
+
+      if (open) {
+        setOpen(false)
+        toggleRef.current?.focus()
+        return
+      }
+
+      const item = document.querySelector<HTMLElement>('[data-dropdown]:is(:hover, :focus-within)')
+      if (!item?.dataset.dropdown) return
+      setDismissed(item.dataset.dropdown)
+      if (item.contains(document.activeElement)) item.querySelector('a')?.focus()
+    }
+
+    document.addEventListener('keydown', onKeyDown)
+    return () => document.removeEventListener('keydown', onKeyDown)
+  }, [open])
 
   return (
-    <header className="border-b border-grey bg-paper" onKeyDown={closeMenuOnEscape}>
+    <header className="border-b border-grey bg-paper">
       <div className="container-x flex h-[var(--header-h)] items-center justify-between gap-6">
         <Logo height={56} />
 
@@ -54,11 +70,7 @@ export function Header({ settings }: { settings: SiteSettings }) {
                 <li
                   key={item.href}
                   className="group relative"
-                  onKeyDown={(event) => {
-                    if (event.key !== 'Escape' || !item.children) return
-                    setDismissed(item.href)
-                    event.currentTarget.querySelector('a')?.focus()
-                  }}
+                  data-dropdown={item.children ? item.href : undefined}
                   onMouseLeave={() => shut && setDismissed(null)}
                   onBlur={(event) => {
                     if (shut && !event.currentTarget.contains(event.relatedTarget)) setDismissed(null)
