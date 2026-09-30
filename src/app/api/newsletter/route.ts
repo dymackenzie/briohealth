@@ -8,9 +8,11 @@ export async function POST(request: Request) {
   const audience = process.env.MAILCHIMP_AUDIENCE_ID
   const prefix = process.env.MAILCHIMP_SERVER_PREFIX
 
+  // Not configured is a known state, not a crash: 503 with a sentence the
+  // form can show.
   if (!key || !audience || !prefix) {
     console.error('[newsletter] Mailchimp env vars are not set')
-    return NextResponse.json({ error: 'Sign-up is not set up yet.' }, { status: 500 })
+    return NextResponse.json({ error: 'Sign-up is not set up yet.' }, { status: 503 })
   }
 
   let body: unknown
@@ -28,10 +30,14 @@ export async function POST(request: Request) {
   const id = createHash('md5').update(result.email).digest('hex')
   const url = `https://${prefix}.api.mailchimp.com/3.0/lists/${audience}/members/${id}`
 
+  // API keys go through HTTP Basic auth as `anystring:key`: the username is
+  // ignored and the key is the password. Bearer is for OAuth tokens only.
+  const auth = `Basic ${Buffer.from(`brio:${key}`).toString('base64')}`
+
   try {
     const response = await fetch(url, {
       method: 'PUT',
-      headers: { Authorization: `Bearer ${key}`, 'Content-Type': 'application/json' },
+      headers: { Authorization: auth, 'Content-Type': 'application/json' },
       body: JSON.stringify({ email_address: result.email, status_if_new: 'subscribed' }),
     })
 
