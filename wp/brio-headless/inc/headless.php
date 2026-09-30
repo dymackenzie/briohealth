@@ -55,6 +55,21 @@ add_filter( 'rest_endpoints', function ( array $endpoints ): array {
 	return $endpoints;
 } );
 
+/**
+ * A single-user read still answers anonymously, so it carries the display
+ * name and nothing more: the slug is the login name on most installs, and
+ * the avatar URL is a hash of the email address.
+ */
+add_filter( 'rest_prepare_user', function ( WP_REST_Response $response ): WP_REST_Response {
+	if ( is_user_logged_in() ) {
+		return $response;
+	}
+	$data = $response->get_data();
+	unset( $data['slug'], $data['link'], $data['url'], $data['avatar_urls'] );
+	$response->set_data( $data );
+	return $response;
+} );
+
 remove_action( 'wp_head', 'wp_generator' );
 remove_action( 'wp_head', 'wlwmanifest_link' );
 remove_action( 'wp_head', 'rsd_link' );

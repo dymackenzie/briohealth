@@ -99,7 +99,8 @@ not undo it.
     ```
 
     `/wp-json/wp/v2/users` should 404 while `/wp-json/wp/v2/posts?_embed=1`
-    still comes back with an author name.
+    still comes back with an author name. Logged out, `/wp-json/wp/v2/users/1`
+    should show `id` and `name` but no `slug`, `link` or `avatar_urls`.
 
 11. **Test the webhook.** Publish anything, then check the Vercel function
     log for a hit on `/api/revalidate`. A missing `BRIO_REVALIDATE_SECRET`
