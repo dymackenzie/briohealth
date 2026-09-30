@@ -24,6 +24,12 @@ describe('StepList', () => {
     })
   })
 
+  it('hides the visible numeral from screen readers, which announce the list position', () => {
+    const html = renderToStaticMarkup(<StepList steps={steps} />)
+
+    expect(html.match(/<span aria-hidden="true"[^>]*>\d<\/span>/g)).toHaveLength(3)
+  })
+
   it('renders only the <ol>, with nothing but <li> children', () => {
     const html = renderToStaticMarkup(<StepList steps={steps} className="plan" />)
 

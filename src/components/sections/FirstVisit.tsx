@@ -52,7 +52,9 @@ export function FirstVisit({ content, settings }: { content: HomeContent['firstV
           <ol className="mt-5 grid gap-5">
             {content.happens.map((step, i) => (
               <li key={step} className="grid grid-cols-[2.25rem_minmax(0,1fr)] gap-3">
-                <span className="font-display text-2xl leading-[1.1] font-semibold text-teal">{i + 1}</span>
+                <span aria-hidden className="font-display text-2xl leading-[1.1] font-semibold text-teal">
+                  {i + 1}
+                </span>
                 <p className="max-w-[48ch]">{step}</p>
               </li>
             ))}

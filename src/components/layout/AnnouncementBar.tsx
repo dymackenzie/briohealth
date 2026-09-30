@@ -6,7 +6,7 @@ export function AnnouncementBar({ announcement }: { announcement: SiteSettings['
   if (!announcement || !announcement.text.trim()) return null
 
   const inner = announcement.href ? (
-    <Link href={announcement.href} className="underline underline-offset-4">
+    <Link href={announcement.href} className="underline underline-offset-4 focus-visible:outline-paper">
       {announcement.text}
     </Link>
   ) : (

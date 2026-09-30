@@ -26,7 +26,9 @@ export function StepList({
     <ol className={`grid gap-10 ${className}`}>
       {steps.map((step, i) => (
         <li key={step.title} className="grid grid-cols-[3rem_minmax(0,1fr)] gap-x-5">
-          <span className={`text-numeral ${numeralColour[surface]}`}>{i + 1}</span>
+          <span aria-hidden className={`text-numeral ${numeralColour[surface]}`}>
+            {i + 1}
+          </span>
           <div className="pt-1">
             <h3 className="text-h3">{step.title}</h3>
             <p className="mt-2 max-w-[48ch]">{step.body}</p>
