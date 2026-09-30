@@ -7,6 +7,7 @@ import { Footer } from '@/components/layout/Footer'
 import { Header } from '@/components/layout/Header'
 import { siteOpenGraph } from '@/lib/seo'
 import { defaultDescription, site } from '@/lib/site'
+import { getSiteSettings } from '@/lib/wp/queries'
 import './globals.css'
 
 /* Both are variable fonts on Google Fonts, so no weight list is needed. */
@@ -34,7 +35,9 @@ export const metadata: Metadata = {
   robots: { index: true, follow: true },
 }
 
-export default function RootLayout({ children }: { children: React.ReactNode }) {
+export default async function RootLayout({ children }: { children: React.ReactNode }) {
+  const settings = await getSiteSettings()
+
   return (
     // The inline script adds a class before React hydrates, so server and
     // client markup differ here on purpose.
@@ -52,10 +55,10 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
         >
           Skip to content
         </a>
-        <AnnouncementBar announcement={site.announcement} />
-        <Header settings={site} />
+        <AnnouncementBar announcement={settings.announcement} />
+        <Header settings={settings} />
         {children}
-        <Footer settings={site} />
+        <Footer settings={settings} />
         <Analytics />
       </body>
     </html>
