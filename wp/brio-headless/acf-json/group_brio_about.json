@@ -1,0 +1,230 @@
+{
+    "key": "group_brio_about",
+    "title": "About page",
+    "fields": [
+        {
+            "key": "field_about_heading",
+            "label": "Heading",
+            "name": "heading",
+            "aria-label": "",
+            "type": "text",
+            "instructions": "Aim for under 28 characters; longer headings show smaller. Empty uses the page title.",
+            "required": 0,
+            "conditional_logic": 0,
+            "wrapper": {
+                "width": "",
+                "class": "",
+                "id": ""
+            },
+            "default_value": "",
+            "maxlength": 60,
+            "placeholder": "",
+            "prepend": "",
+            "append": ""
+        },
+        {
+            "key": "field_about_lead",
+            "label": "Lead",
+            "name": "lead",
+            "aria-label": "",
+            "type": "textarea",
+            "instructions": "One or two sentences under the heading. Under 200 characters.",
+            "required": 0,
+            "conditional_logic": 0,
+            "wrapper": {
+                "width": "",
+                "class": "",
+                "id": ""
+            },
+            "default_value": "",
+            "maxlength": 200,
+            "rows": 2,
+            "placeholder": "",
+            "new_lines": ""
+        },
+        {
+            "key": "field_about_portrait",
+            "label": "Portrait",
+            "name": "portrait",
+            "aria-label": "",
+            "type": "image",
+            "instructions": "Dr. Lee. Leave empty if the photo does not exist yet: the site shows a labelled placeholder instead of a broken image.",
+            "required": 0,
+            "conditional_logic": 0,
+            "wrapper": {
+                "width": "",
+                "class": "",
+                "id": ""
+            },
+            "return_format": "array",
+            "library": "all",
+            "preview_size": "medium",
+            "min_width": "",
+            "min_height": "",
+            "min_size": "",
+            "max_width": "",
+            "max_height": "",
+            "max_size": "",
+            "mime_types": "",
+            "uploader": ""
+        },
+        {
+            "key": "field_about_portrait_position",
+            "label": "Portrait crop",
+            "name": "portrait_position",
+            "aria-label": "",
+            "type": "text",
+            "instructions": "Where the photo is cropped from, as two percentages: \"50% 50%\" is the centre, \"20% 50%\" keeps the left side. Photos show at 4:5.",
+            "required": 0,
+            "conditional_logic": 0,
+            "wrapper": {
+                "width": "",
+                "class": "",
+                "id": ""
+            },
+            "default_value": "50% 30%",
+            "maxlength": 20,
+            "placeholder": "",
+            "prepend": "",
+            "append": ""
+        },
+        {
+            "key": "field_about_credentials",
+            "label": "Credentials",
+            "name": "credentials",
+            "aria-label": "",
+            "type": "repeater",
+            "instructions": "Four short lines.",
+            "required": 0,
+            "conditional_logic": 0,
+            "wrapper": {
+                "width": "",
+                "class": "",
+                "id": ""
+            },
+            "layout": "table",
+            "pagination": 0,
+            "min": 0,
+            "max": 6,
+            "collapsed": "",
+            "button_label": "Add line",
+            "rows_per_page": 20,
+            "sub_fields": [
+                {
+                    "key": "field_about_credentials_text",
+                    "label": "Line",
+                    "name": "text",
+                    "aria-label": "",
+                    "type": "text",
+                    "instructions": "One qualification or fact. Under 70 characters.",
+                    "required": 1,
+                    "conditional_logic": 0,
+                    "wrapper": {
+                        "width": "",
+                        "class": "",
+                        "id": ""
+                    },
+                    "default_value": "",
+                    "maxlength": 90,
+                    "placeholder": "",
+                    "prepend": "",
+                    "append": ""
+                }
+            ]
+        },
+        {
+            "key": "field_about_award",
+            "label": "Award line",
+            "name": "award",
+            "aria-label": "",
+            "type": "text",
+            "instructions": "e.g. \"Voted Best Naturopath in Best of Richmond 2025, by Richmond News.\" Under 90 characters.",
+            "required": 0,
+            "conditional_logic": 0,
+            "wrapper": {
+                "width": "",
+                "class": "",
+                "id": ""
+            },
+            "default_value": "",
+            "maxlength": 120,
+            "placeholder": "",
+            "prepend": "",
+            "append": ""
+        },
+        {
+            "key": "field_about_photo_clinic",
+            "label": "Second photo",
+            "name": "photo_clinic",
+            "aria-label": "",
+            "type": "image",
+            "instructions": "In the clinic. Leave empty if the photo does not exist yet: the site shows a labelled placeholder instead of a broken image.",
+            "required": 0,
+            "conditional_logic": 0,
+            "wrapper": {
+                "width": "",
+                "class": "",
+                "id": ""
+            },
+            "return_format": "array",
+            "library": "all",
+            "preview_size": "medium",
+            "min_width": "",
+            "min_height": "",
+            "min_size": "",
+            "max_width": "",
+            "max_height": "",
+            "max_size": "",
+            "mime_types": "",
+            "uploader": ""
+        },
+        {
+            "key": "field_about_photo_community",
+            "label": "Third photo",
+            "name": "photo_community",
+            "aria-label": "",
+            "type": "image",
+            "instructions": "In the community. Leave empty if the photo does not exist yet: the site shows a labelled placeholder instead of a broken image.",
+            "required": 0,
+            "conditional_logic": 0,
+            "wrapper": {
+                "width": "",
+                "class": "",
+                "id": ""
+            },
+            "return_format": "array",
+            "library": "all",
+            "preview_size": "medium",
+            "min_width": "",
+            "min_height": "",
+            "min_size": "",
+            "max_width": "",
+            "max_height": "",
+            "max_size": "",
+            "mime_types": "",
+            "uploader": ""
+        }
+    ],
+    "location": [
+        [
+            {
+                "param": "page_template",
+                "operator": "==",
+                "value": "template-about.php"
+            }
+        ]
+    ],
+    "menu_order": 0,
+    "position": "normal",
+    "style": "default",
+    "label_placement": "top",
+    "instruction_placement": "label",
+    "hide_on_screen": [
+        "discussion",
+        "comments"
+    ],
+    "active": true,
+    "description": "",
+    "show_in_rest": 1,
+    "modified": 1790000000
+}

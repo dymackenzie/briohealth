@@ -1,0 +1,643 @@
+{
+    "key": "group_brio_settings",
+    "title": "Site settings",
+    "fields": [
+        {
+            "key": "field_settings_tab_contact",
+            "label": "Contact",
+            "name": "",
+            "aria-label": "",
+            "type": "tab",
+            "instructions": "",
+            "required": 0,
+            "conditional_logic": 0,
+            "wrapper": {
+                "width": "",
+                "class": "",
+                "id": ""
+            },
+            "placement": "top",
+            "endpoint": 0,
+            "selected": 0
+        },
+        {
+            "key": "field_settings_phone",
+            "label": "Phone",
+            "name": "phone",
+            "aria-label": "",
+            "type": "text",
+            "instructions": "As it should read on the page, e.g. (604) 271-9355. Under 20 characters.",
+            "required": 1,
+            "conditional_logic": 0,
+            "wrapper": {
+                "width": "50",
+                "class": "",
+                "id": ""
+            },
+            "default_value": "",
+            "maxlength": 30,
+            "placeholder": "",
+            "prepend": "",
+            "append": ""
+        },
+        {
+            "key": "field_settings_email",
+            "label": "Email",
+            "name": "email",
+            "aria-label": "",
+            "type": "email",
+            "instructions": "Where the contact form sends messages and the footer points.",
+            "required": 1,
+            "conditional_logic": 0,
+            "wrapper": {
+                "width": "50",
+                "class": "",
+                "id": ""
+            },
+            "default_value": "",
+            "placeholder": "",
+            "prepend": "",
+            "append": ""
+        },
+        {
+            "key": "field_settings_address_street",
+            "label": "Street",
+            "name": "address_street",
+            "aria-label": "",
+            "type": "text",
+            "instructions": "Unit and street, e.g. 2168-3779 Sexsmith Road. Under 60 characters.",
+            "required": 1,
+            "conditional_logic": 0,
+            "wrapper": {
+                "width": "50",
+                "class": "",
+                "id": ""
+            },
+            "default_value": "",
+            "maxlength": 80,
+            "placeholder": "",
+            "prepend": "",
+            "append": ""
+        },
+        {
+            "key": "field_settings_address_locality",
+            "label": "City",
+            "name": "address_locality",
+            "aria-label": "",
+            "type": "text",
+            "instructions": "e.g. Richmond.",
+            "required": 0,
+            "conditional_logic": 0,
+            "wrapper": {
+                "width": "50",
+                "class": "",
+                "id": ""
+            },
+            "default_value": "Richmond",
+            "maxlength": 40,
+            "placeholder": "",
+            "prepend": "",
+            "append": ""
+        },
+        {
+            "key": "field_settings_address_region",
+            "label": "Province",
+            "name": "address_region",
+            "aria-label": "",
+            "type": "text",
+            "instructions": "Two letters, e.g. BC.",
+            "required": 0,
+            "conditional_logic": 0,
+            "wrapper": {
+                "width": "25",
+                "class": "",
+                "id": ""
+            },
+            "default_value": "BC",
+            "maxlength": 2,
+            "placeholder": "",
+            "prepend": "",
+            "append": ""
+        },
+        {
+            "key": "field_settings_address_postal",
+            "label": "Postal code",
+            "name": "address_postal",
+            "aria-label": "",
+            "type": "text",
+            "instructions": "e.g. V6X 3Z9.",
+            "required": 0,
+            "conditional_logic": 0,
+            "wrapper": {
+                "width": "25",
+                "class": "",
+                "id": ""
+            },
+            "default_value": "",
+            "maxlength": 7,
+            "placeholder": "",
+            "prepend": "",
+            "append": ""
+        },
+        {
+            "key": "field_settings_address_country",
+            "label": "Country",
+            "name": "address_country",
+            "aria-label": "",
+            "type": "text",
+            "instructions": "Two letters, e.g. CA.",
+            "required": 0,
+            "conditional_logic": 0,
+            "wrapper": {
+                "width": "25",
+                "class": "",
+                "id": ""
+            },
+            "default_value": "CA",
+            "maxlength": 2,
+            "placeholder": "",
+            "prepend": "",
+            "append": ""
+        },
+        {
+            "key": "field_settings_map_url",
+            "label": "Map link",
+            "name": "map_url",
+            "aria-label": "",
+            "type": "url",
+            "instructions": "A Google Maps link for the address. The \"Get directions\" link opens it.",
+            "required": 0,
+            "conditional_logic": 0,
+            "wrapper": {
+                "width": "25",
+                "class": "",
+                "id": ""
+            },
+            "default_value": "",
+            "placeholder": ""
+        },
+        {
+            "key": "field_settings_tab_hours",
+            "label": "Hours",
+            "name": "",
+            "aria-label": "",
+            "type": "tab",
+            "instructions": "",
+            "required": 0,
+            "conditional_logic": 0,
+            "wrapper": {
+                "width": "",
+                "class": "",
+                "id": ""
+            },
+            "placement": "top",
+            "endpoint": 0,
+            "selected": 0
+        },
+        {
+            "key": "field_settings_hours",
+            "label": "Opening hours",
+            "name": "hours",
+            "aria-label": "",
+            "type": "repeater",
+            "instructions": "These show on the site and tell Google when the clinic is open. Group days that share the same hours onto one row. Days left off every row read as closed.",
+            "required": 0,
+            "conditional_logic": 0,
+            "wrapper": {
+                "width": "",
+                "class": "",
+                "id": ""
+            },
+            "layout": "table",
+            "pagination": 0,
+            "min": 0,
+            "max": 0,
+            "collapsed": "",
+            "button_label": "Add hours",
+            "rows_per_page": 20,
+            "sub_fields": [
+                {
+                    "key": "field_settings_hours_days",
+                    "label": "Days",
+                    "name": "days",
+                    "aria-label": "",
+                    "type": "checkbox",
+                    "instructions": "Days the clinic is physically open. These feed Google, so leave the remote Saturday off and use the Saturday note instead.",
+                    "required": 1,
+                    "conditional_logic": 0,
+                    "wrapper": {
+                        "width": "40",
+                        "class": "",
+                        "id": ""
+                    },
+                    "choices": {
+                        "Monday": "Monday",
+                        "Tuesday": "Tuesday",
+                        "Wednesday": "Wednesday",
+                        "Thursday": "Thursday",
+                        "Friday": "Friday",
+                        "Saturday": "Saturday",
+                        "Sunday": "Sunday"
+                    },
+                    "layout": "horizontal",
+                    "return_format": "value",
+                    "default_value": [],
+                    "allow_custom": 0,
+                    "save_custom": 0,
+                    "toggle": 0
+                },
+                {
+                    "key": "field_settings_hours_closed",
+                    "label": "Closed",
+                    "name": "closed",
+                    "aria-label": "",
+                    "type": "true_false",
+                    "instructions": "Switch on to list these days as closed.",
+                    "required": 0,
+                    "conditional_logic": 0,
+                    "wrapper": {
+                        "width": "",
+                        "class": "",
+                        "id": ""
+                    },
+                    "message": "Closed all day",
+                    "default_value": 0,
+                    "ui": 1,
+                    "ui_on_text": "",
+                    "ui_off_text": ""
+                },
+                {
+                    "key": "field_settings_hours_opens",
+                    "label": "Opens",
+                    "name": "opens",
+                    "aria-label": "",
+                    "type": "time_picker",
+                    "instructions": "Opening time for these days.",
+                    "required": 0,
+                    "conditional_logic": [
+                        [
+                            {
+                                "field": "field_settings_hours_closed",
+                                "operator": "!=",
+                                "value": "1"
+                            }
+                        ]
+                    ],
+                    "wrapper": {
+                        "width": "25",
+                        "class": "",
+                        "id": ""
+                    },
+                    "display_format": "g:i a",
+                    "return_format": "H:i",
+                    "default_value": ""
+                },
+                {
+                    "key": "field_settings_hours_closes",
+                    "label": "Closes",
+                    "name": "closes",
+                    "aria-label": "",
+                    "type": "time_picker",
+                    "instructions": "Closing time for these days.",
+                    "required": 0,
+                    "conditional_logic": [
+                        [
+                            {
+                                "field": "field_settings_hours_closed",
+                                "operator": "!=",
+                                "value": "1"
+                            }
+                        ]
+                    ],
+                    "wrapper": {
+                        "width": "25",
+                        "class": "",
+                        "id": ""
+                    },
+                    "display_format": "g:i a",
+                    "return_format": "H:i",
+                    "default_value": ""
+                }
+            ]
+        },
+        {
+            "key": "field_settings_saturday_note",
+            "label": "Saturday note",
+            "name": "saturday_note",
+            "aria-label": "",
+            "type": "text",
+            "instructions": "Shown under the hours, never sent to Google. e.g. \"Remote appointments every other Saturday. Ask when you book.\" Under 120 characters.",
+            "required": 0,
+            "conditional_logic": 0,
+            "wrapper": {
+                "width": "",
+                "class": "",
+                "id": ""
+            },
+            "default_value": "",
+            "maxlength": 120,
+            "placeholder": "",
+            "prepend": "",
+            "append": ""
+        },
+        {
+            "key": "field_settings_tab_booking",
+            "label": "Booking",
+            "name": "",
+            "aria-label": "",
+            "type": "tab",
+            "instructions": "",
+            "required": 0,
+            "conditional_logic": 0,
+            "wrapper": {
+                "width": "",
+                "class": "",
+                "id": ""
+            },
+            "placement": "top",
+            "endpoint": 0,
+            "selected": 0
+        },
+        {
+            "key": "field_settings_booking_url",
+            "label": "Jane booking link",
+            "name": "booking_url",
+            "aria-label": "",
+            "type": "url",
+            "instructions": "Every booking button on the site points here.",
+            "required": 1,
+            "conditional_logic": 0,
+            "wrapper": {
+                "width": "",
+                "class": "",
+                "id": ""
+            },
+            "default_value": "",
+            "placeholder": ""
+        },
+        {
+            "key": "field_settings_cta_label",
+            "label": "Booking button label",
+            "name": "cta_label",
+            "aria-label": "",
+            "type": "text",
+            "instructions": "The one label used on every booking button. Keep it to three words, under 30 characters.",
+            "required": 0,
+            "conditional_logic": 0,
+            "wrapper": {
+                "width": "",
+                "class": "",
+                "id": ""
+            },
+            "default_value": "Book a consultation",
+            "maxlength": 30,
+            "placeholder": "",
+            "prepend": "",
+            "append": ""
+        },
+        {
+            "key": "field_settings_tab_social",
+            "label": "Social",
+            "name": "",
+            "aria-label": "",
+            "type": "tab",
+            "instructions": "",
+            "required": 0,
+            "conditional_logic": 0,
+            "wrapper": {
+                "width": "",
+                "class": "",
+                "id": ""
+            },
+            "placement": "top",
+            "endpoint": 0,
+            "selected": 0
+        },
+        {
+            "key": "field_settings_social",
+            "label": "Profiles",
+            "name": "social",
+            "aria-label": "",
+            "type": "repeater",
+            "instructions": "The clinic's social profiles, shown as links in the footer. Rows without a link are skipped.",
+            "required": 0,
+            "conditional_logic": 0,
+            "wrapper": {
+                "width": "",
+                "class": "",
+                "id": ""
+            },
+            "layout": "table",
+            "pagination": 0,
+            "min": 0,
+            "max": 0,
+            "collapsed": "",
+            "button_label": "Add profile",
+            "rows_per_page": 20,
+            "sub_fields": [
+                {
+                    "key": "field_settings_social_label",
+                    "label": "Network",
+                    "name": "label",
+                    "aria-label": "",
+                    "type": "select",
+                    "instructions": "Which network the link goes to.",
+                    "required": 0,
+                    "conditional_logic": 0,
+                    "wrapper": {
+                        "width": "30",
+                        "class": "",
+                        "id": ""
+                    },
+                    "choices": {
+                        "Instagram": "Instagram",
+                        "Facebook": "Facebook",
+                        "X": "X",
+                        "LinkedIn": "LinkedIn",
+                        "YouTube": "YouTube"
+                    },
+                    "default_value": "Instagram",
+                    "allow_null": 0,
+                    "multiple": 0,
+                    "ui": 0,
+                    "return_format": "value",
+                    "ajax": 0,
+                    "placeholder": ""
+                },
+                {
+                    "key": "field_settings_social_url",
+                    "label": "Link",
+                    "name": "url",
+                    "aria-label": "",
+                    "type": "url",
+                    "instructions": "The full address of the profile, starting with https://.",
+                    "required": 0,
+                    "conditional_logic": 0,
+                    "wrapper": {
+                        "width": "70",
+                        "class": "",
+                        "id": ""
+                    },
+                    "default_value": "",
+                    "placeholder": ""
+                }
+            ]
+        },
+        {
+            "key": "field_settings_tab_announcement",
+            "label": "Announcement bar",
+            "name": "",
+            "aria-label": "",
+            "type": "tab",
+            "instructions": "",
+            "required": 0,
+            "conditional_logic": 0,
+            "wrapper": {
+                "width": "",
+                "class": "",
+                "id": ""
+            },
+            "placement": "top",
+            "endpoint": 0,
+            "selected": 0
+        },
+        {
+            "key": "field_settings_announcement",
+            "label": "Announcement",
+            "name": "announcement",
+            "aria-label": "",
+            "type": "group",
+            "instructions": "A strip across the top of every page. It only shows when it is switched on and has text.",
+            "required": 0,
+            "conditional_logic": 0,
+            "wrapper": {
+                "width": "",
+                "class": "",
+                "id": ""
+            },
+            "layout": "block",
+            "sub_fields": [
+                {
+                    "key": "field_settings_ann_enabled",
+                    "label": "Show the bar",
+                    "name": "enabled",
+                    "aria-label": "",
+                    "type": "true_false",
+                    "instructions": "Switch off to hide the bar without losing the text.",
+                    "required": 0,
+                    "conditional_logic": 0,
+                    "wrapper": {
+                        "width": "",
+                        "class": "",
+                        "id": ""
+                    },
+                    "message": "Show a strip across the top of every page",
+                    "default_value": 0,
+                    "ui": 1,
+                    "ui_on_text": "",
+                    "ui_off_text": ""
+                },
+                {
+                    "key": "field_settings_ann_text",
+                    "label": "Text",
+                    "name": "text",
+                    "aria-label": "",
+                    "type": "text",
+                    "instructions": "One line: holiday hours, a closure, a new service. Under 90 characters.",
+                    "required": 0,
+                    "conditional_logic": 0,
+                    "wrapper": {
+                        "width": "",
+                        "class": "",
+                        "id": ""
+                    },
+                    "default_value": "",
+                    "maxlength": 90,
+                    "placeholder": "",
+                    "prepend": "",
+                    "append": ""
+                },
+                {
+                    "key": "field_settings_ann_url",
+                    "label": "Link",
+                    "name": "url",
+                    "aria-label": "",
+                    "type": "url",
+                    "instructions": "Optional. Where the bar goes when it is clicked.",
+                    "required": 0,
+                    "conditional_logic": 0,
+                    "wrapper": {
+                        "width": "",
+                        "class": "",
+                        "id": ""
+                    },
+                    "default_value": "",
+                    "placeholder": ""
+                }
+            ]
+        },
+        {
+            "key": "field_settings_tab_sharing",
+            "label": "Sharing",
+            "name": "",
+            "aria-label": "",
+            "type": "tab",
+            "instructions": "",
+            "required": 0,
+            "conditional_logic": 0,
+            "wrapper": {
+                "width": "",
+                "class": "",
+                "id": ""
+            },
+            "placement": "top",
+            "endpoint": 0,
+            "selected": 0
+        },
+        {
+            "key": "field_settings_og_image",
+            "label": "Default share image",
+            "name": "og_image",
+            "aria-label": "",
+            "type": "image",
+            "instructions": "Used when a page is shared and has no image of its own. 1200 by 630 pixels.",
+            "required": 0,
+            "conditional_logic": 0,
+            "wrapper": {
+                "width": "",
+                "class": "",
+                "id": ""
+            },
+            "return_format": "array",
+            "library": "all",
+            "preview_size": "medium",
+            "min_width": "",
+            "min_height": "",
+            "min_size": "",
+            "max_width": "",
+            "max_height": "",
+            "max_size": "",
+            "mime_types": "",
+            "uploader": ""
+        }
+    ],
+    "location": [
+        [
+            {
+                "param": "options_page",
+                "operator": "==",
+                "value": "brio-settings"
+            }
+        ]
+    ],
+    "menu_order": 0,
+    "position": "normal",
+    "style": "default",
+    "label_placement": "top",
+    "instruction_placement": "label",
+    "hide_on_screen": "",
+    "active": true,
+    "description": "Site-wide details. Changing anything here updates it everywhere on the website.",
+    "show_in_rest": 1,
+    "modified": 1790000000
+}

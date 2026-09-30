@@ -1,0 +1,162 @@
+{
+    "key": "group_brio_testimonial",
+    "title": "Testimonial",
+    "fields": [
+        {
+            "key": "field_testimonial_quote",
+            "label": "Full quote",
+            "name": "quote",
+            "aria-label": "",
+            "type": "textarea",
+            "instructions": "The patient's own words, pasted in full from the review.",
+            "required": 1,
+            "conditional_logic": 0,
+            "wrapper": {
+                "width": "",
+                "class": "",
+                "id": ""
+            },
+            "default_value": "",
+            "maxlength": 2000,
+            "rows": 5,
+            "placeholder": "",
+            "new_lines": ""
+        },
+        {
+            "key": "field_testimonial_short_quote",
+            "label": "Short quote",
+            "name": "short_quote",
+            "aria-label": "",
+            "type": "textarea",
+            "instructions": "What the site shows: three lines at most, under 160 characters, trimmed from the full quote.",
+            "required": 1,
+            "conditional_logic": 0,
+            "wrapper": {
+                "width": "",
+                "class": "",
+                "id": ""
+            },
+            "default_value": "",
+            "maxlength": 160,
+            "rows": 3,
+            "placeholder": "",
+            "new_lines": ""
+        },
+        {
+            "key": "field_testimonial_name",
+            "label": "Name",
+            "name": "name",
+            "aria-label": "",
+            "type": "text",
+            "instructions": "First name and last initial, e.g. Diane C. Under 30 characters.",
+            "required": 1,
+            "conditional_logic": 0,
+            "wrapper": {
+                "width": "40",
+                "class": "",
+                "id": ""
+            },
+            "default_value": "",
+            "maxlength": 40,
+            "placeholder": "",
+            "prepend": "",
+            "append": ""
+        },
+        {
+            "key": "field_testimonial_source",
+            "label": "Source",
+            "name": "source",
+            "aria-label": "",
+            "type": "text",
+            "instructions": "Where the review was posted, e.g. Google review.",
+            "required": 0,
+            "conditional_logic": 0,
+            "wrapper": {
+                "width": "30",
+                "class": "",
+                "id": ""
+            },
+            "default_value": "Google review",
+            "maxlength": 30,
+            "placeholder": "",
+            "prepend": "",
+            "append": ""
+        },
+        {
+            "key": "field_testimonial_date",
+            "label": "When",
+            "name": "date",
+            "aria-label": "",
+            "type": "text",
+            "instructions": "Month and year, e.g. November 2024.",
+            "required": 0,
+            "conditional_logic": 0,
+            "wrapper": {
+                "width": "30",
+                "class": "",
+                "id": ""
+            },
+            "default_value": "",
+            "maxlength": 30,
+            "placeholder": "",
+            "prepend": "",
+            "append": ""
+        },
+        {
+            "key": "field_testimonial_service",
+            "label": "About which service",
+            "name": "service",
+            "aria-label": "",
+            "type": "relationship",
+            "instructions": "Optional. Lets the review show on that service's page.",
+            "required": 0,
+            "conditional_logic": 0,
+            "wrapper": {
+                "width": "",
+                "class": "",
+                "id": ""
+            },
+            "post_type": [
+                "service"
+            ],
+            "taxonomy": [],
+            "post_status": [
+                "publish"
+            ],
+            "filters": [
+                "search"
+            ],
+            "return_format": "id",
+            "min": "",
+            "max": 1,
+            "elements": "",
+            "bidirectional": 0,
+            "bidirectional_target": []
+        }
+    ],
+    "location": [
+        [
+            {
+                "param": "post_type",
+                "operator": "==",
+                "value": "testimonial"
+            }
+        ]
+    ],
+    "menu_order": 0,
+    "position": "normal",
+    "style": "default",
+    "label_placement": "top",
+    "instruction_placement": "label",
+    "hide_on_screen": [
+        "the_content",
+        "excerpt",
+        "discussion",
+        "comments",
+        "featured_image"
+    ],
+    "active": true,
+    "description": "The title is only a label for this list; it never appears on the website.",
+    "show_in_rest": 1,
+    "modified": 1790000000
+}

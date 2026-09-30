@@ -1,0 +1,131 @@
+{
+    "key": "group_brio_home_hero",
+    "title": "Home: hero",
+    "fields": [
+        {
+            "key": "field_home_hero_heading",
+            "label": "Heading",
+            "name": "heading",
+            "aria-label": "",
+            "type": "text",
+            "instructions": "Aim for under 28 characters; longer headings show smaller. e.g. \"Feel like yourself again.\"",
+            "required": 0,
+            "conditional_logic": 0,
+            "wrapper": {
+                "width": "",
+                "class": "",
+                "id": ""
+            },
+            "default_value": "",
+            "maxlength": 60,
+            "placeholder": "",
+            "prepend": "",
+            "append": ""
+        },
+        {
+            "key": "field_home_hero_sentence",
+            "label": "One sentence",
+            "name": "sentence",
+            "aria-label": "",
+            "type": "textarea",
+            "instructions": "Twenty words at most, under 160 characters.",
+            "required": 0,
+            "conditional_logic": 0,
+            "wrapper": {
+                "width": "",
+                "class": "",
+                "id": ""
+            },
+            "default_value": "",
+            "maxlength": 160,
+            "rows": 2,
+            "placeholder": "",
+            "new_lines": ""
+        },
+        {
+            "key": "field_home_hero_image",
+            "label": "Photo",
+            "name": "image",
+            "aria-label": "",
+            "type": "image",
+            "instructions": "A patient, not the doctor. Leave empty if the photo does not exist yet: the site shows a labelled placeholder instead of a broken image.",
+            "required": 0,
+            "conditional_logic": 0,
+            "wrapper": {
+                "width": "",
+                "class": "",
+                "id": ""
+            },
+            "return_format": "array",
+            "library": "all",
+            "preview_size": "medium",
+            "min_width": "",
+            "min_height": "",
+            "min_size": "",
+            "max_width": "",
+            "max_height": "",
+            "max_size": "",
+            "mime_types": "",
+            "uploader": ""
+        },
+        {
+            "key": "field_home_hero_image_position",
+            "label": "Photo crop",
+            "name": "image_position",
+            "aria-label": "",
+            "type": "text",
+            "instructions": "Where the photo is cropped from, as two percentages: \"50% 50%\" is the centre, \"20% 50%\" keeps the left side. Photos show at 4:5.",
+            "required": 0,
+            "conditional_logic": 0,
+            "wrapper": {
+                "width": "",
+                "class": "",
+                "id": ""
+            },
+            "default_value": "50% 50%",
+            "maxlength": 20,
+            "placeholder": "",
+            "prepend": "",
+            "append": ""
+        },
+        {
+            "key": "field_home_hero_award",
+            "label": "Award line",
+            "name": "award",
+            "aria-label": "",
+            "type": "text",
+            "instructions": "Sits beside the photo. e.g. \"Voted Best Naturopath, Best of Richmond 2025, Richmond News.\" Under 90 characters.",
+            "required": 0,
+            "conditional_logic": 0,
+            "wrapper": {
+                "width": "",
+                "class": "",
+                "id": ""
+            },
+            "default_value": "",
+            "maxlength": 90,
+            "placeholder": "",
+            "prepend": "",
+            "append": ""
+        }
+    ],
+    "location": [
+        [
+            {
+                "param": "page_type",
+                "operator": "==",
+                "value": "front_page"
+            }
+        ]
+    ],
+    "menu_order": 0,
+    "position": "normal",
+    "style": "default",
+    "label_placement": "top",
+    "instruction_placement": "label",
+    "hide_on_screen": "",
+    "active": true,
+    "description": "",
+    "show_in_rest": 1,
+    "modified": 1790000000
+}

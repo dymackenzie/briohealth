@@ -1,0 +1,89 @@
+{
+    "key": "group_brio_home_stakes",
+    "title": "Home: sound familiar?",
+    "fields": [
+        {
+            "key": "field_home_stakes_statement",
+            "label": "Statement",
+            "name": "statement",
+            "aria-label": "",
+            "type": "text",
+            "instructions": "One big line. Aim for under 50 characters.",
+            "required": 0,
+            "conditional_logic": 0,
+            "wrapper": {
+                "width": "",
+                "class": "",
+                "id": ""
+            },
+            "default_value": "",
+            "maxlength": 80,
+            "placeholder": "",
+            "prepend": "",
+            "append": ""
+        },
+        {
+            "key": "field_home_stakes_items",
+            "label": "Symptoms",
+            "name": "items",
+            "aria-label": "",
+            "type": "repeater",
+            "instructions": "Five short lines, in the patient's words.",
+            "required": 0,
+            "conditional_logic": 0,
+            "wrapper": {
+                "width": "",
+                "class": "",
+                "id": ""
+            },
+            "layout": "table",
+            "pagination": 0,
+            "min": 0,
+            "max": 6,
+            "collapsed": "",
+            "button_label": "Add line",
+            "rows_per_page": 20,
+            "sub_fields": [
+                {
+                    "key": "field_home_stakes_items_text",
+                    "label": "Line",
+                    "name": "text",
+                    "aria-label": "",
+                    "type": "text",
+                    "instructions": "One symptom. Under 70 characters.",
+                    "required": 1,
+                    "conditional_logic": 0,
+                    "wrapper": {
+                        "width": "",
+                        "class": "",
+                        "id": ""
+                    },
+                    "default_value": "",
+                    "maxlength": 90,
+                    "placeholder": "",
+                    "prepend": "",
+                    "append": ""
+                }
+            ]
+        }
+    ],
+    "location": [
+        [
+            {
+                "param": "page_type",
+                "operator": "==",
+                "value": "front_page"
+            }
+        ]
+    ],
+    "menu_order": 1,
+    "position": "normal",
+    "style": "default",
+    "label_placement": "top",
+    "instruction_placement": "label",
+    "hide_on_screen": "",
+    "active": true,
+    "description": "",
+    "show_in_rest": 1,
+    "modified": 1790000000
+}
