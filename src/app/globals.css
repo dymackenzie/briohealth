@@ -1,5 +1,6 @@
 @import 'tailwindcss';
 @import '../styles/tokens.css';
+@import '../styles/motion.css';
 
 @custom-variant pointer-fine (@media (hover: hover) and (pointer: fine));
 

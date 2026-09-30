@@ -1,0 +1,37 @@
+/*
+ * Motion. Every rule here is gated twice: `.js` on <html> (set by an inline
+ * script, so no JavaScript means no hidden state) and
+ * prefers-reduced-motion: no-preference. Only transform and opacity move,
+ * on the expo/quart tokens. Task 15 adds the hero entrance, the dot burst
+ * stagger and the three scroll-linked effects below this block.
+ */
+
+@media (prefers-reduced-motion: no-preference) {
+  .js [data-reveal] {
+    opacity: 0;
+    transition:
+      opacity 0.7s var(--ease-out-expo),
+      transform 0.7s var(--ease-out-expo);
+    transition-delay: var(--reveal-delay, 0ms);
+  }
+
+  .js [data-reveal='up'] {
+    transform: translateY(20px);
+  }
+
+  .js [data-reveal='across'] {
+    transform: translateX(-24px);
+  }
+
+  .js [data-reveal][data-shown] {
+    opacity: 1;
+    transform: none;
+  }
+}
+
+@media print {
+  .js [data-reveal] {
+    opacity: 1;
+    transform: none;
+  }
+}

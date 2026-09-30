@@ -1,5 +1,13 @@
 import { DotBurst } from '@/components/brand/DotBurst'
 import { Logo } from '@/components/brand/Logo'
+import { Accordion } from '@/components/ui/Accordion'
+import { Button } from '@/components/ui/Button'
+import { Field } from '@/components/ui/Field'
+import { Figure } from '@/components/ui/Figure'
+import { Reveal } from '@/components/ui/Reveal'
+import { faqsFor } from '@/lib/content/faqs'
+import { slots } from '@/lib/content/photos'
+import { site } from '@/lib/site'
 import { displayClass } from '@/lib/typography'
 
 const HEADING = 'Feel like yourself again.'
@@ -25,6 +33,22 @@ export default function HomePage() {
         <div data-surface="teal" className="rounded-brand p-6">
           <DotBurst className="h-32 w-32 text-paper" />
         </div>
+      </div>
+      <div className="mt-10 flex flex-wrap gap-4">
+        <Button href={site.bookingUrl}>{site.ctaLabel}</Button>
+        <Button href="/about" variant="quiet">More about Dr. Lee</Button>
+        <Field className="flex gap-4 p-4">
+          <Button href={site.bookingUrl} on="teal">{site.ctaLabel}</Button>
+          <Button href="/about" on="teal" variant="quiet">More about Dr. Lee</Button>
+        </Field>
+      </div>
+      <div className="mt-10 grid gap-6 sm:grid-cols-3">
+        <Reveal><Figure {...slots.hero} /></Reveal>
+        <Reveal delay={80}><Figure {...slots.services['iv-therapy']} aspect="1/1" /></Reveal>
+        <Reveal delay={160}><Figure {...slots.guide} /></Reveal>
+      </div>
+      <div className="mt-10 max-w-2xl">
+        <Accordion items={faqsFor('general')} />
       </div>
     </main>
   )
