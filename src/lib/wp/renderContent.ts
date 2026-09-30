@@ -4,7 +4,7 @@ import rehypeParse from 'rehype-parse'
 import rehypeSanitize, { defaultSchema } from 'rehype-sanitize'
 import { unified } from 'unified'
 import { SKIP, visit } from 'unist-util-visit'
-import type { Element, Root } from 'hast'
+import type { Element, ElementContent, Root } from 'hast'
 
 import { WP_HOST } from './client'
 import type { Rendered } from './types'
@@ -201,10 +201,75 @@ function stripShortcodes(text: string): string {
   return text.replace(SHORTCODE, '')
 }
 
-function dropShortcodes() {
+/**
+ * Avada's `[youtube id=”…″ width=”600″]` (one 2010s post; the quotes are
+ * wptexturize's curly ones). It becomes a real embed rather than going with
+ * the rest, so the post keeps its video. Also reads a URL or a positional id.
+ */
+const YOUTUBE = /\[youtube\b([^\]]*)\]/gi
+const VIDEO_ID = '([\\w-]{11})(?![\\w-])'
+const ID_FORMS = [
+  new RegExp(`(?:youtu\\.be/|[?&]v=|/embed/|/shorts/)${VIDEO_ID}`),
+  new RegExp(`\\bid\\s*=\\s*\\W?${VIDEO_ID}`),
+  new RegExp(`^\\s*${VIDEO_ID}\\s*$`),
+]
+
+function youtubeId(attributes: string): string | null {
+  for (const form of ID_FORMS) {
+    const match = attributes.match(form)
+    if (match) return match[1]
+  }
+  return null
+}
+
+/** Sized by the prose styles: block, full width, 16/9. */
+function youtubeEmbed(id: string): Element {
+  return {
+    type: 'element',
+    tagName: 'span',
+    properties: { className: ['video-embed'] },
+    children: [
+      {
+        type: 'element',
+        tagName: 'iframe',
+        properties: {
+          src: `https://www.youtube-nocookie.com/embed/${id}`,
+          title: 'YouTube video',
+          loading: 'lazy',
+          allowFullScreen: true,
+        },
+        children: [],
+      },
+    ],
+  }
+}
+
+/** Runs before sanitising, so the iframe it makes is vetted like any other. */
+function convertShortcodes() {
   return (tree: Root) => {
-    visit(tree, 'text', (node) => {
-      node.value = stripShortcodes(node.value)
+    visit(tree, 'text', (node, index, parent) => {
+      if (!parent || index === undefined) return
+      // Shortcodes shown as code are meant to be read.
+      if (parent.type === 'element' && (parent.tagName === 'code' || parent.tagName === 'pre')) return
+
+      const parts: ElementContent[] = []
+      let last = 0
+      for (const match of node.value.matchAll(YOUTUBE)) {
+        parts.push({ type: 'text', value: stripShortcodes(node.value.slice(last, match.index)) })
+        const id = youtubeId(match[1])
+        if (id) parts.push(youtubeEmbed(id))
+        last = match.index + match[0].length
+      }
+
+      if (!parts.length) {
+        node.value = stripShortcodes(node.value)
+        return
+      }
+
+      parts.push({ type: 'text', value: stripShortcodes(node.value.slice(last)) })
+      const kept = parts.filter((part) => part.type !== 'text' || part.value !== '')
+      parent.children.splice(index, 1, ...kept)
+      return index + kept.length
     })
   }
 }
@@ -228,7 +293,7 @@ const schema = {
   attributes: {
     ...defaultAttributes,
     img: [...(defaultAttributes.img ?? []), 'loading', 'decoding', 'width', 'height'],
-    iframe: ['src', 'title', 'allow', 'allowFullScreen', 'width', 'height'],
+    iframe: ['src', 'title', 'allow', 'allowFullScreen', 'loading', 'width', 'height'],
     video: ['controls', 'poster', 'width', 'height'],
     source: ['src', 'type'],
     '*': [...(defaultAttributes['*'] ?? []), 'className', 'id'],
@@ -241,7 +306,7 @@ const schema = {
 const processor = unified()
   .use(rehypeParse, { fragment: true })
   .use(dropNoise)
-  .use(dropShortcodes)
+  .use(convertShortcodes)
   .use(unwrapFusion)
   .use(cleanAttributes)
   .use(dropEmpty)

@@ -271,3 +271,43 @@ describe('leftover Avada shortcodes', () => {
     expect(postSummary(post)).toBe('With this heat wave, I wanted something cold.')
   })
 })
+
+describe('[youtube] shortcodes', () => {
+  const render = (html: string) => renderToStaticMarkup(<>{renderContent(html)}</>)
+  const embed = 'src="https://www.youtube-nocookie.com/embed/mYhjmq7-1q8"'
+
+  it('turns the bare-id form from the corpus into an embed, and strips its neighbours', () => {
+    // As the low-level laser post has it: wptexturize's curly quotes, a separator first.
+    const html = render(
+      '<p>Watch our new video.</p>[separator style_type=&#8221;none&#8221; top_margin=&#8221;15&#8243;][youtube id=&#8221;mYhjmq7-1q8&#8243; width=&#8221;600&#8243; height=&#8221;350&#8243; autoplay=&#8221;no&#8221; api_params=&#8221;&#8221; class=&#8221;&#8221;]',
+    )
+    expect(html).toContain(embed)
+    expect(html).toContain('title="YouTube video"')
+    expect(html).toContain('loading="lazy"')
+    expect(html).toContain('allowFullScreen=""')
+    expect(html).toContain('<span class="video-embed"><iframe')
+    expect(html).not.toMatch(/\[|separator|youtube id/)
+  })
+
+  it('takes a positional id', () => {
+    expect(render('<p>[youtube mYhjmq7-1q8]</p>')).toContain(embed)
+  })
+
+  it('takes a URL', () => {
+    expect(render('<p>[youtube https://www.youtube.com/watch?v=mYhjmq7-1q8&amp;t=10]</p>')).toContain(embed)
+    expect(render('<p>[youtube url=&#8221;https://youtu.be/mYhjmq7-1q8&#8243;]</p>')).toContain(embed)
+  })
+
+  it('strips a youtube shortcode it cannot read an id from', () => {
+    const html = render('<p>Before [youtube width=&#8221;600&#8243; height=&#8221;350&#8243;] after</p><p>[youtube]</p>')
+    expect(html).not.toContain('<iframe')
+    expect(html).not.toContain('youtube')
+    expect(html).toContain('Before  after')
+  })
+
+  it('leaves a shortcode in a code block as text', () => {
+    const html = render('<pre><code>[youtube id="mYhjmq7-1q8"]</code></pre>')
+    expect(html).not.toContain('<iframe')
+    expect(html).toContain('[youtube id=&quot;mYhjmq7-1q8&quot;]')
+  })
+})

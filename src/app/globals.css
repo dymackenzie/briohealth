@@ -256,6 +256,14 @@
     aspect-ratio: 16 / 9;
     width: 100%;
   }
+  /* A [youtube] shortcode's embed. A span, because the shortcode can sit
+   * inside a paragraph; displayed as a block so it takes the flow gap. */
+  & .video-embed {
+    display: block;
+  }
+  & .video-embed iframe {
+    display: block;
+  }
   & blockquote {
     border-left: 2px solid var(--color-teal);
     padding-left: 1.25em;
