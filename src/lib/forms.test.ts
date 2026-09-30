@@ -1,5 +1,5 @@
 import { describe, expect, it } from 'vitest'
-import { validateContact, validateNewsletter } from './forms'
+import { contactEmail, MAX_LENGTH, validateContact, validateNewsletter } from './forms'
 
 const good = { name: 'Ada', email: 'ada@example.com', phone: '', message: 'Hello there' }
 
@@ -49,6 +49,36 @@ describe('validateContact', () => {
   it('flags the honeypot as spam but still ok', () => {
     const result = validateContact({ ...good, website: 'http://spam.example' })
     expect(result).toMatchObject({ ok: true, spam: true })
+  })
+})
+
+describe('contactEmail', () => {
+  it('puts a blank line between who wrote and the message', () => {
+    const { text } = contactEmail({ ...good, phone: '604 555 0100', message: 'First line.\nSecond line.' })
+    expect(text).toBe('Name: Ada\nEmail: ada@example.com\nPhone: 604 555 0100\n\nFirst line.\nSecond line.')
+  })
+
+  it('leaves out an empty phone and keeps the blank line', () => {
+    const { text } = contactEmail(good)
+    expect(text).toBe('Name: Ada\nEmail: ada@example.com\n\nHello there')
+  })
+
+  it('keeps line breaks in the name out of the subject', () => {
+    const { subject } = contactEmail({ ...good, name: 'Ada\r\nBcc: x@example.com' })
+    expect(subject).toBe('Website enquiry from Ada Bcc: x@example.com')
+    expect(subject).not.toMatch(/[\r\n]/)
+  })
+})
+
+describe('MAX_LENGTH', () => {
+  it('is what validateContact caps each field at', () => {
+    const long = Object.fromEntries(Object.entries(MAX_LENGTH).map(([key, max]) => [key, 'a'.repeat(max + 10)]))
+    const result = validateContact({ ...long, email: 'ada@example.com' })
+    expect(result.ok).toBe(true)
+    if (!result.ok) return
+    expect(result.data.name).toHaveLength(MAX_LENGTH.name)
+    expect(result.data.phone).toHaveLength(MAX_LENGTH.phone)
+    expect(result.data.message).toHaveLength(MAX_LENGTH.message)
   })
 })
 

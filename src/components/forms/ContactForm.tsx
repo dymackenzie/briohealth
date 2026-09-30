@@ -4,7 +4,7 @@ import { useEffect, useRef, useState, type ReactNode } from 'react'
 import { WarningCircle } from '@phosphor-icons/react'
 
 import { Button } from '@/components/ui/Button'
-import { type ContactField, validateContact } from '@/lib/forms'
+import { type ContactField, MAX_LENGTH, validateContact } from '@/lib/forms'
 
 type State = 'idle' | 'sending' | 'sent' | 'error'
 
@@ -124,6 +124,7 @@ export function ContactForm({ phone, phoneHref, note }: { phone: string; phoneHr
             id="contact-name"
             name="name"
             required
+            maxLength={MAX_LENGTH.name}
             autoComplete="name"
             aria-invalid={isInvalid('name')}
             aria-describedby={describe('name')}
@@ -141,6 +142,7 @@ export function ContactForm({ phone, phoneHref, note }: { phone: string; phoneHr
             name="email"
             type="email"
             required
+            maxLength={MAX_LENGTH.email}
             autoComplete="email"
             aria-invalid={isInvalid('email')}
             aria-describedby={describe('email')}
@@ -155,7 +157,14 @@ export function ContactForm({ phone, phoneHref, note }: { phone: string; phoneHr
         <label htmlFor="contact-phone" className="font-medium">
           Phone <span className="font-normal text-ink-soft">(optional)</span>
         </label>
-        <input id="contact-phone" name="phone" type="tel" autoComplete="tel" className={input} />
+        <input
+          id="contact-phone"
+          name="phone"
+          type="tel"
+          maxLength={MAX_LENGTH.phone}
+          autoComplete="tel"
+          className={input}
+        />
       </div>
 
       <div className="grid gap-2">
@@ -166,6 +175,7 @@ export function ContactForm({ phone, phoneHref, note }: { phone: string; phoneHr
           id="contact-message"
           name="message"
           required
+          maxLength={MAX_LENGTH.message}
           rows={6}
           aria-invalid={isInvalid('message')}
           aria-describedby={describe('message')}

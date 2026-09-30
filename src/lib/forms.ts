@@ -22,7 +22,8 @@ export type ContactResult =
   // `fields` says which inputs to mark; it is absent when the body itself is bad.
   | { ok: false; error: string; fields?: ContactField[] }
 
-const MAX = { name: 120, email: 200, phone: 40, message: 5000 } as const
+/** Longest accepted value per field. The form's inputs carry the same limits. */
+export const MAX_LENGTH = { name: 120, email: 200, phone: 40, message: 5000 } as const
 const REQUIRED: ContactField[] = ['name', 'email', 'message']
 
 function isRecord(value: unknown): value is Record<string, unknown> {
@@ -32,16 +33,16 @@ function isRecord(value: unknown): value is Record<string, unknown> {
 export function validateContact(body: unknown): ContactResult {
   if (!isRecord(body)) return { ok: false, error: 'Invalid request.' }
 
-  for (const key of Object.keys(MAX) as (keyof typeof MAX)[]) {
+  for (const key of Object.keys(MAX_LENGTH) as (keyof typeof MAX_LENGTH)[]) {
     const value = body[key]
     if (value !== undefined && typeof value !== 'string') {
       return { ok: false, error: 'Invalid request.' }
     }
   }
 
-  const field = (key: keyof typeof MAX) => {
+  const field = (key: keyof typeof MAX_LENGTH) => {
     const value = body[key]
-    return typeof value === 'string' ? value.trim().slice(0, MAX[key]) : ''
+    return typeof value === 'string' ? value.trim().slice(0, MAX_LENGTH[key]) : ''
   }
 
   const data: ContactInput = {
@@ -67,9 +68,21 @@ export function validateContact(body: unknown): ContactResult {
 
 export function validateNewsletter(body: unknown): { ok: true; email: string } | { ok: false; error: string } {
   const raw = isRecord(body) ? body.email : undefined
-  const email = typeof raw === 'string' ? raw.trim().toLowerCase().slice(0, 200) : ''
+  const email = typeof raw === 'string' ? raw.trim().toLowerCase().slice(0, MAX_LENGTH.email) : ''
   if (!EMAIL_PATTERN.test(email)) {
     return { ok: false, error: 'Please enter a valid email address.' }
   }
   return { ok: true, email }
+}
+
+/**
+ * The email the clinic receives: who wrote, a blank line, then the message.
+ * The name goes in the subject, so line breaks come out of it there.
+ */
+export function contactEmail({ name, email, phone, message }: ContactInput): { subject: string; text: string } {
+  const header = [`Name: ${name}`, `Email: ${email}`, ...(phone ? [`Phone: ${phone}`] : [])].join('\n')
+  return {
+    subject: `Website enquiry from ${name.replace(/[\r\n]+/g, ' ').trim()}`,
+    text: `${header}\n\n${message}`,
+  }
 }

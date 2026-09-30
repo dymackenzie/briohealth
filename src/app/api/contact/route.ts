@@ -1,6 +1,6 @@
 import { NextResponse } from 'next/server'
 
-import { validateContact } from '@/lib/forms'
+import { contactEmail, validateContact } from '@/lib/forms'
 import { site } from '@/lib/site'
 
 // Enough to stop a bot loop; resets on cold start, which is fine for a
@@ -45,8 +45,7 @@ export async function POST(request: Request) {
   if (!result.ok) return NextResponse.json({ error: result.error }, { status: 400 })
   if (result.spam) return NextResponse.json({ ok: true })
 
-  const { name, email, phone, message } = result.data
-  const text = [`Name: ${name}`, `Email: ${email}`, phone && `Phone: ${phone}`, '', message].filter(Boolean).join('\n')
+  const { subject, text } = contactEmail(result.data)
 
   try {
     const response = await fetch('https://api.resend.com/emails', {
@@ -55,8 +54,8 @@ export async function POST(request: Request) {
       body: JSON.stringify({
         from: process.env.CONTACT_FROM ?? 'Brio Health <onboarding@resend.dev>',
         to: [process.env.CONTACT_TO ?? site.email],
-        reply_to: email,
-        subject: `Website enquiry from ${name}`,
+        reply_to: result.data.email,
+        subject,
         text,
       }),
     })

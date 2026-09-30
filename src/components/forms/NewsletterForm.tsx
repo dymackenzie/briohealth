@@ -4,7 +4,7 @@ import { useEffect, useRef, useState } from 'react'
 import { WarningCircle } from '@phosphor-icons/react'
 
 import { Button } from '@/components/ui/Button'
-import { validateNewsletter } from '@/lib/forms'
+import { MAX_LENGTH, validateNewsletter } from '@/lib/forms'
 
 type State = 'idle' | 'sending' | 'sent' | 'error'
 
@@ -82,6 +82,7 @@ export function NewsletterForm() {
           name="email"
           type="email"
           required
+          maxLength={MAX_LENGTH.email}
           autoComplete="email"
           aria-invalid={state === 'error' || undefined}
           aria-describedby={state === 'error' ? 'newsletter-error' : undefined}
