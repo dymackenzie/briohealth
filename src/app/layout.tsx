@@ -1,6 +1,12 @@
 import type { Metadata } from 'next'
 import { Funnel_Display, Funnel_Sans } from 'next/font/google'
 import { Analytics } from '@vercel/analytics/next'
+
+import { AnnouncementBar } from '@/components/layout/AnnouncementBar'
+import { Footer } from '@/components/layout/Footer'
+import { Header } from '@/components/layout/Header'
+import { siteOpenGraph } from '@/lib/seo'
+import { defaultDescription, site } from '@/lib/site'
 import './globals.css'
 
 /* Both are variable fonts on Google Fonts, so no weight list is needed. */
@@ -17,7 +23,15 @@ const sans = Funnel_Sans({
 })
 
 export const metadata: Metadata = {
-  title: 'Brio Health',
+  metadataBase: new URL(site.url),
+  title: {
+    default: `${site.name}: ${site.tagline}`,
+    template: `%s | ${site.name}`,
+  },
+  description: defaultDescription,
+  openGraph: { ...siteOpenGraph, type: 'website' },
+  twitter: { card: 'summary_large_image' },
+  robots: { index: true, follow: true },
 }
 
 export default function RootLayout({ children }: { children: React.ReactNode }) {
@@ -32,7 +46,16 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
         <script dangerouslySetInnerHTML={{ __html: "document.documentElement.classList.add('js')" }} />
       </head>
       <body>
+        <a
+          href="#main"
+          className="sr-only focus:not-sr-only focus:fixed focus:top-4 focus:left-4 focus:z-50 focus:rounded-brand focus:bg-ink focus:px-4 focus:py-2 focus:text-paper"
+        >
+          Skip to content
+        </a>
+        <AnnouncementBar announcement={site.announcement} />
+        <Header settings={site} />
         {children}
+        <Footer settings={site} />
         <Analytics />
       </body>
     </html>
