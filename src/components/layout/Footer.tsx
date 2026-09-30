@@ -38,8 +38,11 @@ export function Footer({ settings }: { settings: SiteSettings }) {
   return (
     <footer className="bg-grey">
       <div className="container-x py-16">
-        <div className="grid gap-12 md:grid-cols-2 lg:grid-cols-12">
-          <div className="lg:col-span-5">
+        {/* The link columns take their longest label, so none wraps, and the
+            newsletter column gets the widest share for its field. Two by two
+            until there is room for all four. */}
+        <div className="grid gap-12 md:grid-cols-2 xl:grid-cols-[minmax(0,5fr)_max-content_max-content_minmax(0,6fr)]">
+          <div>
             <Logo height={64} />
             <p className="mt-6 font-medium">{settings.legalName}</p>
             <Address address={settings.address} />
@@ -55,7 +58,7 @@ export function Footer({ settings }: { settings: SiteSettings }) {
             <Hours hours={settings.hours} note={settings.saturdayNote} className="mt-6" />
           </div>
 
-          <nav aria-label="Services" className="lg:col-span-2">
+          <nav aria-label="Services">
             <h2 className="text-h3">Services</h2>
             <ul className="mt-4 space-y-2">
               {services.map((s) => (
@@ -68,7 +71,7 @@ export function Footer({ settings }: { settings: SiteSettings }) {
             </ul>
           </nav>
 
-          <nav aria-label="Pages" className="lg:col-span-2">
+          <nav aria-label="Pages">
             <h2 className="text-h3">Clinic</h2>
             <ul className="mt-4 space-y-2">
               {pageLinks.map((item) => (
@@ -81,7 +84,7 @@ export function Footer({ settings }: { settings: SiteSettings }) {
             </ul>
           </nav>
 
-          <div className="lg:col-span-3">
+          <div>
             <h2 className="text-h3">Occasional notes</h2>
             <p className="mt-2 text-small text-ink-soft">Health, recipes and clinic news. No spam.</p>
             <div className="mt-4">
