@@ -1,7 +1,6 @@
 import { DotBurst } from '@/components/brand/DotBurst'
 import { Button } from '@/components/ui/Button'
 import { Figure } from '@/components/ui/Figure'
-import { Reveal } from '@/components/ui/Reveal'
 import type { HomeContent } from '@/lib/content/home'
 import type { SiteSettings } from '@/lib/site'
 import { displayClass } from '@/lib/typography'
@@ -22,9 +21,10 @@ import { displayClass } from '@/lib/typography'
  *
  * Mobile: the field is full width and the photo hangs off its bottom edge.
  *
- * Task 15 animates `.hero-field` (wipe from the left), `.hero-copy > *`
- * (rise) and `.hero-drift` (the scroll-linked drift). Without them the
- * layout is the final state.
+ * motion.css animates `.hero-field` (wipe from the left), `.hero-copy > *`
+ * (rise), the photo inside `.hero-drift` (slide on load) and `.hero-drift`
+ * itself (the scroll-linked drift). Without them the layout is the final
+ * state. The photo is the LCP image, so it is never behind a Reveal.
  */
 export function Hero({ content, settings }: { content: HomeContent['hero']; settings: SiteSettings }) {
   return (
@@ -55,15 +55,13 @@ export function Hero({ content, settings }: { content: HomeContent['hero']; sett
             </div>
 
             <div className="hero-drift relative z-10 mt-10 w-[78%] max-w-md lg:col-start-2 lg:row-span-3 lg:row-start-2 lg:mt-6 lg:w-[28cqw] lg:max-w-none">
-              <Reveal from="across">
-                <Figure
-                  subject={content.image.subject}
-                  photo={content.image.photo}
-                  aspect="4/5"
-                  preload
-                  sizes="(min-width: 1024px) 28vw, (min-width: 640px) 448px, 78vw"
-                />
-              </Reveal>
+              <Figure
+                subject={content.image.subject}
+                photo={content.image.photo}
+                aspect="4/5"
+                preload
+                sizes="(min-width: 1024px) 28vw, (min-width: 640px) 448px, 78vw"
+              />
             </div>
           </div>
         </div>

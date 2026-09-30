@@ -54,7 +54,7 @@ export default async function HomePage() {
       <FirstVisit content={home.firstVisit} settings={settings} />
       <Proof heading={home.proof.heading} items={testimonials} />
       <Questions content={home.questions} items={faqsFor('general')} settings={settings} />
-      <Close settings={settings} />
+      <Close settings={settings} widen />
     </main>
   )
 }

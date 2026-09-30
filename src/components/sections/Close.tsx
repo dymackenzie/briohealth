@@ -12,32 +12,42 @@ import type { SiteSettings } from '@/lib/site'
  * not teal, because it sits on teal). Reused on /services, the service
  * pages and /about, so the copy defaults to the homepage's.
  *
- * The teal is its own layer (`.close-field`) behind the content, so Task 15
- * can scale it from 7/12 to full width as the section arrives without
- * touching the text. `data-surface` still sets the on-teal colours; the
- * section's own background is cleared so the layer is the only teal.
+ * The teal is its own layer behind the content, so on the homepage
+ * (`widen`) it can scale from 7/12 to full width as the section arrives
+ * without touching the text; the scroll-linked effects are homepage only.
+ * `data-surface` still sets the on-teal colours; the section's own
+ * background is cleared so the layer is the only teal.
+ *
+ * The section clips with `overflow-clip`, not `overflow-hidden`: a hidden
+ * overflow makes it a scroll container, and the field's view() timeline
+ * would then track the section instead of the page.
+ *
+ * The burst sits in its own Reveal: its dots draw in when a `[data-shown]`
+ * ancestor appears.
  */
 export function Close({
   settings,
   heading = home.close.heading,
   sentence = home.close.sentence,
+  widen = false,
 }: {
   settings: SiteSettings
   heading?: string
   sentence?: string
+  /** The homepage's scroll-linked widening of the field. */
+  widen?: boolean
 }) {
   return (
     <section
       aria-labelledby="close-heading"
       data-surface="teal"
-      className="container-edge relative overflow-hidden bg-transparent"
+      className="container-edge relative overflow-clip bg-transparent"
     >
-      <div aria-hidden className="close-field absolute inset-0 bg-teal" />
+      <div aria-hidden className={`${widen ? 'close-field ' : ''}absolute inset-0 bg-teal`} />
 
-      <DotBurst
-        animate="reveal"
-        className="absolute top-[calc(var(--section-y)+0.25rem)] right-[var(--edge)] h-auto w-20 text-paper sm:w-32 lg:w-44"
-      />
+      <Reveal className="absolute top-[calc(var(--section-y)+0.25rem)] right-[var(--edge)] w-20 sm:w-32 lg:w-44">
+        <DotBurst animate="reveal" className="block h-auto w-full text-paper" />
+      </Reveal>
 
       <div className="relative container-x section-y grid-12 gap-y-12">
         <Reveal className="col-span-12 pr-24 sm:pr-40 lg:pr-0">
