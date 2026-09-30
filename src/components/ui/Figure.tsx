@@ -39,6 +39,7 @@ export function Figure({
           fill
           sizes={sizes}
           preload={preload}
+          fetchPriority={preload ? 'high' : undefined}
           className="object-cover"
           style={{ objectPosition: photo.position }}
         />

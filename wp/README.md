@@ -107,6 +107,13 @@ not undo it.
     after WordPress has answered the editor, so a failure only shows in the
     PHP error log (`[brio] revalidate ...`), never as a failed save.
 
+    That depends on PHP-FPM. Check it on the clone: Plesk, the domain, PHP
+    Settings, "PHP support" should read "FPM application served by Apache"
+    (or by nginx). Under mod_php or plain FastCGI there is no
+    `fastcgi_finish_request()`, so each save waits for the webhook, up to 3
+    seconds per call when the Vercel site is slow or down. Switch the
+    handler to FPM if the host allows it; otherwise saves are just slower.
+
 Steps 2 to 11 are reversible. The only one-way step is the DNS change in the
 2026-09-02 spec, section 10.1, and that is a separate day.
 
