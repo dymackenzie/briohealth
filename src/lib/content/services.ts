@@ -10,12 +10,19 @@ import { slots, type PhotoSlot } from './photos'
  *
  * Fees are edited here once and read everywhere else: the homepage's first
  * visit, the cost FAQ, /services, the service page and /book. Nothing else
- * types a dollar figure.
+ * types a dollar figure, and nothing reads a fee by its position.
  */
 
 export type ServiceSlug = 'naturopathic' | 'acupuncture' | 'iv-therapy'
 
+/**
+ * What a fee row is, so callers find a fee by meaning rather than by its
+ * position in the list (the client can reorder the repeater).
+ */
+export type FeeKind = 'initial' | 'follow-up' | 'treatment'
+
 export interface Fee {
+  kind: FeeKind
   label: string
   note?: string
   amount: string
@@ -37,7 +44,7 @@ export interface ServiceContent {
   lead: string
   helpsWith: string[]
   steps: Step[]
-  /** The initial assessment always comes first. */
+  /** Exactly one row has `kind: 'initial'`. */
   fees: Fee[]
   feesNote: string
   /** True until the client confirms the numbers. */
@@ -78,9 +85,9 @@ export const services: ServiceContent[] = [
     ],
     fees: [
       // Stated on the live naturopathic page.
-      { label: 'Initial assessment', note: '30 minutes, virtual', amount: '$150' },
+      { kind: 'initial', label: 'Initial assessment', note: '30 minutes, virtual', amount: '$150' },
       // Unconfirmed.
-      { label: 'Follow-up consultation', note: '30 minutes', amount: '$110' },
+      { kind: 'follow-up', label: 'Follow-up consultation', note: '30 minutes', amount: '$110' },
     ],
     feesNote: 'Fees subject to change.',
     feesPending: true,
@@ -116,8 +123,8 @@ export const services: ServiceContent[] = [
       },
     ],
     fees: [
-      { label: 'Initial assessment', note: '30 minutes, virtual', amount: '$150' },
-      { label: 'Acupuncture treatment', amount: '$100' },
+      { kind: 'initial', label: 'Initial assessment', note: '30 minutes, virtual', amount: '$150' },
+      { kind: 'treatment', label: 'Acupuncture treatment', amount: '$100' },
     ],
     feesNote: 'Fees subject to change.',
     feesPending: true,
@@ -154,8 +161,8 @@ export const services: ServiceContent[] = [
       },
     ],
     fees: [
-      { label: 'Initial assessment', note: '30 minutes, virtual', amount: '$150' },
-      { label: 'I.V. treatment', note: 'Varies with the formula', amount: '$115-$250' },
+      { kind: 'initial', label: 'Initial assessment', note: '30 minutes, virtual', amount: '$150' },
+      { kind: 'treatment', label: 'I.V. treatment', note: 'Varies with the formula', amount: '$115-$250' },
     ],
     feesNote: 'Fees subject to change.',
     feesPending: true,
@@ -167,7 +174,7 @@ export function getService(slug: string): ServiceContent | null {
   return services.find((s) => s.slug === slug) ?? null
 }
 
-/** A service's initial assessment: by convention, its first fee. */
+/** A service's initial assessment, wherever it sits in the fee list. */
 export function initialAssessmentFee(slug: ServiceSlug): Fee | null {
-  return getService(slug)?.fees[0] ?? null
+  return getService(slug)?.fees.find((f) => f.kind === 'initial') ?? null
 }

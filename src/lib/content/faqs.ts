@@ -1,4 +1,4 @@
-import { getService, type ServiceSlug } from './services'
+import { getService, initialAssessmentFee, type Fee, type ServiceSlug } from './services'
 
 /**
  * Answers are lifted from the live service pages. Every one is `pending`
@@ -15,9 +15,28 @@ export interface FaqItem {
   pending: boolean
 }
 
-// The cost answer reads the fees rather than repeating them, so they are
-// edited in one place (services.ts).
-const [initialFee, followUpFee] = getService('naturopathic')!.fees
+/**
+ * The cost answer reads the fees rather than repeating them, so they are
+ * edited in one place (services.ts). Either fee can be missing, since the
+ * follow-up is unconfirmed, and the answer still reads as a sentence.
+ */
+export function costAnswer(initial: Fee | null, followUp: Fee | null): string {
+  const lines: string[] = []
+
+  if (initial) {
+    const note = initial.note ? ` (${initial.note})` : ''
+    const rest = followUp ? `, and a 30-minute follow-up is ${followUp.amount}` : ''
+    lines.push(`A naturopathic initial assessment${note} is ${initial.amount}${rest}.`)
+  } else if (followUp) {
+    lines.push(`A 30-minute naturopathic follow-up is ${followUp.amount}.`)
+  }
+
+  lines.push('Lab test costs vary. Fees are subject to change.')
+  return lines.join(' ')
+}
+
+const naturopathicFollowUp =
+  getService('naturopathic')?.fees.find((f) => f.kind === 'follow-up') ?? null
 
 export const faqs: FaqItem[] = [
   {
@@ -49,7 +68,7 @@ export const faqs: FaqItem[] = [
   },
   {
     question: 'What does it cost?',
-    answer: `A naturopathic initial assessment (30 minutes, virtual) is ${initialFee.amount}, and a 30-minute follow-up is ${followUpFee.amount}. Lab test costs vary. Fees are subject to change.`,
+    answer: costAnswer(initialAssessmentFee('naturopathic'), naturopathicFollowUp),
     group: 'general',
     pending: true,
   },

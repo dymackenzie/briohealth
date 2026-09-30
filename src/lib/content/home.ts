@@ -45,11 +45,11 @@ export interface HomeContent {
   firstVisit: {
     heading: string
     /**
-     * The fee figure, which leads the figures. Only the label lives here: the
-     * amount is `initialAssessmentFee(fee.service).amount` from services.ts,
-     * so fees are edited in one place.
+     * The fee figure, which leads the figures. Only the service lives here:
+     * the figure is `initialAssessmentFee(fee.service)` from services.ts,
+     * rendered as `{ value: amount, label }`, so fees are edited in one place.
      */
-    fee: { service: ServiceSlug; label: string }
+    fee: { service: ServiceSlug }
     /** The figures after the fee. */
     figures: { value: string; label: string }[]
     happens: string[]
@@ -134,7 +134,7 @@ export const home: HomeContent = {
   firstVisit: {
     heading: 'Your first visit',
     // Only figures the live naturopathic page states.
-    fee: { service: 'naturopathic', label: 'Initial assessment' },
+    fee: { service: 'naturopathic' },
     figures: [{ value: '30 min', label: 'Virtual, from wherever you are' }],
     happens: [
       'Fill in the online intake form a few days before, and email us any recent blood tests.',
