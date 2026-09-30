@@ -7,6 +7,7 @@ import { SKIP, visit } from 'unist-util-visit'
 import type { Element, Root } from 'hast'
 
 import { WP_HOST } from './client'
+import type { Rendered } from './types'
 
 /**
  * Turns WordPress post HTML into React.
@@ -184,6 +185,30 @@ function dropEmpty() {
   }
 }
 
+/**
+ * Avada shortcodes from 2016-2017 posts whose plugin no longer renders them,
+ * left in the body as text: `[tagline_box shadow="no" ...]` around a recipe,
+ * `[/tagline_box]` after it. Only a tag with attributes or a closing tag
+ * goes, so a bracketed word in prose ("[sic]") stays. The words inside are
+ * kept; the markup around them was only ever styling.
+ */
+const SHORTCODE = /\[(?:[a-z][\w-]*\s+[\w-]+=[^\]]*|\/[a-z][\w-]*)\]/gi
+
+/** An excerpt cut off by WordPress partway through an opening tag. */
+const CUT_SHORTCODE = /\[[a-z][\w-]*\s+[\w-]+=[^\]]*$/i
+
+function stripShortcodes(text: string): string {
+  return text.replace(SHORTCODE, '')
+}
+
+function dropShortcodes() {
+  return (tree: Root) => {
+    visit(tree, 'text', (node) => {
+      node.value = stripShortcodes(node.value)
+    })
+  }
+}
+
 // The default schema pins className on h2, ul, ol, li, a, code and section to
 // GitHub's footnote and task-list classes. A tag-specific rule beats '*', so
 // every other class on those tags is filtered out and they render class="".
@@ -216,6 +241,7 @@ const schema = {
 const processor = unified()
   .use(rehypeParse, { fragment: true })
   .use(dropNoise)
+  .use(dropShortcodes)
   .use(unwrapFusion)
   .use(cleanAttributes)
   .use(dropEmpty)
@@ -226,7 +252,7 @@ function textContent(node: Root | Element): string {
   visit(node, 'text', (text) => {
     parts.push(text.value)
   })
-  return parts.join('').replace(/\s+/g, ' ').trim()
+  return stripShortcodes(parts.join('')).replace(/\s+/g, ' ').trim()
 }
 
 /** WordPress pages repeat their own title as the first heading of the body. */
@@ -283,11 +309,16 @@ function textOf(html: string, separator: string): string {
 
 /** Excerpts come with a "Continue reading" link and entities baked in. */
 export function plainExcerpt(html: string, limit = 180): string {
-  const text = textOf(html, ' ')
+  const text = stripShortcodes(textOf(html, ' '))
+    .replace(CUT_SHORTCODE, '')
     .replace(/\s*Continue reading.*$/i, '')
     .replace(/\s+/g, ' ')
     .trim()
 
+  return clip(text, limit)
+}
+
+function clip(text: string, limit: number): string {
   if (text.length <= limit) return text
   const cut = text.lastIndexOf(' ', limit)
   return text.slice(0, cut > 0 ? cut : limit).trimEnd() + '\u2026'
@@ -295,4 +326,34 @@ export function plainExcerpt(html: string, limit = 180): string {
 
 export function decodeTitle(html: string): string {
   return textOf(html, '').trim()
+}
+
+/**
+ * Whether the body already shows this upload, at any of WordPress's sizes
+ * (`-300x200`, `-scaled`, an edited `-e1687201635874`). Old posts often
+ * open with their featured image, and showing it twice looks like a glitch.
+ */
+export function showsImage(html: string, imageUrl: string): boolean {
+  const file = imageUrl.split(/[?#]/)[0].split('/').pop() ?? ''
+  const stem = file.replace(/\.\w+$/, '').replace(/(-e\d+|-scaled|-\d+x\d+)+$/, '')
+  if (stem.length < 3) return false
+
+  const escaped = stem.replace(/[.*+?^${}()|[\]\\]/g, '\\$&')
+  return new RegExp(`/${escaped}(-e\\d+|-scaled|-\\d+x\\d+)*\\.\\w+`, 'i').test(html)
+}
+
+/**
+ * A post's summary for the list, meta description and feed. Avada posts
+ * come back from the API with an empty excerpt, so those fall back to their
+ * opening paragraphs, skipping one that only repeats the title.
+ */
+export function postSummary(post: { title: Rendered; excerpt: Rendered; content?: Rendered }, limit = 180): string {
+  const excerpt = plainExcerpt(post.excerpt.rendered, limit)
+  if (excerpt || !post.content) return excerpt
+
+  const title = decodeTitle(post.title.rendered).toLowerCase()
+  const text = paragraphsOf(post.content.rendered)
+    .filter((p) => p.toLowerCase() !== title)
+    .join(' ')
+  return clip(text, limit)
 }

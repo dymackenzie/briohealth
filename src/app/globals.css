@@ -200,15 +200,25 @@
   font-size: var(--fs-post);
   line-height: 1.6;
   max-width: 68ch;
-  & > * + * {
+  /* Old posts sit inside <div class="brio_archived_post">, and the
+   * normaliser leaves bare divs around some images and recipe blocks, so
+   * the flow spacing carries on inside them. The wrapper takes the gap;
+   * its first child adds none, so nesting never doubles it. */
+  & > * + *,
+  & :where(div, section, article) > * + * {
     margin-top: 1.25em;
   }
   & :is(h2, h3, h4) {
     font-family: var(--font-sans);
     font-weight: 600;
     margin-top: 1.8em;
-    margin-bottom: 0.5em;
     letter-spacing: 0;
+  }
+  & :is(h2, h3, h4):first-child {
+    margin-top: 0;
+  }
+  & :is(h2, h3, h4) + * {
+    margin-top: 0.5em;
   }
   & h2 {
     font-size: 1.5rem;

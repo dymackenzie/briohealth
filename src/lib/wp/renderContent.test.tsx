@@ -1,6 +1,6 @@
 import { renderToStaticMarkup } from 'react-dom/server'
 import { describe, expect, it, vi } from 'vitest'
-import { decodeTitle, paragraphsOf, plainExcerpt, renderContent } from './renderContent'
+import { decodeTitle, paragraphsOf, plainExcerpt, postSummary, renderContent, showsImage } from './renderContent'
 
 function render(html: string) {
   return renderToStaticMarkup(<>{renderContent(html)}</>)
@@ -182,5 +182,92 @@ describe('decodeTitle', () => {
   it('decodes entities and strips tags', () => {
     expect(decodeTitle('Fall &#8211; the <em>best</em> season')).toBe('Fall \u2013 the best season')
     expect(decodeTitle('Q &amp; A')).toBe('Q & A')
+  })
+})
+
+describe('postSummary', () => {
+  const rendered = (value: string) => ({ rendered: value })
+
+  it('uses the excerpt when WordPress has one', () => {
+    const post = {
+      title: rendered('Bone broth'),
+      excerpt: rendered('<p>Our November recipe [&hellip;]</p>'),
+      content: rendered('<p>Something else entirely.</p>'),
+    }
+    expect(postSummary(post)).toBe('Our November recipe [\u2026]')
+  })
+
+  it('falls back to the opening paragraphs when the excerpt is empty', () => {
+    const post = {
+      title: rendered('The Autumn Reset'),
+      excerpt: rendered(''),
+      content: rendered(
+        '<div class="fusion-text"><style>.x{color:red}</style><p><strong>The Autumn Reset</strong></p><p>September has a way of making us want to reset.</p><p>Summer schedules shift.</p></div>',
+      ),
+    }
+    expect(postSummary(post)).toBe('September has a way of making us want to reset. Summer schedules shift.')
+  })
+
+  it('clips the fallback on a word boundary', () => {
+    const post = { title: rendered('T'), excerpt: rendered(''), content: rendered('<p>' + 'word '.repeat(80) + '</p>') }
+    const text = postSummary(post, 50)
+    expect(text.length).toBeLessThanOrEqual(51)
+    expect(text.endsWith('\u2026')).toBe(true)
+  })
+
+  it('is empty without an excerpt or content', () => {
+    expect(postSummary({ title: rendered('T'), excerpt: rendered('') })).toBe('')
+  })
+})
+
+describe('showsImage', () => {
+  const featured = 'https://yourbriohealth.com/wp-content/uploads/2014/12/bone-broth.jpg'
+
+  it('finds the same upload in the body', () => {
+    expect(showsImage('<p><img src="https://yourbriohealth.com/wp-content/uploads/2014/12/bone-broth.jpg"></p>', featured)).toBe(true)
+  })
+
+  it('finds it at another WordPress size', () => {
+    expect(showsImage('<img data-orig-src="/wp-content/uploads/2014/12/bone-broth-300x200.jpg">', featured)).toBe(true)
+    expect(
+      showsImage('<img src="/uploads/2023/03/snacks-1024x683.jpeg">', 'https://x.test/uploads/2023/03/snacks-scaled.jpeg'),
+    ).toBe(true)
+  })
+
+  it('does not match a different file that shares a prefix', () => {
+    expect(showsImage('<img src="/uploads/bone-broth-soup.jpg">', featured)).toBe(false)
+    expect(showsImage('<p>No images at all.</p>', featured)).toBe(false)
+  })
+})
+
+describe('leftover Avada shortcodes', () => {
+  const opener = '[tagline_box backgroundcolor=&#8221;&#8221; shadow=&#8221;no&#8221; title=&#8221;Healthy Popsicles&#8221;]'
+
+  it('drops the tags from the body and keeps the words inside', () => {
+    const html = renderToStaticMarkup(
+      <>{renderContent(`<p>Intro.</p>${opener}<p>2 cups almond milk</p><p>Kyra, RHN[/tagline_box]</p>`)}</>,
+    )
+    expect(html).not.toContain('tagline_box')
+    expect(html).toContain('<p>2 cups almond milk</p>')
+    expect(html).toContain('<p>Kyra, RHN</p>')
+  })
+
+  it('leaves a bracketed word in prose alone', () => {
+    const html = renderToStaticMarkup(<>{renderContent('<p>He said [sic] twice.</p>')}</>)
+    expect(html).toContain('[sic]')
+  })
+
+  it('empties an excerpt that WordPress cut off inside a shortcode', () => {
+    expect(plainExcerpt(`<p>[tagline_box backgroundcolor=&#8221;&#8221; link=&#8221;&#8221; [&hellip;]</p>`)).toBe('')
+    expect(plainExcerpt(`<p>[tagline_box backgroundcolor=&#8221;&#8221; link=&#8221;</p>`)).toBe('')
+  })
+
+  it('keeps them out of the summary fallback', () => {
+    const post = {
+      title: { rendered: 'Popsicles' },
+      excerpt: { rendered: `<p>${opener}</p>` },
+      content: { rendered: `<p>${opener}</p><p>With this heat wave, I wanted something cold.</p>` },
+    }
+    expect(postSummary(post)).toBe('With this heat wave, I wanted something cold.')
   })
 })
