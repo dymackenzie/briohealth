@@ -41,8 +41,15 @@ const NOISE = new Set(['style', 'script', 'noscript', 'link', 'meta', 'form'])
 /** Avada's schema.org spans, hidden by CSS we no longer ship. */
 const HIDDEN = ['rich-snippet-hidden', 'screen-reader-text', 'fusion-meta-hidden']
 
+/**
+ * Uploads from the pre-WordPress Drupal site. The files are gone (404 on the
+ * live site too), so an image pointing there would only be a broken icon.
+ */
+const DEAD_MEDIA = /\/sites\/yourbriohealth\.com\/files\//i
+
 /** Wrappers that mean nothing once they have nothing in them. */
-const DROP_WHEN_EMPTY = new Set(['div', 'p', 'span'])
+const DROP_WHEN_EMPTY = new Set(['div', 'p', 'span', 'a'])
+const INLINE = new Set(['span', 'a'])
 
 function classes(node: Element): string[] {
   const value: unknown = node.properties?.className
@@ -60,10 +67,12 @@ function isNoise(el: Element): boolean {
   if (NOISE.has(el.tagName)) return true
   if (classes(el).some((c) => HIDDEN.includes(c))) return true
 
+  if (el.tagName !== 'img') return false
+  const src = el.properties.dataOrigSrc || el.properties.src
+
   // A spacer GIF with nothing lazy-loaded behind it.
-  if (el.tagName !== 'img' || el.properties.dataOrigSrc) return false
-  const src = el.properties.src
-  return typeof src !== 'string' || src === '' || src.startsWith('data:')
+  if (typeof src !== 'string' || src === '' || src.startsWith('data:')) return true
+  return DEAD_MEDIA.test(src)
 }
 
 function dropNoise() {
@@ -143,6 +152,8 @@ function cleanAttributes() {
 }
 
 function hasContent(node: Element): boolean {
+  // An empty <a id> or <a name> is a jump target, not an empty link.
+  if (node.tagName === 'a' && (node.properties.id || node.properties.name)) return true
   return node.children.some(
     (c) => (c.type === 'text' && c.value.trim() !== '') || (c.type === 'element' && c.tagName !== 'br'),
   )
@@ -157,9 +168,13 @@ function pruneEmpty(parent: Root | Element) {
     const child = parent.children[i]
     if (child.type !== 'element') continue
     pruneEmpty(child)
-    if (DROP_WHEN_EMPTY.has(child.tagName) && !hasContent(child)) {
-      parent.children.splice(i, 1)
-    }
+    if (!DROP_WHEN_EMPTY.has(child.tagName) || hasContent(child)) continue
+
+    // "According to<a> </a><a>Chiff.com</a>": the empty inline element was
+    // the only space between two words, so leave the space behind.
+    const spaced = INLINE.has(child.tagName) && child.children.some((c) => c.type === 'text' && c.value !== '')
+    if (spaced) parent.children.splice(i, 1, { type: 'text', value: ' ' })
+    else parent.children.splice(i, 1)
   }
 }
 

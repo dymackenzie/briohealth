@@ -42,6 +42,41 @@ describe('renderContent', () => {
     expect(out).toBe('<p class="keep">Hello</p>')
   })
 
+  describe('dead Drupal-era images', () => {
+    const DEAD = 'http://www.yourbriohealth.com/sites/yourbriohealth.com/files/u6/fruits.jpg'
+
+    it('removes a bare dead image, whatever the scheme or host form', () => {
+      expect(render(`<img src="${DEAD}" alt="">`)).toBe('')
+      expect(render('<img src="https://yourbriohealth.com/sites/yourbriohealth.com/files/a.jpg" alt="">')).toBe('')
+      expect(render('<img src="/sites/yourbriohealth.com/files/a b.jpg" alt="">')).toBe('')
+    })
+
+    it('removes the paragraph a dead image leaves empty', () => {
+      expect(render(`<p><img src="${DEAD}" alt=""></p><p>Kept</p>`)).toBe('<p>Kept</p>')
+    })
+
+    it('removes a link left with nothing in it, but keeps a link with text', () => {
+      expect(render(`<p>See <a href="${DEAD}"><img src="${DEAD}" alt=""></a></p>`)).toBe('<p>See </p>')
+      expect(render(`<a href="${DEAD}"><img src="${DEAD}" alt="">Fruit chart</a>`)).toBe(`<a href="${DEAD}">Fruit chart</a>`)
+    })
+
+    it('keeps the word space an emptied inline element was carrying', () => {
+      expect(render('<p>According to<a href="https://a.b/"> </a><a href="https://a.b/">Chiff</a></p>')).toBe(
+        '<p>According to <a href="https://a.b/">Chiff</a></p>',
+      )
+      expect(render('<p>Hello<span> </span>world</p>')).toBe('<p>Hello world</p>')
+    })
+
+    it('keeps an empty anchor that is a link target', () => {
+      expect(render('<a id="top"></a><p>Body</p>')).toBe('<a id="top"></a><p>Body</p>')
+    })
+
+    it('leaves a live wp-content image alone', () => {
+      const out = render('<p><img src="https://yourbriohealth.com/wp-content/uploads/a.jpg" alt="A"></p>')
+      expect(out).toContain('src="https://yourbriohealth.com/wp-content/uploads/a.jpg"')
+    })
+  })
+
   it('keeps classes on headings and lists instead of emptying them', () => {
     const html = '<h2 class="fusion-title-heading title-heading-left">T</h2><ul class="checklist"><li class="done">x</li></ul>'
     expect(render(html)).toBe('<h2 class="title-heading-left">T</h2><ul class="checklist"><li class="done">x</li></ul>')
