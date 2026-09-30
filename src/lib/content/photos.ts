@@ -66,15 +66,20 @@ export const photos = {
     alt: 'Dr. Jeffrey Lee at a farmers market stall in Richmond',
     position: '50% 40%',
   },
+  /**
+   * The two pickleball photos stay on the WP host. Dr. Lee is at the left
+   * of both, so both crop to the right edge. The selfie only clears him at
+   * 4/5 (its right 60%); the indoor group clears him at 1/1 (its right 68%).
+   */
   pickleballGroup: {
     src: `${WP}/2025/11/pickleball-1-rotated.jpg`,
-    alt: 'The Brio Health pickleball group',
-    position: '50% 50%',
+    alt: 'Four players from the Brio Health pickleball group on an outdoor court',
+    position: '100% 50%',
   },
   pickleballCourt: {
     src: `${WP}/2025/11/pickleball2.jpg`,
-    alt: 'Players on the pickleball court',
-    position: '50% 50%',
+    alt: 'Players from a pickleball clinic holding their paddles on an indoor court',
+    position: '100% 50%',
   },
 } as const satisfies Record<string, Photo>
 

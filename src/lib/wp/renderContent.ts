@@ -3,7 +3,7 @@ import { toJsxRuntime } from 'hast-util-to-jsx-runtime'
 import rehypeParse from 'rehype-parse'
 import rehypeSanitize, { defaultSchema } from 'rehype-sanitize'
 import { unified } from 'unified'
-import { visit } from 'unist-util-visit'
+import { SKIP, visit } from 'unist-util-visit'
 import type { Element, Root } from 'hast'
 
 import { WP_HOST } from './client'
@@ -221,10 +221,69 @@ const processor = unified()
   .use(dropEmpty)
   .use(rehypeSanitize, schema)
 
-export function renderContent(html: string) {
+const MEDIA = new Set(['img', 'picture', 'video', 'audio', 'iframe', 'figure'])
+
+function dropMedia(tree: Root) {
+  visit(tree, 'element', (node, index, parent) => {
+    if (!parent || index === undefined || !MEDIA.has(node.tagName)) return
+    parent.children.splice(index, 1)
+    return index
+  })
+  // The frames and wrappers that held them are empty now.
+  pruneEmpty(tree)
+}
+
+function textContent(node: Root | Element): string {
+  const parts: string[] = []
+  visit(node, 'text', (text) => {
+    parts.push(text.value)
+  })
+  return parts.join('').replace(/\s+/g, ' ').trim()
+}
+
+/** WordPress pages repeat their own title as the first heading of the body. */
+function dropLeadingTitle(tree: Root, title: string) {
+  const first = tree.children.findIndex((c) => c.type === 'element')
+  const node = tree.children[first]
+  if (node?.type !== 'element' || !/^h[1-6]$/.test(node.tagName)) return
+  if (textContent(node).toLowerCase() === title.trim().toLowerCase()) tree.children.splice(first, 1)
+}
+
+export function renderContent(
+  html: string,
+  {
+    title,
+    media = true,
+  }: {
+    /** The page title, dropped when the body opens by repeating it. */
+    title?: string
+    /** false strips images, video and embeds, for a page that places its own photos. */
+    media?: boolean
+  } = {},
+) {
   if (!html?.trim()) return null
   const tree = processor.runSync(processor.parse(html)) as Root
+  if (title) dropLeadingTitle(tree, title)
+  if (!media) dropMedia(tree)
   return toJsxRuntime(tree, { Fragment, jsx, jsxs })
+}
+
+/**
+ * The text of every paragraph, in order, each once. For a page whose layout
+ * is ours and only the words come from WordPress. Avada can carry a second,
+ * mobile-only copy of a row (reworded, so not a plain repeat) that CSS we
+ * don't ship hides on desktop; the desktop copy is the one kept.
+ */
+export function paragraphsOf(html: string): string[] {
+  if (!html?.trim()) return []
+  const found: string[] = []
+  visit(parser.parse(html), 'element', (node) => {
+    if (classes(node).includes('fusion-no-large-visibility')) return SKIP
+    if (node.tagName !== 'p') return
+    const text = textContent(node)
+    if (text && !found.includes(text)) found.push(text)
+  })
+  return found
 }
 
 const parser = unified().use(rehypeParse, { fragment: true })

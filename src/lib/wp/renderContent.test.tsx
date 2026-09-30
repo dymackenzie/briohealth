@@ -1,6 +1,6 @@
 import { renderToStaticMarkup } from 'react-dom/server'
 import { describe, expect, it, vi } from 'vitest'
-import { decodeTitle, plainExcerpt, renderContent } from './renderContent'
+import { decodeTitle, paragraphsOf, plainExcerpt, renderContent } from './renderContent'
 
 function render(html: string) {
   return renderToStaticMarkup(<>{renderContent(html)}</>)
@@ -132,6 +132,51 @@ describe('renderContent', () => {
     expect(out).not.toContain('onclick')
     expect(out).not.toContain('onerror')
     expect(out).not.toContain('javascript:')
+  })
+})
+
+describe('renderContent options', () => {
+  const page =
+    '<div class="fusion-title"><h1>Pickleball</h1></div><p>Lessons.</p>' +
+    '<div class="fusion-imageframe"><span class="imageframe-1"><img src="https://yourbriohealth.com/wp-content/uploads/a.jpg" alt=""></span></div>' +
+    '<div class="video-wrapper"><video controls><source src="https://yourbriohealth.com/v.mp4" type="video/mp4"></video></div>' +
+    '<iframe src="https://www.youtube.com/embed/x"></iframe><h2>Coaching</h2>'
+
+  it('drops a leading heading that repeats the title, and only that', () => {
+    const out = renderToStaticMarkup(<>{renderContent(page, { title: ' pickleball ' })}</>)
+    expect(out).not.toContain('>Pickleball<')
+    expect(out).toContain('<h2>Coaching</h2>')
+    expect(renderToStaticMarkup(<>{renderContent(page, { title: 'Coaching' })}</>)).toContain('<h2>Coaching</h2>')
+  })
+
+  it('strips media and the wrappers it leaves empty when media is false', () => {
+    const out = renderToStaticMarkup(<>{renderContent(page, { media: false })}</>)
+    expect(out).toBe('<h2>Pickleball</h2><p>Lessons.</p><h2>Coaching</h2>')
+  })
+
+  it('keeps media by default', () => {
+    const out = render(page)
+    expect(out).toContain('<img')
+    expect(out).toContain('<video')
+    expect(out).toContain('<iframe')
+  })
+})
+
+describe('paragraphsOf', () => {
+  it('returns each paragraph once, whitespace collapsed, entities decoded', () => {
+    const html = '<p>Hello,  my name\n is Jeff &amp; I</p><p>Second.</p><p>Hello, my name is Jeff &amp; I</p><p> </p>'
+    expect(paragraphsOf(html)).toEqual(['Hello, my name is Jeff & I', 'Second.'])
+  })
+
+  it("skips Avada's mobile-only copy of a row", () => {
+    const html =
+      '<p><div class="fusion-fullwidth fusion-no-small-visibility"><p>Desktop words.</p></div></p>' +
+      '<div class="fusion-fullwidth fusion-no-large-visibility"><p>Mobile words.</p></div><p>After.</p>'
+    expect(paragraphsOf(html)).toEqual(['Desktop words.', 'After.'])
+  })
+
+  it('returns nothing for empty input', () => {
+    expect(paragraphsOf('')).toEqual([])
   })
 })
 
