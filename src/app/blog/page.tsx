@@ -6,22 +6,26 @@ import { PostList } from '@/components/blog/PostList'
 import { PageHero } from '@/components/layout/PageHero'
 import { Button } from '@/components/ui/Button'
 import { pages } from '@/lib/content/pages'
-import { buildMetadata } from '@/lib/seo'
+import { buildMetadata, paged } from '@/lib/seo'
 import { getCategories, getPosts, parsePage } from '@/lib/wp/queries'
 
 export const revalidate = 3600
 
-export const metadata = buildMetadata({
-  title: 'Blog',
-  description: 'Health tips, recipes and clinic news from Brio Health in Richmond, BC.',
-  path: '/blog',
-})
+type SearchParams = Promise<{ page?: string | string[] }>
+
+export async function generateMetadata(props: { searchParams: SearchParams }) {
+  const { page } = await props.searchParams
+  return buildMetadata({
+    ...paged('Blog', '/blog', parsePage(page)),
+    description: 'Health tips, recipes and clinic news from Brio Health in Richmond, BC.',
+  })
+}
 
 /**
  * Reads `?page=`, so it renders per request; the WordPress reads behind it
  * stay cached under their tags.
  */
-export default async function BlogIndex(props: { searchParams: Promise<{ page?: string | string[] }> }) {
+export default async function BlogIndex(props: { searchParams: SearchParams }) {
   const { page: raw } = await props.searchParams
   const page = parsePage(raw)
 

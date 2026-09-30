@@ -5,14 +5,17 @@ import { Pagination } from '@/components/blog/Pagination'
 import { PostList } from '@/components/blog/PostList'
 import { PageHero } from '@/components/layout/PageHero'
 import { Button } from '@/components/ui/Button'
-import { buildMetadata } from '@/lib/seo'
+import { buildMetadata, paged } from '@/lib/seo'
 import { getCategories, getCategory, getPosts, parsePage } from '@/lib/wp/queries'
 import { decodeTitle, plainExcerpt } from '@/lib/wp/renderContent'
 
 export const revalidate = 3600
 
-export async function generateMetadata(props: { params: Promise<{ slug: string }> }) {
-  const { slug } = await props.params
+export async function generateMetadata(props: {
+  params: Promise<{ slug: string }>
+  searchParams: Promise<{ page?: string | string[] }>
+}) {
+  const [{ slug }, { page }] = await Promise.all([props.params, props.searchParams])
   const category = await getCategory(slug)
   if (!category)
     return buildMetadata({
@@ -22,9 +25,8 @@ export async function generateMetadata(props: { params: Promise<{ slug: string }
     })
 
   return buildMetadata({
-    title: decodeTitle(category.name),
+    ...paged(decodeTitle(category.name), `/blog/category/${category.slug}`, parsePage(page)),
     description: plainExcerpt(category.description ?? '', 160) || `Posts filed under ${decodeTitle(category.name)}.`,
-    path: `/blog/category/${category.slug}`,
   })
 }
 

@@ -1,5 +1,5 @@
 import { describe, expect, it } from 'vitest'
-import { buildMetadata } from './seo'
+import { buildMetadata, paged } from './seo'
 import { absoluteUrl, defaultDescription } from './site'
 
 describe('buildMetadata', () => {
@@ -41,5 +41,19 @@ describe('buildMetadata', () => {
   it('sets noindex only when asked', () => {
     expect(buildMetadata({ title: 'x' }).robots).toBeUndefined()
     expect(buildMetadata({ title: 'x', noindex: true }).robots).toEqual({ index: false, follow: false })
+  })
+})
+
+describe('paged', () => {
+  it('leaves the first page alone', () => {
+    expect(paged('Blog', '/blog', 1)).toEqual({ title: 'Blog', path: '/blog' })
+  })
+
+  it('gives a later page its own canonical and title', () => {
+    expect(paged('Recipes', '/blog/category/recipes', 3)).toEqual({
+      title: 'Recipes, page 3',
+      path: '/blog/category/recipes?page=3',
+    })
+    expect(buildMetadata(paged('Blog', '/blog', 2)).alternates?.canonical).toBe(absoluteUrl('/blog?page=2'))
   })
 })

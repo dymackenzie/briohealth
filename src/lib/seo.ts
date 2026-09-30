@@ -58,3 +58,12 @@ export function buildMetadata({
     },
   }
 }
+
+/**
+ * A listing page past the first is a page of its own to a search engine,
+ * with its own canonical and a title that says which page it is.
+ */
+export function paged(title: string, path: string, page: number): { title: string; path: string } {
+  if (page <= 1) return { title, path }
+  return { title: `${title}, page ${page}`, path: `${path}?page=${page}` }
+}
