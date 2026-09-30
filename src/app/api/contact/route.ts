@@ -1,0 +1,74 @@
+import { NextResponse } from 'next/server'
+
+import { validateContact } from '@/lib/forms'
+import { site } from '@/lib/site'
+
+// Enough to stop a bot loop; resets on cold start, which is fine for a
+// clinic contact form.
+const seen = new Map<string, number[]>()
+const WINDOW = 60_000
+const LIMIT = 3
+
+function rateLimited(ip: string) {
+  const now = Date.now()
+  for (const [key, hits] of seen) {
+    const live = hits.filter((t) => now - t < WINDOW)
+    if (live.length) seen.set(key, live)
+    else seen.delete(key)
+  }
+  const hits = seen.get(ip) ?? []
+  hits.push(now)
+  seen.set(ip, hits)
+  return hits.length > LIMIT
+}
+
+export async function POST(request: Request) {
+  const key = process.env.RESEND_API_KEY
+  if (!key) {
+    console.error('[contact] RESEND_API_KEY is not set')
+    return NextResponse.json({ error: 'The form is not set up yet. Please call us instead.' }, { status: 500 })
+  }
+
+  const ip = request.headers.get('x-forwarded-for')?.split(',')[0]?.trim() ?? 'unknown'
+  if (rateLimited(ip)) {
+    return NextResponse.json({ error: 'Too many messages. Please try again in a minute.' }, { status: 429 })
+  }
+
+  let body: unknown
+  try {
+    body = await request.json()
+  } catch {
+    return NextResponse.json({ error: 'Invalid request.' }, { status: 400 })
+  }
+
+  const result = validateContact(body)
+  if (!result.ok) return NextResponse.json({ error: result.error }, { status: 400 })
+  if (result.spam) return NextResponse.json({ ok: true })
+
+  const { name, email, phone, message } = result.data
+  const text = [`Name: ${name}`, `Email: ${email}`, phone && `Phone: ${phone}`, '', message].filter(Boolean).join('\n')
+
+  try {
+    const response = await fetch('https://api.resend.com/emails', {
+      method: 'POST',
+      headers: { Authorization: `Bearer ${key}`, 'Content-Type': 'application/json' },
+      body: JSON.stringify({
+        from: process.env.CONTACT_FROM ?? 'Brio Health <onboarding@resend.dev>',
+        to: [process.env.CONTACT_TO ?? site.email],
+        reply_to: email,
+        subject: `Website enquiry from ${name}`,
+        text,
+      }),
+    })
+
+    if (!response.ok) {
+      console.error('[contact] resend rejected', response.status, await response.text())
+      return NextResponse.json({ error: 'We could not send that. Please call us instead.' }, { status: 502 })
+    }
+  } catch (error) {
+    console.error('[contact] send failed', error)
+    return NextResponse.json({ error: 'We could not send that. Please call us instead.' }, { status: 502 })
+  }
+
+  return NextResponse.json({ ok: true })
+}

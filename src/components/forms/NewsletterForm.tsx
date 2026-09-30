@@ -1,53 +1,78 @@
 'use client'
 
-import { useState } from 'react'
+import { useEffect, useRef, useState } from 'react'
 import { WarningCircle } from '@phosphor-icons/react'
 
 import { Button } from '@/components/ui/Button'
+import { validateNewsletter } from '@/lib/forms'
 
 type State = 'idle' | 'sending' | 'sent' | 'error'
 
+// fetch rejecting says "Failed to fetch"; nobody should read that.
+const UNREACHABLE = "We couldn't sign you up just now. Please try again in a minute."
+
 /**
  * One field, label above it, error below it in words and an icon (no
- * second colour on the site, so state is never colour alone).
+ * second colour on the site, so state is never colour alone). The check is
+ * validateNewsletter, the same one /api/newsletter runs, and the browser's
+ * own bubble is off so its wording never differs from ours.
  */
 export function NewsletterForm() {
   const [state, setState] = useState<State>('idle')
   const [message, setMessage] = useState('')
+  const sentRef = useRef<HTMLParagraphElement>(null)
+
+  // The form, and the button that had focus, are gone; keep focus somewhere.
+  useEffect(() => {
+    if (state === 'sent') sentRef.current?.focus()
+  }, [state])
 
   async function onSubmit(event: React.FormEvent<HTMLFormElement>) {
     event.preventDefault()
+    const form = event.currentTarget
+
+    const result = validateNewsletter({ email: new FormData(form).get('email') })
+    if (!result.ok) {
+      setMessage(result.error)
+      setState('error')
+      form.querySelector<HTMLElement>('[name="email"]')?.focus()
+      return
+    }
+
     setState('sending')
-
-    const email = new FormData(event.currentTarget).get('email')
-
     try {
       const response = await fetch('/api/newsletter', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ email }),
+        body: JSON.stringify({ email: result.email }),
       })
-      const body = await response.json().catch(() => ({}))
-      if (!response.ok) throw new Error(body.error ?? 'Could not subscribe.')
+      const body = await response.json().catch(() => null)
+      if (!response.ok) {
+        // The route's own messages are plain words; anything else (a proxy
+        // page, a crash) gets the fixed line.
+        setMessage(typeof body?.error === 'string' && body.error ? body.error : UNREACHABLE)
+        setState('error')
+        return
+      }
 
-      setMessage(body.message ?? "You're on the list. Thanks.")
+      setMessage(typeof body?.message === 'string' && body.message ? body.message : "You're on the list. Thanks.")
       setState('sent')
-    } catch (err) {
-      setMessage(err instanceof Error ? err.message : 'Could not subscribe.')
+    } catch {
+      setMessage(UNREACHABLE)
       setState('error')
     }
   }
 
   if (state === 'sent') {
     return (
-      <p role="status" className="text-body">
+      <p ref={sentRef} tabIndex={-1} role="status" className="text-body">
         {message}
       </p>
     )
   }
 
   return (
-    <form onSubmit={onSubmit} className="grid gap-3">
+    <form onSubmit={onSubmit} noValidate className="grid gap-3">
       <label htmlFor="newsletter-email" className="text-small font-medium">
         Email address
       </label>

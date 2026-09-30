@@ -4,25 +4,16 @@ import { useEffect, useRef, useState, type ReactNode } from 'react'
 import { WarningCircle } from '@phosphor-icons/react'
 
 import { Button } from '@/components/ui/Button'
-import { EMAIL_PATTERN } from '@/lib/site'
+import { type ContactField, validateContact } from '@/lib/forms'
 
 type State = 'idle' | 'sending' | 'sent' | 'error'
-type FieldName = 'name' | 'email' | 'message'
-type Errors = Partial<Record<FieldName, string>>
 
 const input =
   'w-full min-w-0 rounded-brand border border-ink-soft bg-paper px-4 py-3 text-ink ' +
   'aria-[invalid=true]:border-2 aria-[invalid=true]:border-ink'
 
-function check(data: FormData): Errors {
-  const value = (key: FieldName) => String(data.get(key) ?? '').trim()
-  const errors: Errors = {}
-  if (!value('name')) errors.name = 'Please tell us your name.'
-  if (!value('email')) errors.email = 'Please add your email address.'
-  else if (!EMAIL_PATTERN.test(value('email'))) errors.email = 'That email address looks incomplete.'
-  if (!value('message')) errors.message = 'Please write a message.'
-  return errors
-}
+// One message covers every marked field, so it has one id to point at.
+const FIELD_ERROR_ID = 'contact-field-error'
 
 /** An error in words and an icon: there is no second colour to carry it. */
 function ErrorText({ id, children }: { id: string; children: ReactNode }) {
@@ -35,14 +26,17 @@ function ErrorText({ id, children }: { id: string; children: ReactNode }) {
 }
 
 /**
- * Labels above inputs, each error below its field, a honeypot real people
- * never see. The browser's own bubbles are off so every error looks and
- * reads the same; the first field with a problem takes focus. Success
- * replaces the form and takes focus itself, so it isn't lost.
+ * Labels above inputs, a honeypot real people never see. The check is
+ * validateContact, the same one /api/contact runs, so the two can never
+ * disagree. The browser's own bubbles are off so every error looks and
+ * reads the same: every field with a problem is marked, the message sits
+ * below the first of them, and that field takes focus. Success replaces the
+ * form and takes focus itself, so it isn't lost.
  */
 export function ContactForm({ phone, phoneHref, note }: { phone: string; phoneHref: string; note: string }) {
   const [state, setState] = useState<State>('idle')
-  const [errors, setErrors] = useState<Errors>({})
+  const [invalid, setInvalid] = useState<ContactField[]>([])
+  const [problem, setProblem] = useState('')
   const [failure, setFailure] = useState('')
   const sentRef = useRef<HTMLDivElement>(null)
 
@@ -57,14 +51,21 @@ export function ContactForm({ phone, phoneHref, note }: { phone: string; phoneHr
     const form = event.currentTarget
     const data = new FormData(form)
 
-    const found = check(data)
-    setErrors(found)
+    const result = validateContact(Object.fromEntries(data))
     setFailure('')
-    const first = Object.keys(found)[0]
-    if (first) {
-      form.querySelector<HTMLElement>(`[name="${first}"]`)?.focus()
+    if (!result.ok) {
+      const fields = result.fields ?? []
+      setInvalid(fields)
+      setProblem(result.error)
+      if (fields.length) {
+        form.querySelector<HTMLElement>(`[name="${fields[0]}"]`)?.focus()
+      } else {
+        setFailure(result.error)
+        setState('error')
+      }
       return
     }
+    setInvalid([])
 
     setState('sending')
     try {
@@ -87,8 +88,9 @@ export function ContactForm({ phone, phoneHref, note }: { phone: string; phoneHr
     }
   }
 
-  function clear(name: FieldName) {
-    if (errors[name]) setErrors((current) => ({ ...current, [name]: undefined }))
+  // Typing in a marked field unmarks it; the message moves to the next one.
+  function clear(name: ContactField) {
+    if (invalid.includes(name)) setInvalid((current) => current.filter((field) => field !== name))
   }
 
   if (state === 'sent') {
@@ -106,7 +108,10 @@ export function ContactForm({ phone, phoneHref, note }: { phone: string; phoneHr
     )
   }
 
-  const describe = (name: FieldName) => (errors[name] ? `contact-${name}-error` : undefined)
+  const isInvalid = (name: ContactField) => invalid.includes(name) || undefined
+  const describe = (name: ContactField) => (invalid.includes(name) ? FIELD_ERROR_ID : undefined)
+  const errorBelow = (name: ContactField) =>
+    invalid[0] === name && <ErrorText id={FIELD_ERROR_ID}>{problem}</ErrorText>
 
   return (
     <form onSubmit={onSubmit} noValidate className="relative grid gap-6">
@@ -120,12 +125,12 @@ export function ContactForm({ phone, phoneHref, note }: { phone: string; phoneHr
             name="name"
             required
             autoComplete="name"
-            aria-invalid={Boolean(errors.name) || undefined}
+            aria-invalid={isInvalid('name')}
             aria-describedby={describe('name')}
             onChange={() => clear('name')}
             className={input}
           />
-          {errors.name && <ErrorText id="contact-name-error">{errors.name}</ErrorText>}
+          {errorBelow('name')}
         </div>
         <div className="grid content-start gap-2">
           <label htmlFor="contact-email" className="font-medium">
@@ -137,12 +142,12 @@ export function ContactForm({ phone, phoneHref, note }: { phone: string; phoneHr
             type="email"
             required
             autoComplete="email"
-            aria-invalid={Boolean(errors.email) || undefined}
+            aria-invalid={isInvalid('email')}
             aria-describedby={describe('email')}
             onChange={() => clear('email')}
             className={input}
           />
-          {errors.email && <ErrorText id="contact-email-error">{errors.email}</ErrorText>}
+          {errorBelow('email')}
         </div>
       </div>
 
@@ -162,12 +167,12 @@ export function ContactForm({ phone, phoneHref, note }: { phone: string; phoneHr
           name="message"
           required
           rows={6}
-          aria-invalid={Boolean(errors.message) || undefined}
+          aria-invalid={isInvalid('message')}
           aria-describedby={describe('message')}
           onChange={() => clear('message')}
           className={input}
         />
-        {errors.message && <ErrorText id="contact-message-error">{errors.message}</ErrorText>}
+        {errorBelow('message')}
       </div>
 
       {/* Honeypot. Real people never see it; bots fill everything. */}
