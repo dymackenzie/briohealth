@@ -31,9 +31,20 @@ const DOTS: readonly (readonly [number, number, number])[] = [
   [0, 1, 0.04],
 ]
 
-/** The i-dot sits near the bottom of a 100x100 box; the fan fills the top. */
-export const BURST_ORIGIN = { x: 50, y: 92 }
+/**
+ * The point the fan radiates from, fitted to the logo. It sits below the
+ * droplet, not on it; the 100x72 box hugs the ink with about 2 units spare.
+ */
+export const BURST_ORIGIN = { x: 50, y: 79 }
 const R = 74
+
+/** The logo's own i-dot, mapped into this box with the same origin and R. */
+const DROPLET =
+  'M49.8 40.6 C50.9 41.6 51.7 42.6 52.4 43.8 C52.7 44.2 52.9 44.6 53.2 44.9 C53.3 45.1 53.4 45.3 53.5 45.5 ' +
+  'C53.9 46.0 54.2 46.5 54.6 47.1 C55.8 48.8 56.9 50.5 57.8 52.4 C57.9 52.6 58.0 52.7 58.1 52.9 ' +
+  'C59.6 55.9 60.0 59.9 59.0 63.1 C57.7 66.0 55.7 67.7 52.8 68.9 C49.7 69.7 47.3 69.0 44.6 67.5 ' +
+  'C42.7 66.3 41.3 64.3 40.7 62.2 C39.5 55.7 43.0 50.5 46.5 45.5 C46.9 44.9 47.3 44.4 47.6 43.8 ' +
+  'C48.4 42.7 49.1 41.7 49.8 40.6Z'
 
 const POINTS = DOTS.map(([deg, radius, size]) => {
   const angle = ((deg - 90) * Math.PI) / 180
@@ -51,13 +62,13 @@ export function DotBurst({
   animate,
 }: {
   className?: string
-  /** The teardrop i-dot at the origin. */
+  /** The teardrop i-dot at the foot of the fan. */
   droplet?: boolean
   animate?: 'load' | 'reveal'
 }) {
   return (
     <svg
-      viewBox="0 0 100 100"
+      viewBox="0 0 100 72"
       fill="currentColor"
       aria-hidden="true"
       focusable="false"
@@ -73,9 +84,7 @@ export function DotBurst({
           style={{ '--i': i } as CSSProperties}
         />
       ))}
-      {droplet && (
-        <path d="M50 70 C50 70 43.5 80 43.5 86 a6.5 6.5 0 0 0 13 0 c0-6-6.5-16-6.5-16z" />
-      )}
+      {droplet && <path d={DROPLET} />}
     </svg>
   )
 }
