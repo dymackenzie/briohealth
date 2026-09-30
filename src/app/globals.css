@@ -72,6 +72,21 @@
   [data-surface='teal'] :focus-visible {
     outline-color: var(--color-paper);
   }
+
+  /* The header's mobile menu. Without JavaScript the toggle would do
+   * nothing, so it is hidden and the list stays open under the header row.
+   * Base layer, so the `lg:hidden` utility still wins at 1024 and up. */
+  [data-menu-toggle] {
+    display: none;
+  }
+
+  .js [data-menu-toggle] {
+    display: inline-flex;
+  }
+
+  .js [data-mobile-nav]:not([data-open]) {
+    display: none;
+  }
 }
 
 /* Layout */

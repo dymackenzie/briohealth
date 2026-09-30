@@ -13,6 +13,10 @@ import { nav, type SiteSettings } from '@/lib/site'
  * Dropdowns open on hover and focus-within so keyboard users get the same
  * thing without a focus trap. The dropdown carries the site's only shadow.
  *
+ * Below 1024 the menu is always in the markup. With JavaScript it is hidden
+ * until the toggle opens it; without JavaScript there is no toggle and the
+ * list shows under the header row (rules in globals.css, behind `.js`).
+ *
  * The logo is the stacked lockup, so its width is only 1.2x its height. At
  * 56px tall it is 67px wide, the HEALTH line is legible, and it leaves 8px
  * above and below inside the 72px bar.
@@ -65,9 +69,10 @@ export function Header({ settings }: { settings: SiteSettings }) {
         </nav>
 
         <div className="flex items-center gap-3">
-          <Button href={settings.bookingUrl} className="hidden md:inline-flex">
-            {settings.ctaLabel}
-          </Button>
+          {/* Wrapped: Button's own inline-flex would beat a `hidden` passed to it. */}
+          <div className="hidden md:block">
+            <Button href={settings.bookingUrl}>{settings.ctaLabel}</Button>
+          </div>
 
           <button
             type="button"
@@ -75,6 +80,7 @@ export function Header({ settings }: { settings: SiteSettings }) {
             aria-expanded={open}
             aria-controls="mobile-nav"
             aria-label={open ? 'Close menu' : 'Open menu'}
+            data-menu-toggle
             className="rounded-brand p-2 lg:hidden"
           >
             {open ? <X size={28} aria-hidden /> : <List size={28} aria-hidden />}
@@ -82,33 +88,39 @@ export function Header({ settings }: { settings: SiteSettings }) {
         </div>
       </div>
 
-      {open && (
-        <nav id="mobile-nav" aria-label="Primary" className="container-x border-t border-grey pt-4 pb-6 lg:hidden">
-          <ul className="flex flex-col gap-1">
-            {nav.map((item) => (
-              <li key={item.href}>
-                <Link href={item.href} onClick={() => setOpen(false)} className="block py-2.5 font-medium">
-                  {item.label}
-                </Link>
-                {item.children && (
-                  <ul className="mb-2 ml-4 flex flex-col border-l border-grey pl-4">
-                    {item.children.map((child) => (
-                      <li key={child.href + child.label}>
-                        <Link href={child.href} onClick={() => setOpen(false)} className="block py-2 text-ink-soft">
-                          {child.label}
-                        </Link>
-                      </li>
-                    ))}
-                  </ul>
-                )}
-              </li>
-            ))}
-          </ul>
-          <Button href={settings.bookingUrl} className="mt-4 w-full md:hidden">
+      <nav
+        id="mobile-nav"
+        aria-label="Primary"
+        data-mobile-nav
+        data-open={open || undefined}
+        className="container-x border-t border-grey pt-4 pb-6 lg:hidden"
+      >
+        <ul className="flex flex-col gap-1">
+          {nav.map((item) => (
+            <li key={item.href}>
+              <Link href={item.href} onClick={() => setOpen(false)} className="block py-2.5 font-medium">
+                {item.label}
+              </Link>
+              {item.children && (
+                <ul className="mb-2 ml-4 flex flex-col border-l border-grey pl-4">
+                  {item.children.map((child) => (
+                    <li key={child.href + child.label}>
+                      <Link href={child.href} onClick={() => setOpen(false)} className="block py-2 text-ink-soft">
+                        {child.label}
+                      </Link>
+                    </li>
+                  ))}
+                </ul>
+              )}
+            </li>
+          ))}
+        </ul>
+        <div className="mt-4 md:hidden">
+          <Button href={settings.bookingUrl} className="w-full">
             {settings.ctaLabel}
           </Button>
-        </nav>
-      )}
+        </div>
+      </nav>
     </header>
   )
 }
