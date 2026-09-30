@@ -1,0 +1,167 @@
+/**
+ * Site settings. NAP is repeated in the footer, the contact page, the close
+ * and the JSON-LD, and local SEO punishes inconsistency, so it lives here
+ * once. This object is the fallback for /wp-json/brio/v1/settings; the
+ * shape mirrors that endpoint field for field.
+ */
+
+export type Day =
+  | 'Monday'
+  | 'Tuesday'
+  | 'Wednesday'
+  | 'Thursday'
+  | 'Friday'
+  | 'Saturday'
+  | 'Sunday'
+
+export interface HoursRow {
+  days: Day[]
+  /** 24h 'HH:MM' */
+  opens: string
+  closes: string
+}
+
+export interface SiteSettings {
+  name: string
+  legalName: string
+  tagline: string
+  url: string
+  phone: string
+  phoneHref: string
+  email: string
+  address: {
+    street: string
+    locality: string
+    region: string
+    postal: string
+    country: string
+  }
+  mapUrl: string
+  /** Physical hours only. */
+  hours: HoursRow[]
+  /** Shown on the page, never in JSON-LD: nobody is physically there. */
+  saturdayNote: string
+  bookingUrl: string
+  /** The one booking label, everywhere. */
+  ctaLabel: string
+  social: { label: string; href: string }[]
+  announcement: { text: string; href: string | null } | null
+  ogImage: { url: string; width: number; height: number; alt: string }
+  foundedYear: number
+}
+
+export const site: SiteSettings = {
+  name: 'Brio Health',
+  legalName: 'Brio Health Inc.',
+  tagline: 'Naturopathic medicine, acupuncture and I.V. therapy in Richmond, BC',
+  url: process.env.NEXT_PUBLIC_SITE_URL ?? 'https://yourbriohealth.com',
+
+  phone: '(604) 271-9355',
+  phoneHref: 'tel:+16042719355',
+  email: 'info@yourbriohealth.com',
+
+  address: {
+    street: '2168-3779 Sexsmith Road',
+    locality: 'Richmond',
+    region: 'BC',
+    postal: 'V6X 3Z9',
+    country: 'CA',
+  },
+  mapUrl: 'https://maps.google.com/?q=3779+Sexsmith+Road+Richmond+BC+V6X+3Z9',
+
+  /**
+   * Confirmed by the client on the phone, 2026-09-04. Closed Wednesday,
+   * Friday and Sunday; unlisted days read as closed, which is the convention
+   * Google follows too.
+   */
+  hours: [{ days: ['Monday', 'Tuesday', 'Thursday'], opens: '10:00', closes: '18:00' }],
+  saturdayNote: 'Remote appointments every other Saturday. Ask when you book.',
+
+  /** Jane. Never embedded; their own flow converts better. */
+  bookingUrl: 'https://yourbriohealth.janeapp.com',
+  ctaLabel: 'Book a consultation',
+
+  social: [
+    { label: 'Instagram', href: 'https://www.instagram.com/briohealth/' },
+    { label: 'Facebook', href: 'https://www.facebook.com/briohealth/' },
+    { label: 'X', href: 'https://x.com/briohealth' },
+  ],
+
+  announcement: null,
+
+  ogImage: { url: '/brio_social_2.png', width: 1081, height: 1081, alt: 'Brio Health' },
+
+  foundedYear: 2006,
+}
+
+/**
+ * The one default meta description. The root layout and the homepage both
+ * read it, and `buildMetadata` falls back to it, so it is written once.
+ */
+export const defaultDescription = `Naturopathic medicine, acupuncture and I.V. therapy in Richmond, BC, with Dr. Jeffrey Lee, N.D., R.Ac. Root-cause care since ${site.foundedYear}.`
+
+export interface NavItem {
+  label: string
+  href: string
+  children?: NavItem[]
+}
+
+/** Structural, changes rarely, so it lives in code rather than the CMS. */
+export const nav: NavItem[] = [
+  {
+    label: 'Services',
+    href: '/services',
+    children: [
+      { label: 'Naturopathic Medicine', href: '/services/naturopathic' },
+      { label: 'Acupuncture', href: '/services/acupuncture' },
+      { label: 'I.V. Therapy', href: '/services/iv-therapy' },
+      { label: 'All services', href: '/services' },
+    ],
+  },
+  {
+    label: 'About',
+    href: '/about',
+    children: [
+      { label: 'Dr. Jeffrey Lee', href: '/about' },
+      { label: 'Pickleball & Community', href: '/pickleball' },
+    ],
+  },
+  { label: 'Blog', href: '/blog' },
+  { label: 'Contact', href: '/contact' },
+]
+
+export const footerLegal: NavItem[] = [
+  { label: 'Privacy Policy', href: '/privacy-policy' },
+  { label: 'Terms of Use', href: '/terms-of-use' },
+]
+
+/** Good enough to catch a typo; the confirmation email does the real check. */
+export const EMAIL_PATTERN = /^[^@\s]+@[^@\s]+\.[^@\s]+$/
+
+/**
+ * Canonical absolute URL. Sitemap, OG tags and the RSS guid must all agree,
+ * so every absolute URL is built here rather than by concatenating
+ * `site.url`: URL resolution cannot produce a `//` from a trailing slash.
+ */
+export function absoluteUrl(path: string): string {
+  return new URL(path, site.url).toString()
+}
+
+/** '10:00' -> '10am', '18:30' -> '6:30pm'. */
+export function formatTime(value: string): string {
+  const [h, m] = value.split(':').map(Number)
+  const suffix = h < 12 ? 'am' : 'pm'
+  const hour = h % 12 === 0 ? 12 : h % 12
+  return m ? `${hour}:${String(m).padStart(2, '0')}${suffix}` : `${hour}${suffix}`
+}
+
+/** ['Monday','Tuesday','Thursday'] -> 'Monday, Tuesday and Thursday'. */
+export function formatDays(days: readonly string[]): string {
+  if (days.length < 2) return days.join('')
+  return `${days.slice(0, -1).join(', ')} and ${days[days.length - 1]}`
+}
+
+export function addressLine(settings: SiteSettings): string {
+  const { street, locality, region, postal } = settings.address
+  return `${street}, ${locality}, ${region} ${postal}`
+}
