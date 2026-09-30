@@ -29,14 +29,6 @@
   }
 }
 
-@media print {
-  .js [data-reveal],
-  .js .dotburst[data-animate] circle {
-    opacity: 1;
-    transform: none;
-  }
-}
-
 /* Hero entrance, once: the field wipes in from the left, then the headline,
  * sentence and CTA rise in turn. The brand colour arrives first. On lg the
  * copy wrapper is `display: contents` and has no box, so its children move.
@@ -189,5 +181,26 @@
         transform: none;
       }
     }
+  }
+}
+
+/* Print shows everything in its final state, whether or not it ever
+ * scrolled into view, and the scroll-linked layers sit at their final state
+ * whatever the scroll position. No transition, so nothing prints mid-fade.
+ * Last in the file so it beats every hide rule above at equal specificity;
+ * keep it last. */
+
+@media print {
+  .js [data-reveal],
+  .js .dotburst[data-animate] circle {
+    opacity: 1;
+    transform: none;
+    transition: none;
+  }
+
+  .plan-line,
+  .hero-drift,
+  .close-field {
+    animation: none;
   }
 }
