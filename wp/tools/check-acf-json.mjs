@@ -98,8 +98,8 @@ for (const [groupKey, paths] of Object.entries(readers)) {
 const days = byPath.group_brio_settings?.['hours.days']
 if (days && (days.type !== 'checkbox' || days.return_format !== 'value')) problems.push('settings hours.days must be a checkbox returning values')
 const kind = byPath.group_brio_service?.['fees.kind']
-if (kind && (kind.type !== 'select' || kind.required !== 1 || kind.return_format !== 'value' || Object.keys(kind.choices).join() !== 'initial,follow-up,treatment')) {
-  problems.push('service fees.kind must be a required select returning initial, follow-up or treatment (FeeKind)')
+if (kind && (kind.type !== 'select' || kind.required !== 1 || kind.return_format !== 'value' || kind.allow_null !== 1 || kind.default_value !== '' || Object.keys(kind.choices).join() !== 'initial,follow-up,treatment')) {
+  problems.push('service fees.kind must be a required select with no default (allow_null 1, default_value empty) returning initial, follow-up or treatment (FeeKind)')
 }
 const firstVisit = byPath.group_brio_home_first_visit ?? {}
 for (const path of Object.keys(firstVisit)) if (/fee|price|amount/.test(path) && path !== 'fee_service') problems.push(`home first visit: ${path} looks like a second place to type a fee`)

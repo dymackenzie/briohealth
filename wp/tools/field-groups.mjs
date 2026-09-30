@@ -51,7 +51,7 @@ export const f = {
   select: (group, name, label, instructions, choices, o = {}) =>
     base(group, name, label, 'select', instructions, {
       width: o.width,
-      props: { required: o.required ? 1 : 0, choices, default_value: o.default ?? Object.keys(choices)[0], allow_null: 0, multiple: 0, ui: 0, return_format: 'value', ajax: 0, placeholder: '' },
+      props: { required: o.required ? 1 : 0, choices, default_value: o.allowNull ? '' : o.default ?? Object.keys(choices)[0], allow_null: o.allowNull ? 1 : 0, multiple: 0, ui: 0, return_format: 'value', ajax: 0, placeholder: o.placeholder ?? '' },
     }),
   checkbox: (group, name, label, instructions, choices, o = {}) =>
     base(group, name, label, 'checkbox', instructions, {
@@ -224,7 +224,7 @@ const service = group('brio_service', 'Service', [
   f.repeater(sv, 'helps_with', 'This is for you if', 'Five or six lines, written to the reader.', lineRow(sv, 'helps_with', 'One line, e.g. "You can\'t sleep, or you\'re dealing with fatigue". Under 100 characters.', 120), { layout: 'table', max: 8, button: 'Add line' }),
   f.repeater(sv, 'steps', 'What a visit involves', 'Three steps, in order. They are numbered on the page.', stepRows(sv, 'steps'), { min: 1, max: 4, button: 'Add step' }),
   f.repeater(sv, 'fees', 'Fees', 'Edited once here; shown on the home page, the services list, this service and the book page. Exactly one row per service must be the Initial assessment: the home page and the services list look for it.', [
-    f.select(sv, 'fee_kind', 'Kind', 'What this fee is for. Pick Initial assessment on exactly one row.', FEE_KINDS, { required: true, width: '20' }),
+    f.select(sv, 'fee_kind', 'Kind', 'What this fee is for. Pick Initial assessment on exactly one row.', FEE_KINDS, { required: true, allowNull: true, placeholder: 'Choose', width: '20' }),
     f.text(sv, 'fee_label', 'Label', 'As it reads on the page, e.g. Initial assessment. Under 30 characters.', { required: true, width: '30', maxlength: 40 }),
     f.text(sv, 'fee_note', 'Note', 'Optional. e.g. 30 minutes, virtual. Under 30 characters.', { width: '30', maxlength: 40 }),
     f.text(sv, 'fee_amount', 'Amount', 'e.g. $150, or a range with a hyphen: $115-$250.', { required: true, width: '20', maxlength: 20 }),
@@ -257,7 +257,7 @@ const faq = group('brio_faq', 'FAQ', [
 
 const seo = group('brio_seo', 'Search and sharing', [
   f.text('seo', 'seo_title', 'Search title', 'What Google shows as the link. Around 60 characters. Empty uses the page title.', { maxlength: 70 }),
-  f.textarea('seo', 'seo_description', 'Search description', 'The grey text under the link. Around 155 characters. Empty and one is written from the opening text.', { rows: 2, maxlength: 170 }),
+  f.textarea('seo', 'seo_description', 'Search description', 'The grey text under the link. Around 155 characters. Leave empty and one is written from the opening text.', { rows: 2, maxlength: 170 }),
   f.image('seo', 'seo_image', 'Share image', 'Shown when the page is posted or sent in a chat. 1200 by 630 pixels. Falls back to the featured image, then the site default.'),
   f.trueFalse('seo', 'seo_noindex', 'Hide from search engines', 'Only for pages that should not turn up in Google, such as a thank-you page.', 'Ask Google not to list this page'),
 ], [...location('post_type', 'post'), ...location('post_type', 'page'), ...location('post_type', 'service')], {

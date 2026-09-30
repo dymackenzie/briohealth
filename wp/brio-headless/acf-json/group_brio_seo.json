@@ -28,7 +28,7 @@
             "name": "seo_description",
             "aria-label": "",
             "type": "textarea",
-            "instructions": "The grey text under the link. Around 155 characters. Empty and one is written from the opening text.",
+            "instructions": "The grey text under the link. Around 155 characters. Leave empty and one is written from the opening text.",
             "required": 0,
             "conditional_logic": 0,
             "wrapper": {

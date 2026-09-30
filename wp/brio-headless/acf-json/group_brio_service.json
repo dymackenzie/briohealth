@@ -211,13 +211,13 @@
                         "follow-up": "Follow-up",
                         "treatment": "Treatment"
                     },
-                    "default_value": "initial",
-                    "allow_null": 0,
+                    "default_value": "",
+                    "allow_null": 1,
                     "multiple": 0,
                     "ui": 0,
                     "return_format": "value",
                     "ajax": 0,
-                    "placeholder": ""
+                    "placeholder": "Choose"
                 },
                 {
                     "key": "field_service_fee_label",
