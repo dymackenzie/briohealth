@@ -372,6 +372,12 @@ function textOf(html: string, separator: string): string {
   return parts.join(separator)
 }
 
+/**
+ * WordPress's excerpt_more, " [&hellip;]", where it cut the text short. It
+ * never shows: the summary ends on our own ellipsis instead.
+ */
+const EXCERPT_MORE = /\s*\[\s*(?:…|\.{3})\s*\]$/u
+
 /** Excerpts come with a "Continue reading" link and entities baked in. */
 export function plainExcerpt(html: string, limit = 180): string {
   const text = stripShortcodes(textOf(html, ' '))
@@ -380,7 +386,13 @@ export function plainExcerpt(html: string, limit = 180): string {
     .replace(/\s+/g, ' ')
     .trim()
 
-  return clip(text, limit)
+  if (!EXCERPT_MORE.test(text)) return clip(text, limit)
+
+  // An excerpt that was only the marker comes out empty, so postSummary
+  // falls back to the body.
+  const clipped = clip(text.replace(EXCERPT_MORE, ''), limit).replace(/[\s,;:]+$/, '')
+  if (!clipped || /[.!?…]$/.test(clipped)) return clipped
+  return clipped + '…'
 }
 
 function clip(text: string, limit: number): string {

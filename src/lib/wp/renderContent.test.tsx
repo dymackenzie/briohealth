@@ -178,6 +178,38 @@ describe('plainExcerpt', () => {
   })
 })
 
+describe('plainExcerpt and the WordPress "[…]" marker', () => {
+  it('replaces the marker with an ellipsis on the last whole word', () => {
+    expect(plainExcerpt('<p>Our November recipe is a warming [&hellip;]</p>')).toBe(
+      'Our November recipe is a warming…',
+    )
+    expect(plainExcerpt('<p>Our November recipe [...]</p>')).toBe('Our November recipe…')
+    expect(plainExcerpt('<p>Rest, eat well, [&hellip;]</p>')).toBe('Rest, eat well…')
+  })
+
+  it('adds nothing after a sentence that already ends', () => {
+    expect(plainExcerpt('<p>Rest well. [&hellip;]</p>')).toBe('Rest well.')
+  })
+
+  it('strips it before a continue-reading link, and before clipping', () => {
+    expect(plainExcerpt('<p>Eat well [&hellip;] <a class="more-link">Continue reading Eat</a></p>')).toBe('Eat well…')
+
+    const long = plainExcerpt('<p>' + 'word '.repeat(80) + '[&hellip;]</p>', 50)
+    expect(long).not.toContain('[')
+    expect(long.endsWith('word…')).toBe(true)
+    expect(long.length).toBeLessThanOrEqual(51)
+  })
+
+  it('is empty when the excerpt was only the marker', () => {
+    expect(plainExcerpt('<p>[&hellip;]</p>')).toBe('')
+    expect(plainExcerpt(' [...] ')).toBe('')
+  })
+
+  it('leaves a bracketed ellipsis inside the text alone', () => {
+    expect(plainExcerpt('<p>He said [&hellip;] then left.</p>')).toBe('He said […] then left.')
+  })
+})
+
 describe('decodeTitle', () => {
   it('decodes entities and strips tags', () => {
     expect(decodeTitle('Fall &#8211; the <em>best</em> season')).toBe('Fall \u2013 the best season')
@@ -194,7 +226,16 @@ describe('postSummary', () => {
       excerpt: rendered('<p>Our November recipe [&hellip;]</p>'),
       content: rendered('<p>Something else entirely.</p>'),
     }
-    expect(postSummary(post)).toBe('Our November recipe [\u2026]')
+    expect(postSummary(post)).toBe('Our November recipe\u2026')
+  })
+
+  it('falls back to the body when the excerpt is only the WordPress marker', () => {
+    const post = {
+      title: rendered('Bone broth'),
+      excerpt: rendered('<p> [&hellip;]</p>'),
+      content: rendered('<p>Broth is the base of every soup.</p>'),
+    }
+    expect(postSummary(post)).toBe('Broth is the base of every soup.')
   })
 
   it('falls back to the opening paragraphs when the excerpt is empty', () => {
