@@ -127,6 +127,64 @@ describe('renderContent', () => {
     }
   })
 
+  describe('embeds', () => {
+    it('drops an iframe from a host that is not a known player, and the paragraph it leaves empty', () => {
+      const out = render('<p><iframe src="https://evil.example/embed/x" title="x"></iframe></p><p>After.</p>')
+      expect(out).toBe('<p>After.</p>')
+    })
+
+    it('drops an iframe with a javascript, data, relative or missing src', () => {
+      for (const src of ['javascript:alert(1)', 'data:text/html,<b>x</b>', '/embed/x', '']) {
+        expect(render(`<iframe src="${src}"></iframe>`)).toBe('')
+      }
+      expect(render('<iframe title="no src"></iframe>')).toBe('')
+    })
+
+    it('does not accept a player name inside another host', () => {
+      expect(render('<iframe src="https://www.youtube.com.evil.example/embed/x"></iframe>')).toBe('')
+      expect(render('<iframe src="https://www.google.com/search?q=maps"></iframe>')).toBe('')
+    })
+
+    it('keeps YouTube, Vimeo and Google Maps embeds, over https', () => {
+      expect(render('<iframe src="//www.youtube.com/embed/x"></iframe>')).toBe(
+        '<iframe src="https://www.youtube.com/embed/x"></iframe>',
+      )
+      expect(render('<iframe src="http://www.youtube-nocookie.com/embed/x"></iframe>')).toBe(
+        '<iframe src="https://www.youtube-nocookie.com/embed/x"></iframe>',
+      )
+      expect(render('<iframe src="https://player.vimeo.com/video/1"></iframe>')).toContain('player.vimeo.com/video/1')
+      expect(render('<iframe src="https://www.google.com/maps/embed?pb=1"></iframe>')).toContain(
+        'https://www.google.com/maps/embed?pb=1',
+      )
+    })
+
+    it('drops the allow attribute', () => {
+      const out = render('<iframe src="https://www.youtube.com/embed/x" allow="camera; payment; autoplay"></iframe>')
+      expect(out).toBe('<iframe src="https://www.youtube.com/embed/x"></iframe>')
+    })
+  })
+
+  it('points uploads at our host over https', () => {
+    const out = render(
+      '<p><img src="http://yourbriohealth.com/wp-content/uploads/a.jpg" alt="A"><a href="http://www.yourbriohealth.com/wp-content/uploads/b.pdf">PDF</a></p>',
+    )
+    expect(out).toContain('src="https://yourbriohealth.com/wp-content/uploads/a.jpg"')
+    expect(out).toContain('href="https://yourbriohealth.com/wp-content/uploads/b.pdf"')
+    expect(out).not.toContain('http://')
+  })
+
+  it('leaves another site that mentions our uploads in its query alone', () => {
+    const out = render('<p><a href="http://other.example/?u=//yourbriohealth.com/wp-content/a.jpg">x</a></p>')
+    expect(out).toContain('href="http://other.example/?u=//yourbriohealth.com/wp-content/a.jpg"')
+  })
+
+  it('protocol-checks the video poster', () => {
+    const bad = render('<video controls poster="javascript:alert(1)"><source src="/v.mp4"></video>')
+    expect(bad).not.toContain('poster')
+    const good = render('<video controls poster="http://yourbriohealth.com/wp-content/p.jpg"></video>')
+    expect(good).toContain('poster="https://yourbriohealth.com/wp-content/p.jpg"')
+  })
+
   it('sanitises event handlers and javascript urls', () => {
     const out = render('<a href="javascript:alert(1)" onclick="x()">x</a><img src="https://a.b/c.jpg" onerror="x()">')
     expect(out).not.toContain('onclick')

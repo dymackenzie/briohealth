@@ -19,7 +19,8 @@ import type { Rendered } from './types'
  * second into the first, then sanitises.
  */
 
-const WP_HOSTS = ['yourbriohealth.com', 'www.yourbriohealth.com']
+/** An upload on the WordPress install, with or without www or a scheme. */
+const WP_UPLOADS = /^(?:https?:)?\/\/(?:www\.)?yourbriohealth\.com\/wp-content\//i
 
 /** Layout-only wrappers. Their children get lifted; the div goes. */
 const FUSION_WRAPPERS = [
@@ -100,13 +101,55 @@ function unwrapFusion() {
   }
 }
 
+/**
+ * Uploads point at wherever the API lives, always over https: a 2010 post
+ * links its images as http://, which would be mixed content on this site.
+ */
 function rewriteHost(url: string): string {
-  for (const host of WP_HOSTS) {
-    if (url.includes(`//${host}/wp-content/`)) {
-      return url.replace(`//${host}/`, `//${WP_HOST}/`)
-    }
+  return url.replace(WP_UPLOADS, `https://${WP_HOST}/wp-content/`)
+}
+
+/** The players the clinic's posts embed. Every other iframe goes. */
+const EMBED_HOSTS = new Set([
+  'www.youtube.com',
+  'youtube.com',
+  'www.youtube-nocookie.com',
+  'youtube-nocookie.com',
+  'player.vimeo.com',
+])
+
+/** The embed's URL over https, or null when it is not from a known player. */
+function embedSrc(src: unknown): string | null {
+  if (typeof src !== 'string' || !src.trim()) return null
+  let url: URL
+  try {
+    // A protocol-relative src ("//www.youtube.com/...") resolves to https.
+    url = new URL(src.trim(), 'https://relative.invalid')
+  } catch {
+    return null
   }
-  return url
+  if (url.protocol !== 'https:' && url.protocol !== 'http:') return null
+
+  const map = (url.hostname === 'www.google.com' || url.hostname === 'google.com') && url.pathname.startsWith('/maps')
+  if (!EMBED_HOSTS.has(url.hostname) && !map) return null
+
+  url.protocol = 'https:'
+  return url.href
+}
+
+/** Runs after convertShortcodes, so the embeds it makes are vetted too. */
+function vetEmbeds() {
+  return (tree: Root) => {
+    visit(tree, 'element', (node, index, parent) => {
+      if (node.tagName !== 'iframe' || !parent || index === undefined) return
+      const src = embedSrc(node.properties.src)
+      if (!src) {
+        parent.children.splice(index, 1)
+        return index
+      }
+      node.properties.src = src
+    })
+  }
 }
 
 function cleanAttributes() {
@@ -148,6 +191,7 @@ function cleanAttributes() {
 
       if (typeof props.src === 'string') props.src = rewriteHost(props.src)
       if (typeof props.href === 'string') props.href = rewriteHost(props.href)
+      if (typeof props.poster === 'string') props.poster = rewriteHost(props.poster)
     })
   }
 }
@@ -293,7 +337,9 @@ const schema = {
   attributes: {
     ...defaultAttributes,
     img: [...(defaultAttributes.img ?? []), 'loading', 'decoding', 'width', 'height'],
-    iframe: ['src', 'title', 'allow', 'allowFullScreen', 'loading', 'width', 'height'],
+    // No `allow`: a post does not get to grant an embed the camera, payment
+    // or anything else past the browser's defaults.
+    iframe: ['src', 'title', 'allowFullScreen', 'loading', 'width', 'height'],
     video: ['controls', 'poster', 'width', 'height'],
     source: ['src', 'type'],
     '*': [...(defaultAttributes['*'] ?? []), 'className', 'id'],
@@ -301,12 +347,14 @@ const schema = {
   // YouTube embeds are all over the older posts; the pickleball page has a
   // self-hosted video.
   tagNames: [...(defaultSchema.tagNames ?? []), 'iframe', 'video', 'source', 'figure', 'figcaption'],
+  protocols: { ...defaultSchema.protocols, poster: ['http', 'https'] },
 }
 
 const processor = unified()
   .use(rehypeParse, { fragment: true })
   .use(dropNoise)
   .use(convertShortcodes)
+  .use(vetEmbeds)
   .use(unwrapFusion)
   .use(cleanAttributes)
   .use(dropEmpty)
