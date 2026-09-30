@@ -1,0 +1,52 @@
+/*
+ * Signal tokens. Monochrome plus the logo teal at full saturation.
+ * Every colour on the site is one of these seven; the Tailwind palette is
+ * reset so nothing else can be reached by accident.
+ */
+
+@theme {
+  --color-*: initial;
+  --color-paper: #ffffff;
+  --color-grey: #e8eeee;
+  --color-ink: #1c1c1e;
+  --color-ink-soft: #4a4f50;
+  --color-teal: #00919d;
+  --color-teal-deep: #007a85;
+  --color-on-teal: #031011;
+
+  --font-display: var(--font-funnel-display), 'Funnel Display', ui-sans-serif, system-ui, sans-serif;
+  --font-sans: var(--font-funnel-sans), 'Funnel Sans', ui-sans-serif, system-ui, sans-serif;
+
+  /* The one radius: photos and buttons. */
+  --radius-brand: 0.5rem;
+
+  /* No shadows except the header dropdown. */
+  --shadow-*: initial;
+  --shadow-dropdown: 0 12px 32px rgb(28 28 30 / 0.12);
+
+  /* ease and linear are banned for motion; only these two exist. */
+  --ease-*: initial;
+  --ease-out-expo: cubic-bezier(0.16, 1, 0.3, 1);
+  --ease-out-quart: cubic-bezier(0.25, 1, 0.5, 1);
+  --default-transition-timing-function: var(--ease-out-expo);
+  --default-transition-duration: 300ms;
+}
+
+:root {
+  --container: 1280px;
+  --gutter: clamp(1rem, 4vw, 2.5rem);
+  --section-y: clamp(4rem, 8vw, 7rem);
+  --header-h: 72px;
+
+  /* Type scale (spec section 4). Body 18px, floor 15px. */
+  --fs-display: clamp(3rem, 7vw, 5.75rem);
+  --fs-display-long: clamp(3rem, 7vw, 3.75rem);
+  --fs-h2: clamp(2.125rem, 4.5vw, 3.5rem);
+  --fs-h3: 1.375rem;
+  --fs-lede: clamp(1.25rem, 1.1rem + 0.6vw, 1.5rem);
+  --fs-body: 1.125rem;
+  --fs-small: 0.9375rem;
+  --fs-numeral: clamp(2.75rem, 5vw, 4.5rem);
+  --fs-quote: clamp(1.75rem, 3vw, 2.75rem);
+  --fs-post: 1.1875rem;
+}
