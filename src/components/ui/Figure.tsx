@@ -3,7 +3,7 @@ import { Camera } from '@phosphor-icons/react/dist/ssr'
 import type { Photo } from '@/lib/content/photos'
 
 /**
- * A photo slot. Every photo on the site is a rectangle on --radius at 4/5 or
+ * A photo slot. Every photo on the site is a rectangle on --radius-brand at 4/5 or
  * 1/1; `position` is how a shoot photo of Dr. Lee becomes a slot about the
  * patient. Without a photo it renders the brief as a designed placeholder,
  * so an empty slot still tells the visitor, and the photographer, what

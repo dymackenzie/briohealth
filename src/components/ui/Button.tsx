@@ -5,8 +5,10 @@ import { ArrowRight } from '@phosphor-icons/react/dist/ssr'
 /**
  * Named for the surface they sit on. CTA on light grounds is ink with paper
  * text (17:1); on teal it is paper with ink text. Teal never carries a label.
- * Pressing moves it 1px. The primary label is 3 words at most so it never
- * wraps at desktop.
+ * The quiet link is teal-deep on light and on-teal on a field: paper is for
+ * display type only. Pressing moves it 1px; the hover colour changes
+ * instantly, because only transform animates. The primary label is 3 words
+ * at most so it never wraps at desktop.
  */
 
 type Surface = 'light' | 'teal'
@@ -14,7 +16,7 @@ type Variant = 'primary' | 'quiet'
 
 const primaryBase =
   'inline-flex items-center justify-center gap-2 rounded-brand px-6 py-3.5 font-medium leading-none whitespace-nowrap ' +
-  'transition-[background-color,transform] duration-200 active:translate-y-px disabled:opacity-60 disabled:active:translate-y-0'
+  'transition-transform duration-200 active:translate-y-px disabled:opacity-60 disabled:active:translate-y-0'
 
 const primaryFill: Record<Surface, string> = {
   light: 'bg-ink text-paper hover:bg-ink-soft',
@@ -26,7 +28,7 @@ const quietBase =
 
 const quietColour: Record<Surface, string> = {
   light: 'text-teal-deep',
-  teal: 'text-paper',
+  teal: 'text-on-teal',
 }
 
 export function Button({

@@ -2,6 +2,45 @@
 
 import { useEffect, useRef, useState, type CSSProperties, type ElementType, type ReactNode } from 'react'
 
+const FAILSAFE_MS = 2500
+
+/**
+ * Calls `show` once `node` scrolls into view and returns the cleanup.
+ * An observer always calls back once on observe(), even for an element
+ * below the fold, so that first delivery cancels the failsafe: the timer
+ * only rescues an observer that never calls back at all (an odd embed, a
+ * zoomed print preview). Without IntersectionObserver it shows at once.
+ */
+export function watchReveal(node: Element, show: () => void): () => void {
+  if (!('IntersectionObserver' in globalThis)) {
+    show()
+    return () => {}
+  }
+
+  let failsafe: ReturnType<typeof setTimeout> | undefined = setTimeout(show, FAILSAFE_MS)
+  const cancelFailsafe = () => {
+    clearTimeout(failsafe)
+    failsafe = undefined
+  }
+
+  const observer = new IntersectionObserver(
+    (entries) => {
+      cancelFailsafe()
+      if (entries.some((entry) => entry.isIntersecting)) {
+        show()
+        observer.disconnect()
+      }
+    },
+    { rootMargin: '0px 0px -10% 0px', threshold: 0.05 },
+  )
+  observer.observe(node)
+
+  return () => {
+    observer.disconnect()
+    cancelFailsafe()
+  }
+}
+
 /**
  * Fade and rise on scroll. The hidden state lives in motion.css behind the
  * `.js` class, so the page renders complete if JavaScript never runs, and
@@ -28,26 +67,7 @@ export function Reveal({
   useEffect(() => {
     const node = ref.current
     if (!node) return
-
-    // If the observer never fires (an odd embed, a zoomed print preview),
-    // show it anyway rather than leave a hole.
-    const failsafe = window.setTimeout(() => setShown(true), 2500)
-
-    const observer = new IntersectionObserver(
-      ([entry]) => {
-        if (entry.isIntersecting) {
-          setShown(true)
-          observer.disconnect()
-        }
-      },
-      { rootMargin: '0px 0px -10% 0px', threshold: 0.05 },
-    )
-    observer.observe(node)
-
-    return () => {
-      observer.disconnect()
-      window.clearTimeout(failsafe)
-    }
+    return watchReveal(node, () => setShown(true))
   }, [])
 
   return (
