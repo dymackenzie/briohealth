@@ -36,7 +36,7 @@ describe('mergeSettings', () => {
     const merged = mergeSettings({ phone: '(604) 000-0000', email: '', ctaLabel: '  ' }, site)
     expect(merged.phone).toBe('(604) 000-0000')
     expect(merged.email).toBe(site.email)
-    expect(merged.ctaLabel).toBe('Book a consultation')
+    expect(merged.ctaLabel).toBe(site.ctaLabel)
   })
 
   it('derives phoneHref from a WordPress phone', () => {

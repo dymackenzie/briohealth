@@ -1,5 +1,5 @@
 import { afterEach, describe, expect, it, vi } from 'vitest'
-import { addressLine, formatDays, formatTime, site } from './site'
+import { BOOKING_PATH, addressLine, formatDays, formatTime, nav, site } from './site'
 
 describe('absoluteUrl', () => {
   afterEach(() => {
@@ -52,5 +52,29 @@ describe('formatDays', () => {
 describe('addressLine', () => {
   it('writes the address on one line', () => {
     expect(addressLine(site)).toBe('2168-3779 Sexsmith Road, Richmond, BC V6X 3Z9')
+  })
+})
+
+describe('booking', () => {
+  it('uses the wireframe label and points every button at the New Patient page', () => {
+    expect(site.ctaLabel).toBe('Book Appointment')
+    expect(BOOKING_PATH).toBe('/new-patient')
+    expect(site.bookingUrl).toBe('https://yourbriohealth.janeapp.com')
+    expect(site.foundedYear).toBe(2006)
+  })
+})
+
+describe('nav', () => {
+  it('is New Patient, Services with four children, Blog', () => {
+    expect(nav.map((i) => i.label)).toEqual(['New Patient', 'Services', 'Blog'])
+    expect(nav[0].href).toBe('/new-patient')
+    expect(nav[1].href).toBe('/services')
+    expect(nav[1].children?.map((c) => [c.label, c.href])).toEqual([
+      ['Naturopathic Medicine', '/services/naturopathic'],
+      ['Acupuncture', '/services/acupuncture'],
+      ['I.V. Therapy', '/services/iv-therapy'],
+      ['About Dr. Lee', '/about'],
+    ])
+    expect(nav[2].href).toBe('/blog')
   })
 })

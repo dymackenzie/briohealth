@@ -77,9 +77,9 @@ export const site: SiteSettings = {
   hours: [{ days: ['Monday', 'Tuesday', 'Thursday'], opens: '10:00', closes: '18:00' }],
   saturdayNote: 'Remote appointments every other Saturday. Ask when you book.',
 
-  /** Jane. Never embedded; their own flow converts better. */
+  /** The one label, everywhere (wireframe). Buttons link to BOOKING_PATH; this URL is for the Get Started form. */
   bookingUrl: 'https://yourbriohealth.janeapp.com',
-  ctaLabel: 'Book a consultation',
+  ctaLabel: 'Book Appointment',
 
   social: [
     { label: 'Instagram', href: 'https://www.instagram.com/briohealth/' },
@@ -95,6 +95,12 @@ export const site: SiteSettings = {
 }
 
 /**
+ * Where every "Book Appointment" button goes: the New Patient page, which
+ * screens the way the live site does before handing over to Jane.
+ */
+export const BOOKING_PATH = '/new-patient'
+
+/**
  * The one default meta description. The root layout and the homepage both
  * read it, and `buildMetadata` falls back to it, so it is written once.
  */
@@ -108,6 +114,7 @@ export interface NavItem {
 
 /** Structural, changes rarely, so it lives in code rather than the CMS. */
 export const nav: NavItem[] = [
+  { label: 'New Patient', href: BOOKING_PATH },
   {
     label: 'Services',
     href: '/services',
@@ -115,19 +122,10 @@ export const nav: NavItem[] = [
       { label: 'Naturopathic Medicine', href: '/services/naturopathic' },
       { label: 'Acupuncture', href: '/services/acupuncture' },
       { label: 'I.V. Therapy', href: '/services/iv-therapy' },
-      { label: 'All services', href: '/services' },
-    ],
-  },
-  {
-    label: 'About',
-    href: '/about',
-    children: [
-      { label: 'Dr. Jeffrey Lee', href: '/about' },
-      { label: 'Pickleball & Community', href: '/pickleball' },
+      { label: 'About Dr. Lee', href: '/about' },
     ],
   },
   { label: 'Blog', href: '/blog' },
-  { label: 'Contact', href: '/contact' },
 ]
 
 export const footerLegal: NavItem[] = [
