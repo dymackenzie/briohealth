@@ -3,24 +3,28 @@ import type { ReactNode } from 'react'
 import { ArrowRight } from '@phosphor-icons/react/dist/ssr'
 
 /**
- * Named for the surface they sit on. CTA on light grounds is ink with paper
- * text (17:1); on teal it is paper with ink text. Teal never carries a label.
- * The quiet link is teal-deep on light and on-teal on a field: paper is for
- * display type only. Pressing moves it 1px; the hover colour changes
- * instantly, because only transform animates. The primary label is 3 words
- * at most so it never wraps at desktop.
+ * The primary action is coral with an ink label (about 7:1) on every
+ * surface; nothing else on the site is coral except the nav underline and
+ * the trust marks. The outline button is the secondary: a 2px border in the
+ * surface's text colour. The quiet link is teal-deep on light, on-teal on a
+ * field, paper on the ink wash. Pressing moves the button 1px; colour
+ * changes are instant, because only transform animates. Labels are three
+ * words at most so none wraps at desktop. Buttons stay Funnel Sans.
  */
 
-type Surface = 'light' | 'teal'
-type Variant = 'primary' | 'quiet'
+type Surface = 'light' | 'teal' | 'dark'
+type Variant = 'primary' | 'quiet' | 'outline'
 
-const primaryBase =
+const solidBase =
   'inline-flex items-center justify-center gap-2 rounded-brand px-6 py-3.5 font-medium leading-none whitespace-nowrap ' +
   'transition-transform duration-200 active:translate-y-px disabled:opacity-60 disabled:active:translate-y-0'
 
-const primaryFill: Record<Surface, string> = {
-  light: 'bg-ink text-paper hover:bg-ink-soft',
-  teal: 'bg-paper text-ink hover:bg-grey',
+const primaryFill = 'bg-coral text-ink hover:opacity-90'
+
+const outlineColour: Record<Surface, string> = {
+  light: 'border-2 border-ink text-ink hover:bg-grey',
+  teal: 'border-2 border-on-teal text-on-teal hover:bg-paper/15',
+  dark: 'border-2 border-paper text-paper hover:bg-paper/15',
 }
 
 const quietBase =
@@ -29,6 +33,7 @@ const quietBase =
 const quietColour: Record<Surface, string> = {
   light: 'text-teal-deep',
   teal: 'text-on-teal',
+  dark: 'text-paper',
 }
 
 export function Button({
@@ -50,8 +55,10 @@ export function Button({
 }) {
   const classes =
     variant === 'primary'
-      ? `${primaryBase} ${primaryFill[on]} ${className}`
-      : `${quietBase} ${quietColour[on]} ${className}`
+      ? `${solidBase} ${primaryFill} ${className}`
+      : variant === 'outline'
+        ? `${solidBase} ${outlineColour[on]} ${className}`
+        : `${quietBase} ${quietColour[on]} ${className}`
 
   const content =
     variant === 'quiet' ? (
