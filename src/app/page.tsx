@@ -4,10 +4,8 @@ import { Guide } from '@/components/sections/Guide'
 import { Hero } from '@/components/sections/Hero'
 import { Plan } from '@/components/sections/Plan'
 import { Proof } from '@/components/sections/Proof'
-import { Questions } from '@/components/sections/Questions'
 import { ServiceRows, type ServiceRowItem } from '@/components/sections/ServiceRows'
 import { Stakes } from '@/components/sections/Stakes'
-import { faqsFor } from '@/lib/content/faqs'
 import { home } from '@/lib/content/home'
 import { getService } from '@/lib/content/services'
 import { testimonials } from '@/lib/content/testimonials'
@@ -53,7 +51,6 @@ export default async function HomePage() {
       <Plan content={home.plan} />
       <FirstVisit content={home.firstVisit} settings={settings} />
       <Proof heading={home.proof.heading} items={testimonials} />
-      <Questions content={home.questions} items={faqsFor('general')} settings={settings} />
       <Close settings={settings} widen />
     </main>
   )

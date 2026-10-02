@@ -44,7 +44,7 @@ export default async function ServicePage(props: { params: Promise<{ slug: strin
     getSiteSettings(),
     getPosts({ perPage: 3, search: service.short, fields: 'id,slug,title' }),
   ])
-  const faqs = [...faqsFor(service.slug), ...(service.slug === 'naturopathic' ? faqsFor('general') : [])].slice(0, 6)
+  const faqs = faqsFor(service.slug)
 
   return (
     <main id="main">
