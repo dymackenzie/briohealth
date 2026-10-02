@@ -7,7 +7,7 @@ const fallback = {
   items: ['a', 'b'],
   count: 3,
   flag: false,
-  nested: { label: 'All fees', href: '/book#fees' },
+  nested: { label: 'Open in Google Maps', href: '/#map' },
 }
 
 describe('withFallback', () => {
@@ -41,8 +41,8 @@ describe('withFallback', () => {
   })
 
   it('merges nested objects one level down', () => {
-    const merged = withFallback({ nested: { label: 'See fees', href: '' } }, fallback)
-    expect(merged.nested).toEqual({ label: 'See fees', href: '/book#fees' })
+    const merged = withFallback({ nested: { label: 'See the map', href: '' } }, fallback)
+    expect(merged.nested).toEqual({ label: 'See the map', href: '/#map' })
   })
 
   it('does not mutate the fallback', () => {

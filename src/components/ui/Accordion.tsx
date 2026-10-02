@@ -58,7 +58,7 @@ export function Accordion({
               }`}
             >
               <div className="overflow-hidden">
-                <p className="max-w-[60ch] pb-6 text-ink-soft">{item.answer}</p>
+                <p className="max-w-[60ch] pb-6 whitespace-pre-line text-ink-soft">{item.answer}</p>
               </div>
             </div>
           </div>
