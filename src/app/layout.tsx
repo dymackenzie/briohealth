@@ -1,5 +1,5 @@
 import type { Metadata } from 'next'
-import { Funnel_Display, Funnel_Sans } from 'next/font/google'
+import { Funnel_Display, Funnel_Sans, Newsreader } from 'next/font/google'
 import { Analytics } from '@vercel/analytics/next'
 
 import { AnnouncementBar } from '@/components/layout/AnnouncementBar'
@@ -10,7 +10,7 @@ import { defaultDescription, site } from '@/lib/site'
 import { getSiteSettings } from '@/lib/wp/queries'
 import './globals.css'
 
-/* Both are variable fonts on Google Fonts, so no weight list is needed. */
+/* All three are variable fonts on Google Fonts, so no weight list is needed. */
 const display = Funnel_Display({
   subsets: ['latin'],
   display: 'swap',
@@ -21,6 +21,16 @@ const sans = Funnel_Sans({
   subsets: ['latin'],
   display: 'swap',
   variable: '--font-funnel-sans',
+})
+
+/* The editorial serif: variable weight with the optical-size axis, roman
+   and italic. Weight is not listed because the font is variable. */
+const serif = Newsreader({
+  subsets: ['latin'],
+  display: 'swap',
+  style: ['normal', 'italic'],
+  axes: ['opsz'],
+  variable: '--font-newsreader',
 })
 
 export const metadata: Metadata = {
@@ -41,7 +51,7 @@ export default async function RootLayout({ children }: { children: React.ReactNo
   return (
     // The inline script adds a class before React hydrates, so server and
     // client markup differ here on purpose.
-    <html lang="en-CA" className={`${display.variable} ${sans.variable}`} suppressHydrationWarning>
+    <html lang="en-CA" className={`${display.variable} ${sans.variable} ${serif.variable}`} suppressHydrationWarning>
       <head>
         {/* Gates every hidden-until-revealed state. Inline and synchronous so
             nothing flashes; with no JavaScript the class never lands and the

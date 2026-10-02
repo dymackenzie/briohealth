@@ -1,4 +1,8 @@
-/** Over this many characters the h1 cap drops from 92px to 60px (spec section 4). */
+/**
+ * Over this many characters the h1 used to drop a size; both display
+ * utilities are now the same serif size, so this only chooses the tighter
+ * line-height.
+ */
 export const LONG_HEADING = 28
 
 export function displayClass(heading: string): 'text-display' | 'text-display-long' {
