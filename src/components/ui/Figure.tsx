@@ -4,15 +4,18 @@ import type { Photo } from '@/lib/content/photos'
 
 /**
  * A photo slot. Every photo on the site is a rectangle on --radius-brand at 4/5 or
- * 1/1; `position` is how a shoot photo of Dr. Lee becomes a slot about the
- * patient. Without a photo it renders the brief as a designed placeholder,
+ * 1/1 (the homepage hero strip is the one 3/1, 4/3 below lg); `position` is
+ * how a shoot photo of Dr. Lee becomes a slot about the patient. Without a photo it renders the brief as a designed placeholder,
  * so an empty slot still tells the visitor, and the photographer, what
  * belongs there, and the layout never breaks.
  */
 
-const ASPECTS = {
+export const ASPECTS = {
   '4/5': 'aspect-[4/5]',
   '1/1': 'aspect-square',
+  // The homepage hero strip (spec 4.1): 3/1 on desktop, 4/3 below lg.
+  '3/1': 'aspect-[4/3] lg:aspect-[3/1]',
+  '4/3': 'aspect-[4/3]',
 } as const
 
 export function Figure({
