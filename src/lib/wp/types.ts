@@ -1,5 +1,3 @@
-import type { FeeKind } from '@/lib/content/services'
-
 // Only the fields we read. Verified against the live wp/v2 API; the brio/v1
 // and acf shapes match wp/brio-headless (Tasks 16 and 17).
 //
@@ -82,14 +80,13 @@ export interface WPImageField {
 export interface WPService extends WPContentBase {
   type: 'service'
   acf?: {
-    summary?: string
-    who_for?: string
-    lead?: string
-    helps_with?: { text: string }[]
-    steps?: { title: string; body: string }[]
-    /** Mirrors `Fee` in content/services: read by kind, never by position. */
-    fees?: { kind: FeeKind; label: string; note?: string; amount: string }[]
-    fees_note?: string
+    /** The page body as the editor wrote it (wysiwyg). */
+    body?: string
+    closing?: string
+    /** File field, return format url. */
+    video_loop?: string | false | null
+    video_poster?: WPImageField | false | null
+    video_youtube?: string | false | null
     image?: WPImageField | false | null
     image_position?: string
     faqs?: number[] | false
@@ -102,10 +99,7 @@ export interface WPTestimonial {
   title: Rendered
   acf?: {
     quote?: string
-    short_quote?: string
     name?: string
-    source?: string
-    date?: string
     /** Relationship field, return format id. */
     service?: number[] | false | null
   }
