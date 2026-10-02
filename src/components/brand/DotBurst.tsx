@@ -3,8 +3,9 @@ import type { CSSProperties } from 'react'
 /**
  * The logo's radiating dots, drawn from the same geometry: fifteen dots fanning
  * up from the "i" dot at seven radii, up to 56 degrees either side of
- * vertical, shrinking as they go out. It is the site's signature and appears
- * at most three times on a page.
+ * vertical, shrinking as they go out. It is the site's signature. Placed
+ * as a Bud (src/components/brand/Bud.tsx): three per page at most,
+ * scattered, varied sizes.
  *
  * Static by itself. With `animate`, Task 15's CSS scales each dot in from the
  * origin at a 40ms stagger, inner ring first; `--i` on each circle is that

@@ -51,11 +51,13 @@ export function Reveal({
   as: Tag = 'div',
   delay = 0,
   className = '',
+  'aria-hidden': ariaHidden,
   children,
 }: {
   as?: ElementType
   delay?: number
   className?: string
+  'aria-hidden'?: boolean | 'true'
   children: ReactNode
 }) {
   const ref = useRef<HTMLElement>(null)
@@ -74,6 +76,7 @@ export function Reveal({
       data-shown={shown || undefined}
       style={delay ? ({ '--reveal-delay': `${delay}ms` } as CSSProperties) : undefined}
       className={className}
+      aria-hidden={ariaHidden}
     >
       {children}
     </Tag>

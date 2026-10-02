@@ -1,8 +1,10 @@
 import { renderToStaticMarkup } from 'react-dom/server'
 import { describe, expect, it } from 'vitest'
+import { Bud } from '@/components/brand/Bud'
 import type { SiteSettings } from '@/lib/site'
 import { Accordion } from './Accordion'
 import { Address } from './Address'
+import { Button } from './Button'
 import { Hours } from './Hours'
 import { StepList } from './StepList'
 
@@ -131,5 +133,50 @@ describe('Accordion', () => {
   it('snaps instead of animating under reduced motion', () => {
     const html = renderToStaticMarkup(<Accordion items={items} />)
     expect(html).toContain('motion-reduce:transition-none')
+  })
+})
+
+describe('Button', () => {
+  it('fills the primary button coral with an ink label on every surface', () => {
+    for (const on of ['light', 'teal', 'dark'] as const) {
+      const html = renderToStaticMarkup(<Button on={on}>Book Appointment</Button>)
+      expect(html).toContain('bg-coral')
+      expect(html).toContain('text-ink')
+      expect(html).not.toContain('bg-ink ')
+    }
+  })
+
+  it('draws the outline variant in the surface text colour', () => {
+    expect(renderToStaticMarkup(<Button variant="outline">x</Button>)).toContain('border-ink')
+    expect(renderToStaticMarkup(<Button variant="outline" on="teal">x</Button>)).toContain('border-on-teal')
+    expect(renderToStaticMarkup(<Button variant="outline" on="dark">x</Button>)).toContain('border-paper')
+  })
+
+  it('renders an internal href as a link and an external one in a new tab', () => {
+    // next/link writes class before href, so match the tag, not the order.
+    const internal = renderToStaticMarkup(<Button href="/new-patient">x</Button>)
+    expect(internal).toMatch(/^<a [^>]*href="\/new-patient"/)
+    expect(internal).not.toContain('target=')
+    expect(renderToStaticMarkup(<Button href="https://yourbriohealth.janeapp.com">x</Button>)).toContain('target="_blank"')
+  })
+})
+
+describe('Bud', () => {
+  it('is a dot burst that blooms on reveal, sized and coloured by name', () => {
+    const html = renderToStaticMarkup(<Bud size="large" colour="teal" className="top-4 right-4" />)
+    expect(html).toContain('data-reveal="up"')
+    expect(html).toContain('data-animate="reveal"')
+    expect(html).toContain('w-[130px]')
+    expect(html).toContain('text-teal')
+    expect(html).toContain('top-4 right-4')
+    expect(html).toContain('aria-hidden="true"')
+  })
+
+  it('sizes medium and small, colours paper, and hides below md unless told not to', () => {
+    expect(renderToStaticMarkup(<Bud size="medium" colour="paper" />)).toContain('w-[70px]')
+    expect(renderToStaticMarkup(<Bud size="small" colour="paper" />)).toContain('w-[45px]')
+    expect(renderToStaticMarkup(<Bud size="small" colour="paper" />)).toContain('text-paper')
+    expect(renderToStaticMarkup(<Bud size="small" colour="teal" />)).toContain('hidden md:block')
+    expect(renderToStaticMarkup(<Bud size="small" colour="teal" hideBelowMd={false} />)).not.toContain('hidden md:block')
   })
 })
