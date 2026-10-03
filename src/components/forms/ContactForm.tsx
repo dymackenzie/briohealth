@@ -33,7 +33,7 @@ function ErrorText({ id, children }: { id: string; children: ReactNode }) {
  * below the first of them, and that field takes focus. Success replaces the
  * form and takes focus itself, so it isn't lost.
  */
-export function ContactForm({ phone, phoneHref, note }: { phone: string; phoneHref: string; note: string }) {
+export function ContactForm({ phone, phoneHref, note }: { phone: string; phoneHref: string; note?: string }) {
   const [state, setState] = useState<State>('idle')
   const [invalid, setInvalid] = useState<ContactField[]>([])
   const [problem, setProblem] = useState('')
@@ -201,7 +201,7 @@ export function ContactForm({ phone, phoneHref, note }: { phone: string; phoneHr
         </Button>
       </div>
 
-      <p className="max-w-[56ch] text-small text-ink-soft">{note}</p>
+      {note && <p className="max-w-[56ch] text-small text-ink-soft">{note}</p>}
     </form>
   )
 }
