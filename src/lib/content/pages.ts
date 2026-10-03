@@ -1,23 +1,21 @@
-import { site } from '@/lib/site'
 import { slots } from './photos'
 
 /** Heading and lead per page template, shaped like their SCF groups. */
 export const pages = {
+  // The live About page (about-2, 5907): the first, longer block verbatim.
+  // Title and lead are its h2/h3; the body is the pull quote and the five
+  // paragraphs. The photos are the clinic's own (slots.about).
   about: {
     title: 'Dr. Jeffrey Lee, N.D., R.Ac.',
-    lead: `Naturopathic Physician and Registered Acupuncturist, serving Richmond since ${site.foundedYear}.`,
-    // Fallback story, from the live About page, used when WordPress is unreachable.
-    story: [
-      'Dr. Lee holds degrees in naturopathic medicine and acupuncture from Bastyr University in Seattle, and a science degree from the University of British Columbia. He is one of the few practitioners in BC licensed as both a Naturopathic Physician and a Registered Acupuncturist.',
-      `He has practised in Richmond since ${site.foundedYear}, and Brio Health has looked after more than 5,000 patients in that time.`,
-    ],
-    credentials: [
-      'Naturopathic Physician and Registered Acupuncturist',
-      'Bastyr University, Seattle: naturopathic medicine and acupuncture',
-      'University of British Columbia: science degree',
-      `Practising in Richmond since ${site.foundedYear}`,
-    ],
-    award: 'Voted Best Naturopath in Best of Richmond 2025, by Richmond News.',
+    lead: 'Naturopathic Physician & Registered Acupuncturist',
+    body: `
+<blockquote><p>“ I help patients like you make sense of all the confusing health information out there and to create a personalized, actionable plan to optimize your health.”</p></blockquote>
+<p>Hello, my name is Dr. Jeffrey Lee. I have been serving the community of Richmond as a Naturopathic Doctor and Registered Acupuncturist since 2006. I value collaboration, a growth mindset, generosity and laughter.</p>
+<p>My personal mission is to encourage and empower people to take charge of their own health, so that they can regain their natural vitality. I help patients like you make sense of all the confusing health information out there and to create a personalized, actionable plan to optimize your health. My patients experience pain relief, improved sleep, healthier skin, strong digestive systems, mental clarity and abundant energy!</p>
+<p>My personal health journey started when I struggled with digestive and immune-related issues as a child. Some medications, such as antibiotics, would only temporarily alleviate my symptoms, and often left me feeling worse. Due to my digestion issues and my poor health habits, I began putting on excess weight. By the time I reached my late teens, I was about 50 pounds overweight, with constant fatigue and continued irritable bowel symptoms. In search of a solution to my health problems, I discovered Naturopathic Medicine and Traditional Chinese Medicine. With the guidance that I received from amazing Naturopathic Doctors, I completely transformed my health, and my life. Not only did I lose over 50 lbs, my energy and mental focus improved significantly and my vitality returned. That experience confirmed my desire to study Natural Medicine and has led me to where I am today.</p>
+<p>Outside of the clinic, I play pickleball several days a week (Yes, I am obsessed)! I also enjoy all that British Columbia has to offer. During the winter months, I like to ski at Whistler or the interior mountains with friends and family. In the summer months, I play in pickleball tournaments, go camping and explore all around BC. I am blessed to be part of a great local community church, where I am supported through friendship and prayer. Integrating spiritual disciplines like prayer and meditation is how I stay grounded and focused in helping others.</p>
+<p>Dr. Jeffrey Lee is a board certified and licensed Naturopathic Physician and Registered Acupuncturist. He earned his degrees in Naturopathic Medicine and Acupuncture at Bastyr University in Seattle, WA after completing a Science degree at the University of British Columbia.</p>
+`,
     photos: slots.about,
   },
   // The live Book Now page (5913), verbatim. The three statements are the
@@ -43,12 +41,11 @@ export const pages = {
     /** Ours: UI chrome for people who have already been screened. */
     returningLabel: 'Returning patient? Book directly',
   },
+  // The live Contact page (contact-us, 11952).
   contact: {
-    title: 'Get in touch',
-    lead: "Questions about whether we can help? Send a note or give us a call. We're happy to talk it through before you book.",
-    formHeading: 'Send us a message',
-    detailsHeading: 'The clinic',
-    privacyNote: "Please don't include medical details you wouldn't want sent by email. For anything sensitive, call us instead.",
+    title: 'Contact Us',
+    lead: 'Call or email us if you have any questions',
+    bookLine: 'If you want to book an appointment use the link below.',
   },
   pickleball: {
     title: 'Pickleball and community',

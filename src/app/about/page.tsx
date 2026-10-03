@@ -1,38 +1,38 @@
+import { Bud } from '@/components/brand/Bud'
 import { PageHero } from '@/components/layout/PageHero'
-import { Close } from '@/components/sections/Close'
 import { Figure } from '@/components/ui/Figure'
 import { Reveal } from '@/components/ui/Reveal'
 import { pages } from '@/lib/content/pages'
 import { clinicJsonLd, JsonLd } from '@/lib/jsonld'
 import { buildMetadata } from '@/lib/seo'
-import { getPage, getSiteSettings } from '@/lib/wp/queries'
-import { paragraphsOf } from '@/lib/wp/renderContent'
+import { getSiteSettings } from '@/lib/wp/queries'
+import { renderContent } from '@/lib/wp/renderContent'
 
 export const revalidate = 3600
 
 export const metadata = buildMetadata({
   title: 'About Dr. Jeffrey Lee',
-  description: pages.about.lead,
+  description: `${pages.about.title}, ${pages.about.lead}, serving Richmond since 2006.`,
   path: '/about',
 })
 
 /**
- * Dr. Lee leads. The story is the words of the WordPress About page (slug
- * about-2), set in our layout: its Avada markup repeats the title, the
- * portrait and every row twice, so only the paragraphs are taken. The code
- * paragraphs are the fallback. This is the one page where the photos of him
- * are used freely. One teal field and one burst, both the close's.
+ * The live About page's first block, verbatim, beside the clinic's own
+ * portrait; the two other photos of him below. The code fallback is the
+ * page: the Avada original carries a second, shorter copy of every row and
+ * a person block, so it is not read at runtime (the SCF `body` field will
+ * be, once wiring lands). This is one of the two pages he appears on. Two
+ * buds (spec 3.7 allows up to three): small teal in the hero's right side,
+ * medium teal in the empty columns between the two lower photos.
  */
 export default async function AboutPage() {
-  const [settings, page] = await Promise.all([getSiteSettings(), getPage('about-2')])
+  const settings = await getSiteSettings()
   const about = pages.about
-  const fromWordPress = page ? paragraphsOf(page.content.rendered) : []
-  const story = fromWordPress.length ? fromWordPress : about.story
 
   return (
     <main id="main">
       <JsonLd data={clinicJsonLd(settings)} />
-      <PageHero title={about.title} lead={about.lead} />
+      <PageHero title={about.title} lead={about.lead} bud={<Bud size="small" colour="teal" className="top-14 right-[14%]" />} />
 
       <section aria-label="Story" className="container-x pb-[var(--section-y)] grid-12 gap-y-10">
         <Reveal className="col-span-12 self-start sm:col-span-8 lg:sticky lg:top-10 lg:col-span-5">
@@ -45,33 +45,12 @@ export default async function AboutPage() {
           />
         </Reveal>
         <Reveal delay={80} className="col-span-12 lg:col-span-6 lg:col-start-7">
-          <div className="prose-post">
-            {story.map((paragraph) => (
-              <p key={paragraph}>{paragraph}</p>
-            ))}
-          </div>
+          <div className="prose-post prose-page">{renderContent(about.body)}</div>
         </Reveal>
       </section>
 
-      <section aria-labelledby="credentials-heading" className="bg-grey">
-        <div className="container-x section-y grid-12 gap-y-10">
-          <Reveal className="col-span-12 lg:col-span-4">
-            <h2 id="credentials-heading" className="text-h2">
-              Credentials
-            </h2>
-            <p className="mt-5 max-w-[30ch] text-ink-soft">{about.award}</p>
-          </Reveal>
-          <ul className="col-span-12 grid gap-x-8 gap-y-8 sm:grid-cols-2 lg:col-span-7 lg:col-start-6">
-            {about.credentials.map((item, i) => (
-              <Reveal as="li" key={item} delay={i * 60} className="border-t-2 border-teal pt-4">
-                {item}
-              </Reveal>
-            ))}
-          </ul>
-        </div>
-      </section>
-
-      <section aria-label="In the clinic and the community" className="container-x section-y grid-12 gap-y-8">
+      <section aria-label="In the clinic and the community" className="container-x relative pb-[var(--section-y)] grid-12 gap-y-8">
+        <Bud size="medium" colour="teal" className="top-6 left-[47%]" />
         <Reveal className="col-span-12 sm:col-span-6 lg:col-span-5">
           <Figure
             subject={about.photos.explaining.subject}
@@ -89,8 +68,6 @@ export default async function AboutPage() {
           />
         </Reveal>
       </section>
-
-      <Close settings={settings} />
     </main>
   )
 }
