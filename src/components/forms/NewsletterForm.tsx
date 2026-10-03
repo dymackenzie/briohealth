@@ -88,7 +88,7 @@ export function NewsletterForm() {
           aria-describedby={state === 'error' ? 'newsletter-error' : undefined}
           className="w-full min-w-0 rounded-brand border border-ink-soft bg-paper px-4 py-3 text-ink"
         />
-        <Button type="submit" disabled={state === 'sending'}>
+        <Button type="submit" variant="outline" on="light" disabled={state === 'sending'}>
           {state === 'sending' ? 'Joining' : 'Sign up'}
         </Button>
       </div>

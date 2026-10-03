@@ -196,7 +196,7 @@ export function ContactForm({ phone, phoneHref, note }: { phone: string; phoneHr
       {state === 'error' && failure && <ErrorText id="contact-failure">{failure}</ErrorText>}
 
       <div>
-        <Button type="submit" disabled={state === 'sending'}>
+        <Button type="submit" variant="outline" on="light" disabled={state === 'sending'}>
           {state === 'sending' ? 'Sending' : 'Send message'}
         </Button>
       </div>

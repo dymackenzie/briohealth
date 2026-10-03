@@ -4,9 +4,11 @@ import { ArrowRight } from '@phosphor-icons/react/dist/ssr'
 
 /**
  * The primary action is coral with an ink label (about 7:1) on every
- * surface; nothing else on the site is coral except the nav underline and
- * the trust marks. The outline button is the secondary: a 2px border in the
- * surface's text colour. The quiet link is teal-deep on light, on-teal on a
+ * surface, and only "Book Appointment" and "Get Started" are primary;
+ * nothing else on the site is coral except the nav underline and the trust
+ * marks. The outline button is the secondary (form submits included): a 2px
+ * border in the surface's text colour. On light it hovers with an ink tint,
+ * which shows on paper and on grey alike. The quiet link is teal-deep on light, on-teal on a
  * field, paper on the ink wash. Pressing moves the button 1px; colour
  * changes are instant, because only transform animates. Labels are three
  * words at most so none wraps at desktop. Buttons stay Funnel Sans.
@@ -22,7 +24,7 @@ const solidBase =
 const primaryFill = 'bg-coral text-ink hover:opacity-90'
 
 const outlineColour: Record<Surface, string> = {
-  light: 'border-2 border-ink text-ink hover:bg-grey',
+  light: 'border-2 border-ink text-ink hover:bg-ink/5',
   teal: 'border-2 border-on-teal text-on-teal hover:bg-paper/15',
   dark: 'border-2 border-paper text-paper hover:bg-paper/15',
 }

@@ -17,7 +17,7 @@ const socialIcons: Record<string, Icon> = {
 }
 
 /** Wireframe section 9, "the junk drawer". The line is Dr. Jeff's. */
-const MERCY = "Don't be at the mercy of your symptoms"
+const MERCY = "Don't be at the Mercy of your symptoms"
 
 const pageLinks = [
   { label: 'Contact', href: '/contact' },
@@ -32,7 +32,7 @@ const link = 'underline decoration-1 underline-offset-4 hover:decoration-2'
 
 /**
  * The wireframe's junk drawer, on grey (not a teal field), in its order:
- * the three service buttons, "Don't be at the mercy of your symptoms" with
+ * the three service buttons, "Don't be at the Mercy of your symptoms" with
  * the booking button, the map (patients get lost), the clinic's details
  * and hours with the About link, the newsletter, then legal, Contact,
  * Pickleball, socials and the copyright. NAP here must match the contact
