@@ -11,6 +11,15 @@ describe('services carry the live pages verbatim', () => {
     }
   })
 
+  it('carries no fee or summary fields any more', () => {
+    for (const s of services) {
+      expect(s).not.toHaveProperty('fees')
+      expect(s).not.toHaveProperty('whoFor')
+      expect(s).not.toHaveProperty('summary')
+      expect(s).not.toHaveProperty('steps')
+    }
+  })
+
   it('opens each body with the live page opening line', () => {
     expect(getService('naturopathic')?.body).toContain('Do you wake up feeling refreshed and ready to start your day')
     expect(getService('acupuncture')?.body).toContain('Acupuncture can help shift our bodies out of this overdrive mode')
