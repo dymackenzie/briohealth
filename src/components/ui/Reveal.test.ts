@@ -7,11 +7,13 @@ type Callback = (entries: { isIntersecting: boolean }[]) => void
 class FakeObserver {
   static last: FakeObserver | null = null
   callback: Callback
+  options: IntersectionObserverInit | undefined
   disconnect = vi.fn()
   observe = vi.fn()
 
-  constructor(callback: Callback) {
+  constructor(callback: Callback, options?: IntersectionObserverInit) {
     this.callback = callback
+    this.options = options
     FakeObserver.last = this
   }
 
@@ -61,6 +63,16 @@ describe('watchReveal', () => {
 
     expect(show).toHaveBeenCalledTimes(1)
     expect(FakeObserver.last!.disconnect).toHaveBeenCalled()
+  })
+
+  // A block taller than about twenty viewports (a long service body on a
+  // phone) never gets 5% of itself across the line, so any nonzero
+  // threshold would leave it hidden. Any part crossing the line counts.
+  it('reveals as soon as any part crosses the line 10% above the bottom', () => {
+    vi.stubGlobal('IntersectionObserver', FakeObserver)
+    watchReveal(node, vi.fn())
+
+    expect(FakeObserver.last!.options).toEqual({ rootMargin: '0px 0px -10% 0px', threshold: 0 })
   })
 
   it('shows after the failsafe when the observer never calls back', () => {

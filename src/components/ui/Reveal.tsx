@@ -6,6 +6,9 @@ const FAILSAFE_MS = 2500
 
 /**
  * Calls `show` once `node` scrolls into view and returns the cleanup.
+ * Any part of it crossing a line 10% above the viewport's bottom counts
+ * (threshold 0): a ratio threshold never trips for a block many viewports
+ * tall, which would stay hidden on a phone.
  * An observer always calls back once on observe(), even for an element
  * below the fold, so that first delivery cancels the failsafe: the timer
  * only rescues an observer that never calls back at all (an odd embed, a
@@ -31,7 +34,7 @@ export function watchReveal(node: Element, show: () => void): () => void {
         observer.disconnect()
       }
     },
-    { rootMargin: '0px 0px -10% 0px', threshold: 0.05 },
+    { rootMargin: '0px 0px -10% 0px', threshold: 0 },
   )
   observer.observe(node)
 
