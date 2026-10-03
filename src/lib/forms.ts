@@ -12,6 +12,8 @@ export interface ContactInput {
   email: string
   phone: string
   message: string
+  /** 'lesson' from the pickleball page; anything else is a normal enquiry. */
+  topic: 'lesson' | null
 }
 
 /** The contact fields a person has to fill in, in the order the form shows them. */
@@ -45,15 +47,17 @@ export function validateContact(body: unknown): ContactResult {
     return typeof value === 'string' ? value.trim().slice(0, MAX_LENGTH[key]) : ''
   }
 
+  // Honeypot: real people never see the field; bots fill everything.
+  const spam = typeof body.website === 'string' && body.website.trim() !== ''
+  const topic = body.topic === 'lesson' ? 'lesson' : null
+
   const data: ContactInput = {
     name: field('name'),
     email: field('email'),
     phone: field('phone'),
     message: field('message'),
+    topic,
   }
-
-  // Honeypot: real people never see the field; bots fill everything.
-  const spam = typeof body.website === 'string' && body.website.trim() !== ''
 
   const missing = REQUIRED.filter((key) => !data[key])
   if (missing.length) {
@@ -77,12 +81,14 @@ export function validateNewsletter(body: unknown): { ok: true; email: string } |
 
 /**
  * The email the clinic receives: who wrote, a blank line, then the message.
- * The name goes in the subject, so line breaks come out of it there.
+ * The name goes in the subject, so line breaks come out of it there. A
+ * lesson enquiry from /pickleball says so in the subject.
  */
-export function contactEmail({ name, email, phone, message }: ContactInput): { subject: string; text: string } {
+export function contactEmail({ name, email, phone, message, topic }: ContactInput): { subject: string; text: string } {
   const header = [`Name: ${name}`, `Email: ${email}`, ...(phone ? [`Phone: ${phone}`] : [])].join('\n')
+  const who = name.replace(/[\r\n]+/g, ' ').trim()
   return {
-    subject: `Website enquiry from ${name.replace(/[\r\n]+/g, ' ').trim()}`,
+    subject: topic === 'lesson' ? `Pickleball lesson enquiry from ${who}` : `Website enquiry from ${who}`,
     text: `${header}\n\n${message}`,
   }
 }

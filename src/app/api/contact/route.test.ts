@@ -38,6 +38,23 @@ describe('POST /api/contact', () => {
     expect(sent.text).toBe('Name: Ada\nLovelace\nEmail: ada@example.com\n\nHello there.')
   })
 
+  it('marks only a lesson topic in the subject; any other topic is a normal enquiry, not an error', async () => {
+    const base = { name: 'Pat', email: 'pat@example.com', message: 'Two of us, beginners.' }
+    const subjects: string[] = []
+    for (const [i, topic] of ['lesson', 'other', 42, { x: 1 }, null].entries()) {
+      const res = await POST(post({ ...base, topic }, `10.0.1.${i}`))
+      expect(res.status).toBe(200)
+      subjects.push(JSON.parse(fetchMock.mock.calls[i][1].body).subject)
+    }
+    expect(subjects).toEqual([
+      'Pickleball lesson enquiry from Pat',
+      'Website enquiry from Pat',
+      'Website enquiry from Pat',
+      'Website enquiry from Pat',
+      'Website enquiry from Pat',
+    ])
+  })
+
   it('sends nothing for a honeypot hit but still answers ok', async () => {
     const res = await POST(
       post({ name: 'Bot', email: 'bot@example.com', message: 'Buy', website: 'http://spam.example' }, '10.0.0.2'),

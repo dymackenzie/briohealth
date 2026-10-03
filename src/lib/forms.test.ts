@@ -1,7 +1,7 @@
 import { describe, expect, it } from 'vitest'
 import { contactEmail, MAX_LENGTH, validateContact, validateNewsletter } from './forms'
 
-const good = { name: 'Ada', email: 'ada@example.com', phone: '', message: 'Hello there' }
+const good = { name: 'Ada', email: 'ada@example.com', phone: '', message: 'Hello there', topic: null }
 
 describe('validateContact', () => {
   it('accepts a complete message', () => {
@@ -92,5 +92,27 @@ describe('validateNewsletter', () => {
     expect(validateNewsletter({}).ok).toBe(false)
     expect(validateNewsletter(null).ok).toBe(false)
     expect(validateNewsletter({ email: ['a@b.co'] }).ok).toBe(false)
+  })
+})
+
+describe('lesson enquiries', () => {
+  const body = { name: 'Pat', email: 'pat@example.com', phone: '', message: 'Two of us, beginners.' }
+
+  it('marks a lesson enquiry in the subject', () => {
+    const result = validateContact({ ...body, topic: 'lesson' })
+    expect(result.ok).toBe(true)
+    if (!result.ok) return
+    expect(result.data.topic).toBe('lesson')
+    expect(contactEmail(result.data).subject).toBe('Pickleball lesson enquiry from Pat')
+  })
+
+  it('treats a missing, unknown or non-string topic as a normal enquiry', () => {
+    for (const topic of [undefined, 'other', 42, { x: 1 }, ['lesson']]) {
+      const result = validateContact({ ...body, topic })
+      expect(result.ok).toBe(true)
+      if (!result.ok) return
+      expect(result.data.topic).toBeNull()
+      expect(contactEmail(result.data).subject).toBe('Website enquiry from Pat')
+    }
   })
 })
