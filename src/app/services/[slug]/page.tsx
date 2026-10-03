@@ -42,7 +42,9 @@ export async function generateMetadata(props: { params: Promise<{ slug: string }
  * body, the booking button, "FAQ's" as an accordion, the closing block
  * where the live page has one, and the booking button again where the
  * live page's closing ends in BOOK NOW. The page's one bud (spec 3.7)
- * sits in the open space right of the body's opening.
+ * sits in the open space right of the body's opening. The hero's still is
+ * the video poster only: the 4/5 shoot crops in `image` show Dr. Lee at
+ * full width (spec 7.5), so without a poster the hero is the teal field.
  */
 export default async function ServicePage(props: { params: Promise<{ slug: string }> }) {
   const service = getService((await props.params).slug)!
@@ -60,7 +62,7 @@ export default async function ServicePage(props: { params: Promise<{ slug: strin
 
       <VideoHero
         title={service.title}
-        still={service.video.poster ?? service.image.photo}
+        still={service.video.poster}
         loop={service.video.loop}
         youtube={service.video.youtube}
         ctaLabel={settings.ctaLabel}
@@ -69,7 +71,9 @@ export default async function ServicePage(props: { params: Promise<{ slug: strin
       <div className="container-x section-y relative overflow-x-clip">
         <Bud size="medium" colour="teal" className="top-[calc(var(--section-y)+4rem)] right-[9%]" />
         <div className="max-w-[68ch]">
-          <Reveal className="prose-post prose-page">{renderContent(service.body)}</Reveal>
+          {/* Not a Reveal: the body is thousands of pixels tall, so the observer's 5% threshold is not met
+              while only its top shows under the hero, and on a phone it would stay hidden until a scroll. */}
+          <div className="prose-post prose-page">{renderContent(service.body)}</div>
 
           <Reveal delay={80} className="mt-8">
             <Button href={BOOKING_PATH}>{settings.ctaLabel}</Button>

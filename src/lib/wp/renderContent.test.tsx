@@ -210,6 +210,11 @@ describe('paragraphsOf', () => {
     expect(paragraphsOf(html)).toEqual(['Hello, my name is Jeff & I', 'Second.'])
   })
 
+  it('drops inline tags, as in the bold openings of the service pages', () => {
+    const html = '<p><strong>Acupuncture can help.</strong> Our modern day lifestyle &amp; “Fight or Flight” mode.</p>'
+    expect(paragraphsOf(html)).toEqual(['Acupuncture can help. Our modern day lifestyle & “Fight or Flight” mode.'])
+  })
+
   it("skips Avada's mobile-only copy of a row", () => {
     const html =
       '<p><div class="fusion-fullwidth fusion-no-small-visibility"><p>Desktop words.</p></div></p>' +

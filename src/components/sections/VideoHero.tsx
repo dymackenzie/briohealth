@@ -15,7 +15,9 @@ import { youtubeEmbedUrl } from '@/lib/video'
  * 45% (no gradient); over it the title in paper (display size, so the
  * 24px+ white rule holds), the coral booking button and, when there is a
  * YouTube link, "Watch the video". No loop: the still under the same wash.
- * No still either: a teal field with the same text (counts as a teal field).
+ * No still: a teal field with the same text (counts as a teal field), even
+ * with a loop, because the loop needs its poster. The still is the video
+ * poster, never the service's 4/5 shoot crop (Dr. Lee shows at full width).
  *
  * Layers, bottom to top: the video, the wash (z-10), the copy (z-20), the
  * loop's pause button (z-30, set in LoopVideo) so the copy layer, which

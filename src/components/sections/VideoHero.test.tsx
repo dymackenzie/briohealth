@@ -17,9 +17,19 @@ describe('VideoHero', () => {
     expect(html).not.toContain('Watch the video')
   })
 
+  it('falls back to the teal field with no image or video when there is a loop but no poster', () => {
+    const html = renderToStaticMarkup(<VideoHero {...base} still={null} loop="https://example.com/loop.mp4" youtube={null} />)
+    expect(html).toContain('data-surface="teal"')
+    expect(html).toContain('Acupuncture')
+    expect(html).not.toContain('<img')
+    expect(html).not.toContain('<video')
+    expect(html).not.toContain('bg-ink/45')
+  })
+
   it('shows the photo as a still under the ink wash when there is no loop', () => {
     const html = renderToStaticMarkup(<VideoHero {...base} still={still} loop={null} youtube={null} />)
     expect(html).toContain('acupuncture-wide.jpg')
+    expect(html).not.toContain('<video')
     expect(html).toContain('bg-ink/45')
     expect(html).not.toContain('data-surface="teal"')
   })
