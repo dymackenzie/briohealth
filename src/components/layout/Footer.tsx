@@ -5,9 +5,10 @@ import { FacebookLogo, InstagramLogo, XLogo } from '@phosphor-icons/react/dist/s
 import { Logo } from '@/components/brand/Logo'
 import { NewsletterForm } from '@/components/forms/NewsletterForm'
 import { Address } from '@/components/ui/Address'
+import { Button } from '@/components/ui/Button'
 import { Hours } from '@/components/ui/Hours'
 import { services } from '@/lib/content/services'
-import { footerLegal, type SiteSettings } from '@/lib/site'
+import { BOOKING_PATH, footerLegal, mapEmbedUrl, mapSearchUrl, type SiteSettings } from '@/lib/site'
 
 const socialIcons: Record<string, Icon> = {
   Instagram: InstagramLogo,
@@ -15,12 +16,12 @@ const socialIcons: Record<string, Icon> = {
   X: XLogo,
 }
 
+/** Wireframe section 9, "the junk drawer". The line is Dr. Jeff's. */
+const MERCY = "Don't be at the mercy of your symptoms"
+
 const pageLinks = [
-  { label: 'About Dr. Lee', href: '/about' },
-  { label: 'Pickleball & Community', href: '/pickleball' },
-  { label: 'Blog', href: '/blog' },
-  { label: 'New Patient', href: '/new-patient' },
   { label: 'Contact', href: '/contact' },
+  { label: 'Pickleball', href: '/pickleball' },
 ]
 
 /**
@@ -30,21 +31,49 @@ const pageLinks = [
 const link = 'underline decoration-1 underline-offset-4 hover:decoration-2'
 
 /**
- * The quiet panel. NAP and hours here must match the contact page and the
- * JSON-LD: all three read the same settings object. Not teal: the homepage's
- * three fields are the hero, the plan and the close.
+ * The wireframe's junk drawer, on grey (not a teal field), in its order:
+ * the three service buttons, "Don't be at the mercy of your symptoms" with
+ * the booking button, the map (patients get lost), the clinic's details
+ * and hours with the About link, the newsletter, then legal, Contact,
+ * Pickleball, socials and the copyright. NAP here must match the contact
+ * page and the JSON-LD: all three read the same settings object.
  */
 export function Footer({ settings }: { settings: SiteSettings }) {
   return (
     <footer className="bg-grey">
-      <div className="container-x py-16">
-        {/* The link columns take their longest label, so none wraps, and the
-            newsletter column gets the widest share for its field. Two by two
-            until there is room for all four. */}
-        <div className="grid gap-12 md:grid-cols-2 xl:grid-cols-[minmax(0,5fr)_max-content_max-content_minmax(0,6fr)]">
-          <div>
-            <Logo height={64} />
-            <p className="mt-6 font-medium">{settings.legalName}</p>
+      <div className="container-x py-12 lg:py-14">
+        <nav aria-label="Services" className="flex flex-wrap gap-3">
+          {services.map((s) => (
+            <Button key={s.slug} href={`/services/${s.slug}`} variant="outline">
+              {s.title}
+            </Button>
+          ))}
+        </nav>
+
+        <div className="mt-10 flex flex-col gap-5 border-t border-ink/15 pt-10 sm:flex-row sm:items-center sm:justify-between">
+          <h2 className="max-w-[18ch] text-h2">{MERCY}</h2>
+          <div className="shrink-0">
+            <Button href={BOOKING_PATH}>{settings.ctaLabel}</Button>
+          </div>
+        </div>
+
+        <div className="mt-10 grid gap-10 border-t border-ink/15 pt-10 lg:grid-cols-12">
+          <section id="map" aria-label="Map" className="scroll-mt-6 lg:col-span-7">
+            <iframe
+              src={mapEmbedUrl(settings)}
+              title={`Map showing ${settings.legalName} at ${settings.address.street}, ${settings.address.locality}`}
+              loading="lazy"
+              referrerPolicy="no-referrer-when-downgrade"
+              className="h-[280px] w-full rounded-brand border-0 bg-paper"
+            />
+            <a href={mapSearchUrl(settings)} target="_blank" rel="noopener noreferrer" className={`mt-3 inline-block ${link}`}>
+              Open in Google Maps
+            </a>
+          </section>
+
+          <div className="lg:col-span-5">
+            <Logo height={56} />
+            <p className="mt-5 font-medium">{settings.legalName}</p>
             <Address address={settings.address} />
             <p className="mt-3">
               <a href={settings.phoneHref} className={link}>
@@ -55,26 +84,25 @@ export function Footer({ settings }: { settings: SiteSettings }) {
                 {settings.email}
               </a>
             </p>
-            <Hours hours={settings.hours} note={settings.saturdayNote} className="mt-6" />
+            <Hours hours={settings.hours} note={settings.saturdayNote} className="mt-5" />
+            <p className="mt-5">
+              <Link href="/about" className={link}>
+                About Dr. Lee
+              </Link>
+            </p>
           </div>
+        </div>
 
-          <nav aria-label="Services">
-            <h2 className="text-h3">Services</h2>
-            <ul className="mt-4 space-y-2">
-              {services.map((s) => (
-                <li key={s.slug}>
-                  <Link href={`/services/${s.slug}`} className={link}>
-                    {s.title}
-                  </Link>
-                </li>
-              ))}
-            </ul>
-          </nav>
-
-          <nav aria-label="Pages">
-            <h2 className="text-h3">Clinic</h2>
-            <ul className="mt-4 space-y-2">
-              {pageLinks.map((item) => (
+        <div className="mt-10 grid gap-8 border-t border-ink/15 pt-10 lg:grid-cols-12">
+          <div className="lg:col-span-7">
+            <h2 className="text-h3">Newsletter</h2>
+            <div className="mt-4 max-w-md">
+              <NewsletterForm />
+            </div>
+          </div>
+          <div className="lg:col-span-5">
+            <ul className="flex flex-wrap gap-x-5 gap-y-2">
+              {[...footerLegal, ...pageLinks].map((item) => (
                 <li key={item.href}>
                   <Link href={item.href} className={link}>
                     {item.label}
@@ -82,14 +110,6 @@ export function Footer({ settings }: { settings: SiteSettings }) {
                 </li>
               ))}
             </ul>
-          </nav>
-
-          <div>
-            <h2 className="text-h3">Occasional notes</h2>
-            <p className="mt-2 text-small text-ink-soft">Health, recipes and clinic news. No spam.</p>
-            <div className="mt-4">
-              <NewsletterForm />
-            </div>
             <ul className="mt-6 flex gap-2">
               {settings.social.map((channel) => {
                 const Icon = socialIcons[channel.label]
@@ -109,22 +129,10 @@ export function Footer({ settings }: { settings: SiteSettings }) {
                 )
               })}
             </ul>
+            <p className="mt-6 text-small text-ink-soft">
+              &copy; {new Date().getFullYear()} {settings.legalName}
+            </p>
           </div>
-        </div>
-
-        <div className="mt-14 flex flex-col gap-4 border-t border-ink/15 pt-6 text-small text-ink-soft sm:flex-row sm:items-center sm:justify-between">
-          <p>
-            &copy; {new Date().getFullYear()} {settings.legalName}
-          </p>
-          <ul className="flex gap-5">
-            {footerLegal.map((item) => (
-              <li key={item.href}>
-                <Link href={item.href} className={link}>
-                  {item.label}
-                </Link>
-              </li>
-            ))}
-          </ul>
         </div>
       </div>
     </footer>
