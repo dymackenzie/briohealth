@@ -5,11 +5,12 @@
  * photo-originals/). Every shoot photo except the lobby has Dr. Lee in it, and
  * the lobby shows a neighbouring business's Botox banner, so it is never used.
  *
- * The rule: Dr. Lee appears once on the homepage (the guide section) and
- * freely on /about. Every other slot is a patient-side crop via `position`
- * (CSS object-position, at 4/5 or 1/1), or a `null` photo whose `subject` is
- * the brief for the next shoot. A null never breaks a layout: Figure renders
- * a designed placeholder.
+ * The rule: Dr. Lee appears on /about and /pickleball only. The homepage hero
+ * is licensed stock (Unsplash), self-hosted in public/photos/stock; the
+ * shortlist is `heroStock*` below and the client picks one. Every other slot
+ * is a patient-side crop via `position` (CSS object-position, at 4/5 or 1/1),
+ * or a `null` photo whose `subject` is the brief for the next shoot. A null
+ * never breaks a layout: Figure renders a designed placeholder.
  *
  * Retired (still in public/photos, unused): lee-reviewing-plan, lee-portrait-
  * clinic, lee-treatment, lee-outdoors-family, acupuncture-tall, iv-tall,
@@ -27,6 +28,8 @@ export interface Photo {
   alt: string
   /** CSS object-position: where the crop centres. */
   position: string
+  /** Stock only: where it came from, for the licence record and the client's pick. */
+  credit?: { name: string; url: string; photo: string }
 }
 
 export interface PhotoSlot {
@@ -78,16 +81,51 @@ export const photos = {
     alt: 'Pickleball players lined up with their paddles on an indoor court, one kneeling in front',
     position: '86% 50%',
   },
+
+  /** Stock shortlist for the homepage hero (spec 4.1). Unsplash licence; self-hosted. */
+  heroStockPlaceholder: {
+    src: '/photos/stock/aZzXKGcyWqk.jpg',
+    alt: 'A woman smiling outdoors in daylight',
+    // The mockups crop this one at `center 62%` for the 3/1 strip.
+    position: '50% 62%',
+    credit: { name: 'Eye for Ebony', url: 'https://unsplash.com/@eyeforebony', photo: 'https://unsplash.com/photos/aZzXKGcyWqk' },
+  },
+  heroStock2: {
+    src: '/photos/stock/wm4DuvIpLj8.jpg',
+    alt: 'A young woman laughing among tall evergreens',
+    position: '50% 40%',
+    credit: { name: 'Jamie Brown', url: 'https://unsplash.com/@lightphonics', photo: 'https://unsplash.com/photos/wm4DuvIpLj8' },
+  },
+  heroStock3: {
+    src: '/photos/stock/KgsXAHYWcU8.jpg',
+    alt: 'A man smiling in the sun in front of a sunflower field',
+    position: '50% 10%',
+    credit: { name: 'Eye for Ebony', url: 'https://unsplash.com/@eyeforebony', photo: 'https://unsplash.com/photos/KgsXAHYWcU8' },
+  },
+  heroStock4: {
+    src: '/photos/stock/qWyuJHPb3GE.jpg',
+    alt: 'An older man in glasses smiling outdoors',
+    position: '50% 20%',
+    credit: { name: 'Age Cymru', url: 'https://unsplash.com/@agecymru', photo: 'https://unsplash.com/photos/qWyuJHPb3GE' },
+  },
+  heroStock5: {
+    src: '/photos/stock/q322N5XmLjk.jpg',
+    alt: 'A woman smiling into the low sun, hair in the wind',
+    position: '50% 48%',
+    credit: { name: 'Jordan Bauer', url: 'https://unsplash.com/@jordanbauer', photo: 'https://unsplash.com/photos/q322N5XmLjk' },
+  },
+  heroStock6: {
+    src: '/photos/stock/iQASgiEtCxA.jpg',
+    alt: 'Two friends laughing outdoors on a snowy day',
+    position: '50% 42%',
+    credit: { name: 'Harry Brewer', url: 'https://unsplash.com/@harrybrewer', photo: 'https://unsplash.com/photos/iQASgiEtCxA' },
+  },
 } as const satisfies Record<string, Photo>
 
 export const slots = {
   hero: {
-    subject: 'A patient mid-conversation at a first visit, warm natural light',
-    photo: photos.patientsFirstVisit,
-  },
-  guide: {
-    subject: 'Dr. Jeffrey Lee, portrait',
-    photo: photos.guidePortrait,
+    subject: 'Happy, vitality, smiling, healthy: a person outdoors in natural light, room to crop to 3/1',
+    photo: photos.heroStockPlaceholder,
   },
   services: {
     naturopathic: {
