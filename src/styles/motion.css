@@ -25,11 +25,9 @@
   }
 }
 
-/* Hero entrance, once: the field wipes in from the left, then the headline,
- * sentence and CTA rise in turn. The brand colour arrives first. On lg the
- * copy wrapper is `display: contents` and has no box, so its children move.
- * The photo slides across the seam with the wipe; it never starts hidden,
- * because it is the LCP image. */
+/* Hero entrance, once: the teal floor wipes in from the left, then the serif
+ * headline and the tagline/button column rise. The photo never animates: it
+ * is the LCP image. */
 
 @media (prefers-reduced-motion: no-preference) {
   .js .hero-field {
@@ -50,13 +48,6 @@
     animation-delay: 0.55s;
   }
 
-  .js .hero-copy > :nth-child(3) {
-    animation-delay: 0.65s;
-  }
-
-  .js .hero-drift > * {
-    animation: hero-photo 0.9s var(--ease-out-expo) both;
-  }
 
   @keyframes hero-wipe {
     from {
@@ -74,15 +65,6 @@
     }
     to {
       opacity: 1;
-      transform: none;
-    }
-  }
-
-  @keyframes hero-photo {
-    from {
-      transform: translateX(-24px);
-    }
-    to {
       transform: none;
     }
   }
@@ -121,7 +103,7 @@
 
 /* CTA press: 1px, handled by active:translate-y-px on the buttons. */
 
-/* Scroll-linked effects, homepage only. Three, each with one job. Native
+/* Scroll-linked effects, each with one job. Native
  * scroll-driven animations; browsers without them and reduced-motion users
  * get the final layout, and nothing here needs JavaScript. `linear` is the
  * timing because scroll position is the easing. `animation-timeline` must
@@ -146,21 +128,7 @@
       }
     }
 
-    /* 2. The hero photo drifts across the seam as the hero scrolls away.
-     * The photo only; the text never moves. */
-    .hero-drift {
-      animation: hero-drift linear both;
-      animation-timeline: view();
-      animation-range: exit 0% exit 100%;
-    }
-
-    @keyframes hero-drift {
-      to {
-        transform: translateX(40px);
-      }
-    }
-
-    /* 3. The close field widens from 7/12 to full width as it arrives.
+    /* 2. The close field widens from 7/12 to full width as it arrives.
      * The background layer only; content is not scaled. */
     .close-field {
       transform-origin: left;
@@ -195,7 +163,6 @@
   }
 
   .plan-line,
-  .hero-drift,
   .close-field {
     animation: none;
   }
