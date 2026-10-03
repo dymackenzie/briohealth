@@ -1,29 +1,44 @@
 'use client'
 
 import Link from 'next/link'
+import { usePathname } from 'next/navigation'
 import { useEffect, useRef, useState } from 'react'
 import { CaretDown, List, X } from '@phosphor-icons/react'
 
 import { Logo } from '@/components/brand/Logo'
 import { Button } from '@/components/ui/Button'
-import { nav, type SiteSettings } from '@/lib/site'
+import { BOOKING_PATH, nav, type NavItem, type SiteSettings } from '@/lib/site'
 
 /**
- * 72px, paper, one line at 1024px: logo, four items, the booking button.
- * Dropdowns open on hover and focus-within so keyboard users get the same
- * thing without a focus trap. The dropdown carries the site's only shadow.
- * Escape shuts an open dropdown (it stays shut until the pointer and focus
- * leave that item) or the mobile menu, and puts focus back on its trigger.
+ * 88px, paper, a 1px ink rule under it (spec 3.6), one line at 1024px: logo
+ * (72px), three items, the coral booking button. The header is
+ * `relative z-40`: the homepage hero's transformed layers create stacking
+ * contexts painted after the header, and without a z-index the open
+ * dropdown sat underneath them (hovering "Acupuncture" hit the hero).
+ * Nothing on a page sits above z-40.
+ *
+ * Hover and the current page are a 3px coral underline under ink text (the
+ * only coral in the header besides the button). Dropdowns open on hover
+ * and focus-within; Escape shuts an open dropdown or the mobile menu and
+ * returns focus to its trigger.
  *
  * Below 1024 the menu is always in the markup. With JavaScript it is hidden
  * until the toggle opens it; without JavaScript there is no toggle and the
  * list shows under the header row (rules in globals.css, behind `.js`).
- *
- * The logo is the stacked lockup, so its width is only 1.2x its height. At
- * 56px tall it is 67px wide, the HEALTH line is legible, and it leaves 8px
- * above and below inside the 72px bar.
  */
+
+const underline =
+  'relative after:absolute after:inset-x-3.5 after:bottom-1 after:h-[3px] after:bg-coral after:opacity-0 after:transition-opacity after:duration-200 ' +
+  'hover:after:opacity-100 aria-[current=page]:after:opacity-100 motion-reduce:after:transition-none'
+
+function isCurrent(item: NavItem, pathname: string): boolean {
+  if (pathname === item.href) return true
+  if (item.children?.some((c) => c.href === pathname)) return true
+  return item.href !== '/' && pathname.startsWith(`${item.href}/`)
+}
+
 export function Header({ settings }: { settings: SiteSettings }) {
+  const pathname = usePathname()
   const [open, setOpen] = useState(false)
   const [dismissed, setDismissed] = useState<string | null>(null)
   const toggleRef = useRef<HTMLButtonElement>(null)
@@ -58,14 +73,15 @@ export function Header({ settings }: { settings: SiteSettings }) {
   }, [open])
 
   return (
-    <header className="border-b border-grey bg-paper">
+    <header className="relative z-40 border-b border-ink bg-paper">
       <div className="container-x flex h-[var(--header-h)] items-center justify-between gap-6">
-        <Logo height={56} />
+        <Logo height={72} />
 
         <nav aria-label="Primary" className="hidden lg:block">
           <ul className="flex items-center gap-1">
             {nav.map((item) => {
               const shut = dismissed === item.href
+              const current = isCurrent(item, pathname)
               return (
                 <li
                   key={item.href}
@@ -78,7 +94,8 @@ export function Header({ settings }: { settings: SiteSettings }) {
                 >
                   <Link
                     href={item.href}
-                    className="inline-flex items-center gap-1 rounded-brand px-3.5 py-2 font-medium text-ink hover:text-teal-deep"
+                    aria-current={current ? 'page' : undefined}
+                    className={`inline-flex items-center gap-1 rounded-brand px-3.5 py-2 font-medium text-ink ${underline}`}
                   >
                     {item.label}
                     {item.children && (
@@ -99,7 +116,8 @@ export function Header({ settings }: { settings: SiteSettings }) {
                           <li key={child.href + child.label}>
                             <Link
                               href={child.href}
-                              className="block rounded-brand px-3.5 py-2.5 text-ink hover:bg-grey"
+                              aria-current={pathname === child.href ? 'page' : undefined}
+                              className="block rounded-brand px-3.5 py-2.5 text-ink hover:bg-grey aria-[current=page]:font-medium"
                             >
                               {child.label}
                             </Link>
@@ -117,7 +135,7 @@ export function Header({ settings }: { settings: SiteSettings }) {
         <div className="flex items-center gap-3">
           {/* Wrapped: Button's own inline-flex would beat a `hidden` passed to it. */}
           <div className="hidden md:block">
-            <Button href={settings.bookingUrl}>{settings.ctaLabel}</Button>
+            <Button href={BOOKING_PATH}>{settings.ctaLabel}</Button>
           </div>
 
           <button
@@ -145,7 +163,12 @@ export function Header({ settings }: { settings: SiteSettings }) {
         <ul className="flex flex-col gap-1">
           {nav.map((item) => (
             <li key={item.href}>
-              <Link href={item.href} onClick={() => setOpen(false)} className="block py-2.5 font-medium">
+              <Link
+                href={item.href}
+                aria-current={isCurrent(item, pathname) ? 'page' : undefined}
+                onClick={() => setOpen(false)}
+                className="block py-2.5 font-medium aria-[current=page]:underline aria-[current=page]:decoration-coral aria-[current=page]:decoration-[3px] aria-[current=page]:underline-offset-4"
+              >
                 {item.label}
               </Link>
               {item.children && (
@@ -163,7 +186,7 @@ export function Header({ settings }: { settings: SiteSettings }) {
           ))}
         </ul>
         <div className="mt-4 md:hidden">
-          <Button href={settings.bookingUrl} className="w-full">
+          <Button href={BOOKING_PATH} className="w-full">
             {settings.ctaLabel}
           </Button>
         </div>
