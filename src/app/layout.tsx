@@ -5,6 +5,7 @@ import { Analytics } from '@vercel/analytics/next'
 import { AnnouncementBar } from '@/components/layout/AnnouncementBar'
 import { Footer } from '@/components/layout/Footer'
 import { Header } from '@/components/layout/Header'
+import { TopBar } from '@/components/layout/TopBar'
 import { siteOpenGraph } from '@/lib/seo'
 import { defaultDescription, site } from '@/lib/site'
 import { getSiteSettings } from '@/lib/wp/queries'
@@ -66,6 +67,7 @@ export default async function RootLayout({ children }: { children: React.ReactNo
           Skip to content
         </a>
         <AnnouncementBar announcement={settings.announcement} />
+        <TopBar settings={settings} />
         <Header settings={settings} />
         {children}
         <Footer settings={settings} />
