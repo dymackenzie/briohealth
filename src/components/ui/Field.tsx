@@ -10,15 +10,25 @@ export function Field({
   as: Tag = 'div',
   className = '',
   style,
+  'aria-label': ariaLabel,
+  'aria-labelledby': ariaLabelledBy,
   children,
 }: {
   as?: 'div' | 'section' | 'aside'
   className?: string
   style?: CSSProperties
+  'aria-label'?: string
+  'aria-labelledby'?: string
   children: ReactNode
 }) {
   return (
-    <Tag data-surface="teal" className={`bg-teal text-on-teal ${className}`} style={style}>
+    <Tag
+      data-surface="teal"
+      aria-label={ariaLabel}
+      aria-labelledby={ariaLabelledBy}
+      className={`bg-teal text-on-teal ${className}`}
+      style={style}
+    >
       {children}
     </Tag>
   )

@@ -1,26 +1,41 @@
+import { Bud } from '@/components/brand/Bud'
 import { Reveal } from '@/components/ui/Reveal'
 import type { HomeContent } from '@/lib/content/home'
+import type { ReactNode } from 'react'
 
 /**
- * One oversized statement, then the clinic's five symptoms as short text
- * blocks under teal top rules, 3+2 on desktop, 2 columns on tablet, one on
- * phones. No cards, no icons, no numbers.
+ * Wireframe section 2 in layout "D1" (spec 4.2, mockup
+ * editorial-d1-final.html): the heading set small (Funnel Sans 600, about
+ * 20px, teal-deep) as the section's real h2, no eyebrow; the four
+ * questions as the dominant element in large serif, one per line; the
+ * two paragraphs in columns 7-12 below them; the large teal bud in the
+ * open space right of the questions. `children` is the service tiles,
+ * which the spec places after the paragraphs inside this section.
  */
-export function Stakes({ content }: { content: HomeContent['stakes'] }) {
+export function Stakes({ content, children }: { content: HomeContent['stakes']; children?: ReactNode }) {
   return (
-    <section aria-labelledby="stakes-heading" className="container-x section-y">
+    <section aria-labelledby="stakes-heading" className="container-x section-y relative">
+      <Bud size="large" colour="teal" className="top-[calc(var(--section-y)+3rem)] right-[6%] lg:right-[10%]" />
       <Reveal>
-        <h2 id="stakes-heading" className="max-w-[16ch] text-h2">
-          {content.statement}
+        <h2 id="stakes-heading" className="font-sans text-[1.25rem] leading-snug font-semibold tracking-normal text-teal-deep">
+          {content.heading}
         </h2>
+        <ul className="text-questions mt-4">
+          {content.questions.map((q) => (
+            <li key={q}>{q}</li>
+          ))}
+        </ul>
       </Reveal>
-      <ul className="mt-14 grid gap-x-8 gap-y-10 sm:grid-cols-2 lg:grid-cols-3">
-        {content.items.map((item, i) => (
-          <Reveal as="li" key={item} delay={i * 70} className="border-t-2 border-teal pt-4 text-lede">
-            {item}
-          </Reveal>
-        ))}
-      </ul>
+      <div className="mt-6 grid gap-8 lg:grid-cols-12 lg:gap-7">
+        <Reveal delay={80} className="lg:col-span-6 lg:col-start-7">
+          {content.paragraphs.map((p) => (
+            <p key={p} className="mt-4 text-body first:mt-0">
+              {p}
+            </p>
+          ))}
+        </Reveal>
+      </div>
+      {children && <div className="mt-10">{children}</div>}
     </section>
   )
 }
