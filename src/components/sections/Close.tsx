@@ -3,14 +3,13 @@ import { Address } from '@/components/ui/Address'
 import { Button } from '@/components/ui/Button'
 import { Hours } from '@/components/ui/Hours'
 import { Reveal } from '@/components/ui/Reveal'
-import { home } from '@/lib/content/home'
 import type { SiteSettings } from '@/lib/site'
 
 /**
  * Full-width teal field: heading, CTA, hours, address, and dot burst #3 at
  * the top right, level with the hero's (paper, the one place the burst is
  * not teal, because it sits on teal). Reused on /services, the service
- * pages and /about, so the copy defaults to the homepage's.
+ * pages and /about. The homepage no longer uses it; Task 11 retires it.
  *
  * The teal is its own layer behind the content, so on the homepage
  * (`widen`) it can scale from 7/12 to full width as the section arrives
@@ -27,8 +26,8 @@ import type { SiteSettings } from '@/lib/site'
  */
 export function Close({
   settings,
-  heading = home.close.heading,
-  sentence = home.close.sentence,
+  heading = 'Ready when you are.',
+  sentence = "Book online, or call and we'll set it up with you.",
   widen = false,
 }: {
   settings: SiteSettings

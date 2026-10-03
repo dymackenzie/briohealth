@@ -1,14 +1,8 @@
-import { Close } from '@/components/sections/Close'
-import { FirstVisit } from '@/components/sections/FirstVisit'
-import { Guide } from '@/components/sections/Guide'
-import { Hero } from '@/components/sections/Hero'
+import { HomeHero } from '@/components/sections/HomeHero'
 import { Plan } from '@/components/sections/Plan'
-import { Proof } from '@/components/sections/Proof'
-import { ServiceRows, type ServiceRowItem } from '@/components/sections/ServiceRows'
+import { ServiceTiles } from '@/components/sections/ServiceTiles'
 import { Stakes } from '@/components/sections/Stakes'
 import { home } from '@/lib/content/home'
-import { getService } from '@/lib/content/services'
-import { testimonials } from '@/lib/content/testimonials'
 import { clinicJsonLd, JsonLd } from '@/lib/jsonld'
 import { buildMetadata } from '@/lib/seo'
 import { site } from '@/lib/site'
@@ -23,35 +17,18 @@ export const metadata = buildMetadata({
   path: '/',
 })
 
+/** Wireframe order: hero, stakes (with the service tiles), trust, plan, explanatory paragraph; the footer is the junk drawer. */
 export default async function HomePage() {
   const settings = await getSiteSettings()
-
-  const rows: ServiceRowItem[] = home.services.order.flatMap((slug) => {
-    const service = getService(slug)
-    if (!service) return []
-    return [
-      {
-        slug: service.slug,
-        title: service.title,
-        href: `/services/${service.slug}`,
-        outcome: service.whoFor,
-        subject: service.image.subject,
-        photo: service.image.photo,
-      },
-    ]
-  })
 
   return (
     <main id="main">
       <JsonLd data={clinicJsonLd(settings)} />
-      <Hero content={home.hero} settings={settings} />
-      <Stakes content={home.stakes} />
-      <Guide content={home.guide} />
-      <ServiceRows heading={home.services.heading} items={rows} />
-      <Plan content={home.plan} />
-      <FirstVisit content={home.firstVisit} settings={settings} />
-      <Proof heading={home.proof.heading} items={testimonials} />
-      <Close settings={settings} widen />
+      <HomeHero content={home.hero} settings={settings} />
+      <Stakes content={home.stakes}>
+        <ServiceTiles order={home.services.order} />
+      </Stakes>
+      <Plan content={home.plan} settings={settings} />
     </main>
   )
 }
