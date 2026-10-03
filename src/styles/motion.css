@@ -71,7 +71,7 @@
 }
 
 /* The dot burst draws itself: each dot scales in from the i-dot, inner ring
- * first, 40ms apart. On load in the hero; on reveal in the plan and close.
+ * first, 40ms apart. On load, or on reveal as in every Bud.
  * The fan's geometric origin sits below the 100x72 box, so the scale origin
  * is the droplet's body, in user units. */
 
@@ -103,15 +103,15 @@
 
 /* CTA press: 1px, handled by active:translate-y-px on the buttons. */
 
-/* Scroll-linked effects, each with one job. Native
- * scroll-driven animations; browsers without them and reduced-motion users
- * get the final layout, and nothing here needs JavaScript. `linear` is the
+/* The one scroll-linked effect: the plan line. A native scroll-driven
+ * animation; browsers without it and reduced-motion users get the final
+ * layout, and nothing here needs JavaScript. `linear` is the
  * timing because scroll position is the easing. `animation-timeline` must
  * come after the `animation` shorthand, which would otherwise reset it. */
 
 @supports (animation-timeline: view()) {
   @media (prefers-reduced-motion: no-preference) {
-    /* 1. The plan's line draws from step 1 to step 3 as the field passes. */
+    /* The plan's line draws from step 1 to step 3 as the field passes. */
     .plan-line {
       transform-origin: top;
       animation: draw-line linear both;
@@ -125,24 +125,6 @@
       }
       to {
         transform: scaleY(1);
-      }
-    }
-
-    /* 2. The close field widens from 7/12 to full width as it arrives.
-     * The background layer only; content is not scaled. */
-    .close-field {
-      transform-origin: left;
-      animation: widen linear both;
-      animation-timeline: view();
-      animation-range: entry 0% entry 90%;
-    }
-
-    @keyframes widen {
-      from {
-        transform: scaleX(0.5833);
-      }
-      to {
-        transform: none;
       }
     }
   }
@@ -162,8 +144,7 @@
     transition: none;
   }
 
-  .plan-line,
-  .close-field {
+  .plan-line {
     animation: none;
   }
 }
