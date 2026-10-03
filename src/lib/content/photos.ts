@@ -16,9 +16,9 @@
  * clinic, lee-treatment, lee-outdoors-family, acupuncture-tall, iv-tall,
  * naturopathic-tall, iv-wide, lobby. He dominates each frame and no crop fixes
  * it; iv-wide puts his face at 41-56% of the width, inside any left-anchored
- * crop. Also unused: the WP host's pickleball-1-rotated.jpg, a selfie he
- * takes at the left edge; every crop that clears him cuts the face beside
- * him.
+ * crop. Also unused: the WP host's pickleball-1-rotated.jpg, a selfie the
+ * live Pickleball page carries; the spec lists the Ben Johns, Jordan Briones
+ * and court photos only.
  */
 
 const WP = 'https://yourbriohealth.com/wp-content/uploads'
@@ -71,15 +71,22 @@ export const photos = {
     alt: 'Dr. Jeffrey Lee at a farmers market stall in Richmond',
     position: '50% 40%',
   },
-  /**
-   * On the WP host. Dr. Lee is second from the left; at 4/5 and 86% the
-   * frame starts past him and no face meets either edge. At 1/1 there is no
-   * position that clears him without halving someone else.
-   */
+  /** On the WP host. Dr. Lee may appear on /pickleball, so the frame is centred. */
   pickleballCourt: {
     src: `${WP}/2025/11/pickleball2.jpg`,
     alt: 'Pickleball players lined up with their paddles on an indoor court, one kneeling in front',
-    position: '86% 50%',
+    position: '50% 50%',
+  },
+  /** On the WP host, for /pickleball, where Dr. Lee may appear. */
+  pickleballBenJohns: {
+    src: `${WP}/2025/11/Ben-Johns.jpg`,
+    alt: 'Dr. Jeff with Ben Johns on a pickleball court',
+    position: '50% 30%',
+  },
+  pickleballJordanBriones: {
+    src: `${WP}/2025/11/Jordan-Briones-scaled.jpg`,
+    alt: 'Dr. Jeff with Jordan Briones',
+    position: '50% 30%',
   },
 
   /** Stock shortlist for the homepage hero (spec 4.1). Unsplash licence; self-hosted. */
@@ -148,5 +155,7 @@ export const slots = {
   },
   pickleball: {
     court: { subject: 'A community game on the court', photo: photos.pickleballCourt },
+    benJohns: { subject: 'Dr. Jeff with Ben Johns', photo: photos.pickleballBenJohns },
+    jordanBriones: { subject: 'Dr. Jeff with Jordan Briones', photo: photos.pickleballJordanBriones },
   },
 } as const satisfies Record<string, PhotoSlot | Record<string, PhotoSlot>>
