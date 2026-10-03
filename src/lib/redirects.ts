@@ -6,10 +6,11 @@
  */
 export const TOP_LEVEL_ROUTES = new Set([
   'about',
+  'new-patient',
   'services',
   'pickleball',
   'blog',
-  'book',
+  'book', // redirect source only (next.config); listed so the proxy never sends it to /blog
   'contact',
   'privacy-policy',
   'terms-of-use',

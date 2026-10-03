@@ -11,6 +11,7 @@ import { faqsFor } from '@/lib/content/faqs'
 import { getService, services } from '@/lib/content/services'
 import { breadcrumbJsonLd, JsonLd } from '@/lib/jsonld'
 import { buildMetadata } from '@/lib/seo'
+import { BOOKING_PATH } from '@/lib/site'
 import { getPosts, getSiteSettings } from '@/lib/wp/queries'
 import { decodeTitle } from '@/lib/wp/renderContent'
 
@@ -109,8 +110,8 @@ export default async function ServicePage(props: { params: Promise<{ slug: strin
           </h2>
           <p className="mt-4 text-small text-ink-soft">
             {service.feesNote}{' '}
-            <Link href="/book#fees" className="link-quiet">
-              All fees
+            <Link href={BOOKING_PATH} className="link-quiet">
+              {settings.ctaLabel}
             </Link>
           </p>
         </Reveal>

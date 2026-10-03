@@ -12,7 +12,7 @@ describe('proxy', () => {
   })
 
   it('passes a real route through', () => {
-    for (const path of ['/about', '/services', '/contact', '/privacy-policy']) {
+    for (const path of ['/about', '/services', '/new-patient', '/contact', '/privacy-policy']) {
       const res = proxy(new NextRequest(`https://yourbriohealth.com${path}`))
       expect(res.status).toBe(200)
       expect(res.headers.get('location')).toBeNull()

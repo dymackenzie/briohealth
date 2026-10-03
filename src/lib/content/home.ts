@@ -145,7 +145,7 @@ export const home: HomeContent = {
     leaveWith:
       'A treatment plan under way, and lab tests ordered through LifeLabs or another lab if you need them.',
     feesNote: 'Fees subject to change.',
-    feesLink: { label: 'All fees', href: '/book#fees' },
+    feesLink: { label: 'Book Appointment', href: '/new-patient' },
   },
 
   proof: {

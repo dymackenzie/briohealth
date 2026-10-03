@@ -19,7 +19,7 @@ const pageLinks = [
   { label: 'About Dr. Lee', href: '/about' },
   { label: 'Pickleball & Community', href: '/pickleball' },
   { label: 'Blog', href: '/blog' },
-  { label: 'Book', href: '/book' },
+  { label: 'New Patient', href: '/new-patient' },
   { label: 'Contact', href: '/contact' },
 ]
 

@@ -9,7 +9,9 @@ const legacyRedirects = [
   ['/naturopathic', '/services/naturopathic'],
   ['/acupuncture-3', '/services/acupuncture'],
   ['/i-v-therapy', '/services/iv-therapy'],
-  ['/book-now', '/book'],
+  ['/book-now', '/new-patient'],
+  // Signal's /book became /new-patient in revision 1.
+  ['/book', '/new-patient'],
   ['/contact-us', '/contact'],
   ['/contact-us-2', '/contact'],
   // Both still published on the live install: brio-home is the front page
