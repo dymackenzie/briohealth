@@ -180,6 +180,14 @@ function cleanAttributes() {
         props.decoding = 'async'
       }
 
+      // An embed code's width and height only ever force a box; the prose
+      // styles size iframes at the column's width and 16/9. Images and video
+      // keep theirs: they reserve the box before the file arrives.
+      if (node.tagName === 'iframe') {
+        delete props.width
+        delete props.height
+      }
+
       // Embed codes write allowfullscreen="true", which parses as the string
       // "true"; presence is what the attribute means, so make it a boolean.
       if (props.allowFullScreen !== undefined) props.allowFullScreen = true
@@ -199,6 +207,7 @@ function cleanAttributes() {
 function hasContent(node: Element): boolean {
   // An empty <a id> or <a name> is a jump target, not an empty link.
   if (node.tagName === 'a' && (node.properties.id || node.properties.name)) return true
+  // trim() strips U+00A0 too, so a `&nbsp;` spacer counts as empty
   return node.children.some(
     (c) => (c.type === 'text' && c.value.trim() !== '') || (c.type === 'element' && c.tagName !== 'br'),
   )
@@ -339,7 +348,7 @@ const schema = {
     img: [...(defaultAttributes.img ?? []), 'loading', 'decoding', 'width', 'height'],
     // No `allow`: a post does not get to grant an embed the camera, payment
     // or anything else past the browser's defaults.
-    iframe: ['src', 'title', 'allowFullScreen', 'loading', 'width', 'height'],
+    iframe: ['src', 'title', 'allowFullScreen', 'loading'],
     video: ['controls', 'poster', 'width', 'height'],
     source: ['src', 'type'],
     '*': [...(defaultAttributes['*'] ?? []), 'className', 'id'],
@@ -348,6 +357,24 @@ const schema = {
   // self-hosted video.
   tagNames: [...(defaultSchema.tagNames ?? []), 'iframe', 'video', 'source', 'figure', 'figcaption'],
   protocols: { ...defaultSchema.protocols, poster: ['http', 'https'] },
+}
+
+/**
+ * An image shows at its own size, capped by the column and 80% of the
+ * screen's height. The width attribute is a fixed width, so CSS can't cap
+ * the height without distorting it; capping the width at the height limit
+ * times the ratio can. Set after sanitising, which drops every style a post
+ * brings, so this is the only one an image carries.
+ */
+function imageRatios() {
+  return (tree: Root) => {
+    visit(tree, 'element', (node: Element) => {
+      if (node.tagName !== 'img') return
+      const width = Number(node.properties.width)
+      const height = Number(node.properties.height)
+      if (width > 0 && height > 0) node.properties.style = `--ratio:${(width / height).toFixed(4)}`
+    })
+  }
 }
 
 const processor = unified()
@@ -359,6 +386,7 @@ const processor = unified()
   .use(cleanAttributes)
   .use(dropEmpty)
   .use(rehypeSanitize, schema)
+  .use(imageRatios)
 
 function textContent(node: Root | Element): string {
   const parts: string[] = []

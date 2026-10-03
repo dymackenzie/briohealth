@@ -191,6 +191,40 @@ describe('renderContent', () => {
     expect(out).not.toContain('onerror')
     expect(out).not.toContain('javascript:')
   })
+
+  describe('Avada spacers and forced boxes', () => {
+    it('drops paragraphs and divs that hold only a non-breaking space or a line break', () => {
+      expect(render('<p>&nbsp;</p><p>Kept</p>')).toBe('<p>Kept</p>')
+      expect(render('<div>&nbsp;</div><div><p>   </p></div><p>Kept</p>')).toBe('<p>Kept</p>')
+      expect(render('<p><br></p><p>Kept</p>')).toBe('<p>Kept</p>')
+      expect(render('<p>&nbsp;Kept</p>')).toBe('<p> Kept</p>')
+    })
+
+    it('keeps width and height on images and video, so the box is reserved before they load', () => {
+      const out = render(
+        '<img src="https://yourbriohealth.com/wp-content/uploads/a.jpg" width="1024" height="768" alt="A"><video controls width="640" height="360"><source src="/v.mp4" type="video/mp4"></video>',
+      )
+      expect(out).toContain('src="https://yourbriohealth.com/wp-content/uploads/a.jpg" width="1024" height="768"')
+      expect(out).toContain('<video controls="" width="640" height="360"')
+    })
+
+    it('strips width and height from iframes, which the prose styles size at 16/9', () => {
+      const out = render('<iframe src="https://www.youtube.com/embed/x" width="560" height="315"></iframe>')
+      expect(out).toBe('<iframe src="https://www.youtube.com/embed/x"></iframe>')
+    })
+
+    it("gives an image with numeric dimensions its ratio, which caps a portrait's width to the screen", () => {
+      expect(render('<img src="https://a.b/c.jpg" width="683" height="1024" alt="">')).toContain('style="--ratio:0.6670"')
+      expect(render('<img src="https://a.b/c.jpg" width="100%" height="300" alt="">')).not.toContain('style=')
+      expect(render('<img src="https://a.b/c.jpg" width="300" alt="">')).not.toContain('style=')
+    })
+
+    it('keeps a style a post sets on an image out, even with a ratio added', () => {
+      const out = render('<img src="https://a.b/c.jpg" width="2" height="1" style="position:fixed" alt="">')
+      expect(out).toContain('style="--ratio:2.0000"')
+      expect(out).not.toContain('fixed')
+    })
+  })
 })
 
 describe('renderContent title option', () => {
