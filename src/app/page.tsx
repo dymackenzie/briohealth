@@ -1,8 +1,11 @@
+import { Explain } from '@/components/sections/Explain'
 import { HomeHero } from '@/components/sections/HomeHero'
 import { Plan } from '@/components/sections/Plan'
 import { ServiceTiles } from '@/components/sections/ServiceTiles'
 import { Stakes } from '@/components/sections/Stakes'
+import { Trust } from '@/components/sections/Trust'
 import { home } from '@/lib/content/home'
+import { testimonials } from '@/lib/content/testimonials'
 import { clinicJsonLd, JsonLd } from '@/lib/jsonld'
 import { buildMetadata } from '@/lib/seo'
 import { site } from '@/lib/site'
@@ -28,7 +31,9 @@ export default async function HomePage() {
       <Stakes content={home.stakes}>
         <ServiceTiles order={home.services.order} />
       </Stakes>
+      <Trust content={home.trust} items={testimonials} />
       <Plan content={home.plan} settings={settings} />
+      <Explain content={home.explain} settings={settings} />
     </main>
   )
 }
