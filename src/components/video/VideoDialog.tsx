@@ -13,7 +13,16 @@ import { Button } from '@/components/ui/Button'
  * removed and focus returns to the trigger. `embedUrl` comes from
  * youtubeEmbedUrl, so it is always a youtube-nocookie.com/embed URL.
  */
-export function VideoDialog({ embedUrl, label = 'Watch the video' }: { embedUrl: string; label?: string }) {
+export function VideoDialog({
+  embedUrl,
+  label = 'Watch the video',
+  on = 'dark',
+}: {
+  embedUrl: string
+  label?: string
+  /** The surface the trigger sits on: the ink wash, or the teal field when a service has no photo. */
+  on?: 'dark' | 'teal'
+}) {
   const dialog = useRef<HTMLDialogElement>(null)
   const trigger = useRef<HTMLDivElement>(null)
   const [open, setOpen] = useState(false)
@@ -32,7 +41,7 @@ export function VideoDialog({ embedUrl, label = 'Watch the video' }: { embedUrl:
     <>
       {/* Button renders a <button> when it has no href; the wrapper is only where focus returns to. */}
       <div ref={trigger} className="inline-block">
-        <Button variant="outline" on="dark" onClick={show}>
+        <Button variant="outline" on={on} onClick={show}>
           {label}
         </Button>
       </div>

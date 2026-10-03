@@ -18,7 +18,8 @@ import { useHydrated, useInView, useMediaQuery } from './hooks'
  *
  * Tile mode takes `active` (hover or focus of the whole tile) from its
  * parent; on a device without hover it plays while 60% in view. Hero mode
- * plays while 25% in view and shows a pause button (WCAG 2.2.2).
+ * plays while 25% in view and shows a pause button (WCAG 2.2.2), on z-30
+ * so it stays above VideoHero's wash and copy layers.
  */
 export function LoopVideo({
   src,
@@ -66,7 +67,7 @@ export function LoopVideo({
 
   return (
     <div ref={box} className={`relative ${className}`}>
-      <Figure subject={poster.alt} photo={poster} aspect={aspect} sizes={sizes} preload={preload} />
+      <Figure subject={poster.alt} photo={poster} aspect={aspect} sizes={sizes} preload={preload} className="h-full" />
       {showVideo && (
         <video
           ref={video}
@@ -90,7 +91,7 @@ export function LoopVideo({
           onClick={() => setUserPaused((p) => !p)}
           aria-pressed={userPaused}
           aria-label={userPaused ? 'Play background video' : 'Pause background video'}
-          className="absolute right-4 bottom-4 z-10 flex h-11 w-11 items-center justify-center rounded-brand border-2 border-paper bg-ink/60 text-paper focus-visible:outline-paper"
+          className="absolute right-4 bottom-4 z-30 flex h-11 w-11 items-center justify-center rounded-brand border-2 border-paper bg-ink/60 text-paper focus-visible:outline-paper"
         >
           {userPaused ? <Play size={20} aria-hidden /> : <Pause size={20} aria-hidden />}
         </button>
