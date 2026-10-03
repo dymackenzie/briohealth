@@ -1,5 +1,5 @@
 import { afterEach, describe, expect, it, vi } from 'vitest'
-import { BOOKING_PATH, addressLine, formatDays, formatTime, nav, site } from './site'
+import { BOOKING_PATH, addressLine, formatDays, formatPhoneDashed, formatTime, nav, site } from './site'
 
 describe('absoluteUrl', () => {
   afterEach(() => {
@@ -76,5 +76,19 @@ describe('nav', () => {
       ['About Dr. Lee', '/about'],
     ])
     expect(nav[2].href).toBe('/blog')
+  })
+})
+
+describe('formatPhoneDashed', () => {
+  it('writes a ten-digit North American number the way the wireframe does', () => {
+    expect(formatPhoneDashed('(604) 271-9355')).toBe('604-271-9355')
+    expect(formatPhoneDashed('604.271.9355')).toBe('604-271-9355')
+    expect(formatPhoneDashed('+1 604 271 9355')).toBe('604-271-9355')
+    expect(formatPhoneDashed(site.phone)).toBe('604-271-9355')
+  })
+
+  it('leaves anything that is not ten digits as typed', () => {
+    expect(formatPhoneDashed('+44 20 7946 0958')).toBe('+44 20 7946 0958')
+    expect(formatPhoneDashed('')).toBe('')
   })
 })

@@ -163,3 +163,14 @@ export function addressLine(settings: SiteSettings): string {
   const { street, locality, region, postal } = settings.address
   return `${street}, ${locality}, ${region} ${postal}`
 }
+
+/**
+ * '(604) 271-9355' -> '604-271-9355', the wireframe's top-bar format. A
+ * leading country code 1 is dropped; anything that is not ten digits after
+ * that is returned as typed rather than mangled.
+ */
+export function formatPhoneDashed(phone: string): string {
+  const digits = phone.replace(/\D/g, '').replace(/^1(?=\d{10}$)/, '')
+  if (digits.length !== 10) return phone
+  return `${digits.slice(0, 3)}-${digits.slice(3, 6)}-${digits.slice(6)}`
+}
