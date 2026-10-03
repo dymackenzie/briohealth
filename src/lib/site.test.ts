@@ -1,5 +1,15 @@
 import { afterEach, describe, expect, it, vi } from 'vitest'
-import { BOOKING_PATH, addressLine, formatDays, formatPhoneDashed, formatTime, nav, site } from './site'
+import {
+  BOOKING_PATH,
+  addressLine,
+  formatDays,
+  formatPhoneDashed,
+  formatTime,
+  mapEmbedUrl,
+  mapSearchUrl,
+  nav,
+  site,
+} from './site'
 
 describe('absoluteUrl', () => {
   afterEach(() => {
@@ -90,5 +100,19 @@ describe('formatPhoneDashed', () => {
   it('leaves anything that is not ten digits as typed', () => {
     expect(formatPhoneDashed('+44 20 7946 0958')).toBe('+44 20 7946 0958')
     expect(formatPhoneDashed('')).toBe('')
+  })
+})
+
+describe('map links', () => {
+  it('embeds Google Maps without an API key, by address', () => {
+    expect(mapEmbedUrl(site)).toBe(
+      'https://www.google.com/maps?q=2168-3779%20Sexsmith%20Road%2C%20Richmond%2C%20BC%20V6X%203Z9&output=embed',
+    )
+  })
+
+  it('opens the same address in Google Maps', () => {
+    expect(mapSearchUrl(site)).toBe(
+      'https://www.google.com/maps/search/?api=1&query=2168-3779%20Sexsmith%20Road%2C%20Richmond%2C%20BC%20V6X%203Z9',
+    )
   })
 })

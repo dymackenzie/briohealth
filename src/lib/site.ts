@@ -174,3 +174,13 @@ export function formatPhoneDashed(phone: string): string {
   if (digits.length !== 10) return phone
   return `${digits.slice(0, 3)}-${digits.slice(3, 6)}-${digits.slice(6)}`
 }
+
+/** The footer map: a plain Google Maps embed by address, no API key. */
+export function mapEmbedUrl(settings: SiteSettings): string {
+  return `https://www.google.com/maps?q=${encodeURIComponent(addressLine(settings))}&output=embed`
+}
+
+/** "Open in Google Maps" under the embed; also the fallback when the iframe is blocked. */
+export function mapSearchUrl(settings: SiteSettings): string {
+  return `https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(addressLine(settings))}`
+}
