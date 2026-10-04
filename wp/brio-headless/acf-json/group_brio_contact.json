@@ -8,7 +8,7 @@
             "name": "heading",
             "aria-label": "",
             "type": "text",
-            "instructions": "Aim for under 28 characters; longer headings show smaller. Empty uses the page title.",
+            "instructions": "The title as it reads on the page. Under 40 characters. Empty uses the page title.",
             "required": 0,
             "conditional_logic": 0,
             "wrapper": {
@@ -28,7 +28,7 @@
             "name": "lead",
             "aria-label": "",
             "type": "textarea",
-            "instructions": "One or two sentences under the heading. Under 200 characters.",
+            "instructions": "The line under the heading. Under 200 characters.",
             "required": 0,
             "conditional_logic": 0,
             "wrapper": {
@@ -43,12 +43,12 @@
             "new_lines": ""
         },
         {
-            "key": "field_contact_privacy_note",
-            "label": "Note under the form",
-            "name": "privacy_note",
+            "key": "field_contact_book_line",
+            "label": "Booking line",
+            "name": "book_line",
             "aria-label": "",
-            "type": "textarea",
-            "instructions": "A reminder not to send medical details by email. Under 160 characters.",
+            "type": "text",
+            "instructions": "Above the booking button, e.g. \"If you want to book an appointment use the link below.\" Under 120 characters.",
             "required": 0,
             "conditional_logic": 0,
             "wrapper": {
@@ -56,11 +56,11 @@
                 "class": "",
                 "id": ""
             },
-            "default_value": "Please don't include medical details you wouldn't want sent by email. For anything sensitive, call us instead.",
-            "maxlength": 200,
-            "rows": 2,
+            "default_value": "",
+            "maxlength": 120,
             "placeholder": "",
-            "new_lines": ""
+            "prepend": "",
+            "append": ""
         }
     ],
     "location": [

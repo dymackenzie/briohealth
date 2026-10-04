@@ -1,14 +1,14 @@
 {
     "key": "group_brio_home_stakes",
-    "title": "Home: sound familiar?",
+    "title": "Home: stakes",
     "fields": [
         {
-            "key": "field_home_stakes_statement",
-            "label": "Statement",
-            "name": "statement",
+            "key": "field_home_stakes_heading",
+            "label": "Heading",
+            "name": "heading",
             "aria-label": "",
             "type": "text",
-            "instructions": "One big line. Aim for under 50 characters.",
+            "instructions": "e.g. \"Have you been frustrated with your level of health?\" Under 80 characters.",
             "required": 0,
             "conditional_logic": 0,
             "wrapper": {
@@ -23,12 +23,12 @@
             "append": ""
         },
         {
-            "key": "field_home_stakes_items",
-            "label": "Symptoms",
-            "name": "items",
+            "key": "field_home_stakes_questions",
+            "label": "Questions",
+            "name": "questions",
             "aria-label": "",
             "type": "repeater",
-            "instructions": "Five short lines, in the patient's words.",
+            "instructions": "Four short questions, in order.",
             "required": 0,
             "conditional_logic": 0,
             "wrapper": {
@@ -41,16 +41,16 @@
             "min": 0,
             "max": 6,
             "collapsed": "",
-            "button_label": "Add line",
+            "button_label": "Add question",
             "rows_per_page": 20,
             "sub_fields": [
                 {
-                    "key": "field_home_stakes_items_text",
+                    "key": "field_home_stakes_questions_text",
                     "label": "Line",
                     "name": "text",
                     "aria-label": "",
                     "type": "text",
-                    "instructions": "One symptom. Under 70 characters.",
+                    "instructions": "One question. Under 70 characters.",
                     "required": 1,
                     "conditional_logic": 0,
                     "wrapper": {
@@ -63,6 +63,50 @@
                     "placeholder": "",
                     "prepend": "",
                     "append": ""
+                }
+            ]
+        },
+        {
+            "key": "field_home_stakes_paragraphs",
+            "label": "Paragraphs",
+            "name": "paragraphs",
+            "aria-label": "",
+            "type": "repeater",
+            "instructions": "The two paragraphs after the questions, as written.",
+            "required": 0,
+            "conditional_logic": 0,
+            "wrapper": {
+                "width": "",
+                "class": "",
+                "id": ""
+            },
+            "layout": "row",
+            "pagination": 0,
+            "min": 0,
+            "max": 3,
+            "collapsed": "",
+            "button_label": "Add paragraph",
+            "rows_per_page": 20,
+            "sub_fields": [
+                {
+                    "key": "field_home_stakes_paragraphs_text",
+                    "label": "Paragraph",
+                    "name": "text",
+                    "aria-label": "",
+                    "type": "textarea",
+                    "instructions": "One paragraph. Under 400 characters.",
+                    "required": 1,
+                    "conditional_logic": 0,
+                    "wrapper": {
+                        "width": "",
+                        "class": "",
+                        "id": ""
+                    },
+                    "default_value": "",
+                    "maxlength": 400,
+                    "rows": 3,
+                    "placeholder": "",
+                    "new_lines": ""
                 }
             ]
         }

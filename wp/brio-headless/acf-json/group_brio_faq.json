@@ -8,7 +8,7 @@
             "name": "question",
             "aria-label": "",
             "type": "text",
-            "instructions": "As the patient would ask it. Under 80 characters.",
+            "instructions": "As it reads on the page. Under 120 characters.",
             "required": 1,
             "conditional_logic": 0,
             "wrapper": {
@@ -17,7 +17,7 @@
                 "id": ""
             },
             "default_value": "",
-            "maxlength": 80,
+            "maxlength": 120,
             "placeholder": "",
             "prepend": "",
             "append": ""
@@ -28,7 +28,7 @@
             "name": "answer",
             "aria-label": "",
             "type": "textarea",
-            "instructions": "Two or three sentences. Plain text, under 400 characters.",
+            "instructions": "As written. Line breaks are kept. Under 600 characters.",
             "required": 1,
             "conditional_logic": 0,
             "wrapper": {
@@ -37,18 +37,18 @@
                 "id": ""
             },
             "default_value": "",
-            "maxlength": 400,
-            "rows": 4,
+            "maxlength": 600,
+            "rows": 5,
             "placeholder": "",
             "new_lines": ""
         },
         {
             "key": "field_faq_faq_group",
-            "label": "Where it belongs",
+            "label": "Which page",
             "name": "faq_group",
             "aria-label": "",
             "type": "select",
-            "instructions": "General questions can show anywhere; the others belong with their service.",
+            "instructions": "Booking questions show on the New Patient page; the others on their service page.",
             "required": 0,
             "conditional_logic": 0,
             "wrapper": {
@@ -57,12 +57,12 @@
                 "id": ""
             },
             "choices": {
-                "general": "General",
+                "booking": "Booking (New Patient page)",
                 "naturopathic": "Naturopathic",
                 "acupuncture": "Acupuncture",
                 "iv-therapy": "I.V. therapy"
             },
-            "default_value": "general",
+            "default_value": "booking",
             "allow_null": 0,
             "multiple": 0,
             "ui": 0,

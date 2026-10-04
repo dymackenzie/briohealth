@@ -26,7 +26,7 @@
             "name": "phone",
             "aria-label": "",
             "type": "text",
-            "instructions": "As it should read on the page, e.g. (604) 271-9355. Under 20 characters.",
+            "instructions": "As it should read on the page, e.g. (604) 271-9355. The top bar shows a ten-digit number as 604-271-9355. Under 20 characters.",
             "required": 1,
             "conditional_logic": 0,
             "wrapper": {
@@ -364,7 +364,7 @@
             "name": "booking_url",
             "aria-label": "",
             "type": "url",
-            "instructions": "Every booking button on the site points here.",
+            "instructions": "Where the New Patient page's \"Get Started\" button and its \"Returning patient? Book directly\" link go. Every other booking button goes to the New Patient page.",
             "required": 1,
             "conditional_logic": 0,
             "wrapper": {
@@ -389,7 +389,7 @@
                 "class": "",
                 "id": ""
             },
-            "default_value": "Book a consultation",
+            "default_value": "Book Appointment",
             "maxlength": 30,
             "placeholder": "",
             "prepend": "",

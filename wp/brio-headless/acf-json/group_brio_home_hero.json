@@ -8,7 +8,7 @@
             "name": "heading",
             "aria-label": "",
             "type": "text",
-            "instructions": "Aim for under 28 characters; longer headings show smaller. e.g. \"Feel like yourself again.\"",
+            "instructions": "Dr. Jeff's headline, e.g. \"Transform Your Health, Regain Your Life:\". Under 60 characters.",
             "required": 0,
             "conditional_logic": 0,
             "wrapper": {
@@ -28,7 +28,7 @@
             "name": "sentence",
             "aria-label": "",
             "type": "textarea",
-            "instructions": "Twenty words at most, under 160 characters.",
+            "instructions": "Under the heading, e.g. \"A Natural Approach to Building Vitality and Increasing Energy\". Under 120 characters.",
             "required": 0,
             "conditional_logic": 0,
             "wrapper": {
@@ -37,7 +37,7 @@
                 "id": ""
             },
             "default_value": "",
-            "maxlength": 160,
+            "maxlength": 120,
             "rows": 2,
             "placeholder": "",
             "new_lines": ""
@@ -48,7 +48,7 @@
             "name": "image",
             "aria-label": "",
             "type": "image",
-            "instructions": "A patient, not the doctor. Leave empty if the photo does not exist yet: the site shows a labelled placeholder instead of a broken image.",
+            "instructions": "Wide (3:1 on desktop), happy and healthy; licensed stock is fine. Leave empty if the photo does not exist yet: the site shows a labelled placeholder instead of a broken image.",
             "required": 0,
             "conditional_logic": 0,
             "wrapper": {
@@ -74,7 +74,7 @@
             "name": "image_position",
             "aria-label": "",
             "type": "text",
-            "instructions": "Where the photo is cropped from, as two percentages: \"50% 50%\" is the centre, \"20% 50%\" keeps the left side. Photos show at 4:5.",
+            "instructions": "Where the photo is cropped from, as two percentages: \"50% 50%\" is the centre, \"20% 50%\" keeps the left side. Shown at 3:1 on desktop and 4:3 on phones.",
             "required": 0,
             "conditional_logic": 0,
             "wrapper": {
@@ -82,28 +82,8 @@
                 "class": "",
                 "id": ""
             },
-            "default_value": "50% 50%",
+            "default_value": "50% 62%",
             "maxlength": 20,
-            "placeholder": "",
-            "prepend": "",
-            "append": ""
-        },
-        {
-            "key": "field_home_hero_award",
-            "label": "Award line",
-            "name": "award",
-            "aria-label": "",
-            "type": "text",
-            "instructions": "Sits beside the photo. e.g. \"Voted Best Naturopath, Best of Richmond 2025, Richmond News.\" Under 90 characters.",
-            "required": 0,
-            "conditional_logic": 0,
-            "wrapper": {
-                "width": "",
-                "class": "",
-                "id": ""
-            },
-            "default_value": "",
-            "maxlength": 90,
             "placeholder": "",
             "prepend": "",
             "append": ""

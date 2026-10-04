@@ -3,52 +3,12 @@
     "title": "Service",
     "fields": [
         {
-            "key": "field_service_summary",
-            "label": "Summary",
-            "name": "summary",
+            "key": "field_service_body",
+            "label": "Page text",
+            "name": "body",
             "aria-label": "",
-            "type": "textarea",
-            "instructions": "One or two sentences for the service page. Under 220 characters.",
-            "required": 1,
-            "conditional_logic": 0,
-            "wrapper": {
-                "width": "",
-                "class": "",
-                "id": ""
-            },
-            "default_value": "",
-            "maxlength": 220,
-            "rows": 3,
-            "placeholder": "",
-            "new_lines": ""
-        },
-        {
-            "key": "field_service_who_for",
-            "label": "Who it is for",
-            "name": "who_for",
-            "aria-label": "",
-            "type": "text",
-            "instructions": "One line for the lists. e.g. \"For when pain, stress or poor sleep is wearing you down.\" Under 120 characters.",
-            "required": 1,
-            "conditional_logic": 0,
-            "wrapper": {
-                "width": "",
-                "class": "",
-                "id": ""
-            },
-            "default_value": "",
-            "maxlength": 120,
-            "placeholder": "",
-            "prepend": "",
-            "append": ""
-        },
-        {
-            "key": "field_service_lead",
-            "label": "Lead line",
-            "name": "lead",
-            "aria-label": "",
-            "type": "text",
-            "instructions": "Under the heading on the service page. Under 80 characters.",
+            "type": "wysiwyg",
+            "instructions": "The service page, top to bottom, up to the booking button. Paste the clinic's text as written. Headings, lists and bold come through; nothing is rewritten on the website.",
             "required": 0,
             "conditional_logic": 0,
             "wrapper": {
@@ -57,18 +17,18 @@
                 "id": ""
             },
             "default_value": "",
-            "maxlength": 80,
-            "placeholder": "",
-            "prepend": "",
-            "append": ""
+            "tabs": "all",
+            "toolbar": "basic",
+            "media_upload": 0,
+            "delay": 0
         },
         {
-            "key": "field_service_helps_with",
-            "label": "This is for you if",
-            "name": "helps_with",
+            "key": "field_service_closing",
+            "label": "Closing block",
+            "name": "closing",
             "aria-label": "",
-            "type": "repeater",
-            "instructions": "Five or six lines, written to the reader.",
+            "type": "wysiwyg",
+            "instructions": "The \"... at Brio Health\" block shown after the FAQs. Leave empty if the page has none. Paste the clinic's text as written. Headings, lists and bold come through; nothing is rewritten on the website.",
             "required": 0,
             "conditional_logic": 0,
             "wrapper": {
@@ -76,43 +36,19 @@
                 "class": "",
                 "id": ""
             },
-            "layout": "table",
-            "pagination": 0,
-            "min": 0,
-            "max": 8,
-            "collapsed": "",
-            "button_label": "Add line",
-            "rows_per_page": 20,
-            "sub_fields": [
-                {
-                    "key": "field_service_helps_with_text",
-                    "label": "Line",
-                    "name": "text",
-                    "aria-label": "",
-                    "type": "text",
-                    "instructions": "One line, e.g. \"You can't sleep, or you're dealing with fatigue\". Under 100 characters.",
-                    "required": 1,
-                    "conditional_logic": 0,
-                    "wrapper": {
-                        "width": "",
-                        "class": "",
-                        "id": ""
-                    },
-                    "default_value": "",
-                    "maxlength": 120,
-                    "placeholder": "",
-                    "prepend": "",
-                    "append": ""
-                }
-            ]
+            "default_value": "",
+            "tabs": "all",
+            "toolbar": "basic",
+            "media_upload": 0,
+            "delay": 0
         },
         {
-            "key": "field_service_steps",
-            "label": "What a visit involves",
-            "name": "steps",
+            "key": "field_service_video_loop",
+            "label": "Background loop",
+            "name": "video_loop",
             "aria-label": "",
-            "type": "repeater",
-            "instructions": "Three steps, in order. They are numbered on the page.",
+            "type": "file",
+            "instructions": "An 8 to 15 second MP4, 1280x720, no sound, under 3 MB. It plays muted on the home page tile and behind the service page title. See wp/README.md, \"Service videos\".",
             "required": 0,
             "conditional_logic": 0,
             "wrapper": {
@@ -120,63 +56,19 @@
                 "class": "",
                 "id": ""
             },
-            "layout": "row",
-            "pagination": 0,
-            "min": 1,
-            "max": 4,
-            "collapsed": "",
-            "button_label": "Add step",
-            "rows_per_page": 20,
-            "sub_fields": [
-                {
-                    "key": "field_service_steps_title",
-                    "label": "Title",
-                    "name": "title",
-                    "aria-label": "",
-                    "type": "text",
-                    "instructions": "A few words. Aim for under 40 characters.",
-                    "required": 1,
-                    "conditional_logic": 0,
-                    "wrapper": {
-                        "width": "",
-                        "class": "",
-                        "id": ""
-                    },
-                    "default_value": "",
-                    "maxlength": 60,
-                    "placeholder": "",
-                    "prepend": "",
-                    "append": ""
-                },
-                {
-                    "key": "field_service_steps_body",
-                    "label": "Text",
-                    "name": "body",
-                    "aria-label": "",
-                    "type": "textarea",
-                    "instructions": "One or two sentences. Aim for under 200 characters.",
-                    "required": 1,
-                    "conditional_logic": 0,
-                    "wrapper": {
-                        "width": "",
-                        "class": "",
-                        "id": ""
-                    },
-                    "default_value": "",
-                    "maxlength": 300,
-                    "rows": 3,
-                    "placeholder": "",
-                    "new_lines": ""
-                }
-            ]
+            "return_format": "url",
+            "library": "all",
+            "min_size": "",
+            "max_size": 3,
+            "mime_types": "mp4"
         },
         {
-            "key": "field_service_fees",
-            "label": "Fees",
-            "name": "fees",
+            "key": "field_service_video_poster",
+            "label": "Loop still",
+            "name": "video_poster",
             "aria-label": "",
-            "type": "repeater",
-            "instructions": "Edited once here; shown on the home page, the services list, this service and the book page. Exactly one row per service must be the Initial assessment: the home page and the services list look for it.",
+            "type": "image",
+            "instructions": "A frame from the loop, JPG, 1600 pixels wide. Shown until the loop plays, and instead of it for people who prefer less motion.",
             "required": 0,
             "conditional_logic": 0,
             "wrapper": {
@@ -184,110 +76,25 @@
                 "class": "",
                 "id": ""
             },
-            "layout": "table",
-            "pagination": 0,
-            "min": 0,
-            "max": 0,
-            "collapsed": "",
-            "button_label": "Add fee",
-            "rows_per_page": 20,
-            "sub_fields": [
-                {
-                    "key": "field_service_fee_kind",
-                    "label": "Kind",
-                    "name": "kind",
-                    "aria-label": "",
-                    "type": "select",
-                    "instructions": "What this fee is for. Pick Initial assessment on exactly one row.",
-                    "required": 1,
-                    "conditional_logic": 0,
-                    "wrapper": {
-                        "width": "20",
-                        "class": "",
-                        "id": ""
-                    },
-                    "choices": {
-                        "initial": "Initial assessment",
-                        "follow-up": "Follow-up",
-                        "treatment": "Treatment"
-                    },
-                    "default_value": "",
-                    "allow_null": 1,
-                    "multiple": 0,
-                    "ui": 0,
-                    "return_format": "value",
-                    "ajax": 0,
-                    "placeholder": "Choose"
-                },
-                {
-                    "key": "field_service_fee_label",
-                    "label": "Label",
-                    "name": "label",
-                    "aria-label": "",
-                    "type": "text",
-                    "instructions": "As it reads on the page, e.g. Initial assessment. Under 30 characters.",
-                    "required": 1,
-                    "conditional_logic": 0,
-                    "wrapper": {
-                        "width": "30",
-                        "class": "",
-                        "id": ""
-                    },
-                    "default_value": "",
-                    "maxlength": 40,
-                    "placeholder": "",
-                    "prepend": "",
-                    "append": ""
-                },
-                {
-                    "key": "field_service_fee_note",
-                    "label": "Note",
-                    "name": "note",
-                    "aria-label": "",
-                    "type": "text",
-                    "instructions": "Optional. e.g. 30 minutes, virtual. Under 30 characters.",
-                    "required": 0,
-                    "conditional_logic": 0,
-                    "wrapper": {
-                        "width": "30",
-                        "class": "",
-                        "id": ""
-                    },
-                    "default_value": "",
-                    "maxlength": 40,
-                    "placeholder": "",
-                    "prepend": "",
-                    "append": ""
-                },
-                {
-                    "key": "field_service_fee_amount",
-                    "label": "Amount",
-                    "name": "amount",
-                    "aria-label": "",
-                    "type": "text",
-                    "instructions": "e.g. $150, or a range with a hyphen: $115-$250.",
-                    "required": 1,
-                    "conditional_logic": 0,
-                    "wrapper": {
-                        "width": "20",
-                        "class": "",
-                        "id": ""
-                    },
-                    "default_value": "",
-                    "maxlength": 20,
-                    "placeholder": "",
-                    "prepend": "",
-                    "append": ""
-                }
-            ]
+            "return_format": "array",
+            "library": "all",
+            "preview_size": "medium",
+            "min_width": "",
+            "min_height": "",
+            "min_size": "",
+            "max_width": "",
+            "max_height": "",
+            "max_size": "",
+            "mime_types": "",
+            "uploader": ""
         },
         {
-            "key": "field_service_fees_note",
-            "label": "Fees note",
-            "name": "fees_note",
+            "key": "field_service_video_youtube",
+            "label": "Narrated video",
+            "name": "video_youtube",
             "aria-label": "",
-            "type": "text",
-            "instructions": "One line under the fees. Under 60 characters.",
+            "type": "url",
+            "instructions": "The YouTube link to the full video (unlisted is fine). Adds a \"Watch the video\" button.",
             "required": 0,
             "conditional_logic": 0,
             "wrapper": {
@@ -295,11 +102,8 @@
                 "class": "",
                 "id": ""
             },
-            "default_value": "Fees subject to change.",
-            "maxlength": 80,
-            "placeholder": "",
-            "prepend": "",
-            "append": ""
+            "default_value": "",
+            "placeholder": "https://youtu.be/..."
         },
         {
             "key": "field_service_image",
@@ -307,7 +111,7 @@
             "name": "image",
             "aria-label": "",
             "type": "image",
-            "instructions": "The patient, never the doctor. Leave empty if the photo does not exist yet: the site shows a labelled placeholder instead of a broken image.",
+            "instructions": "Used when there is no loop still. The patient, never the doctor. Leave empty if the photo does not exist yet: the site shows a labelled placeholder instead of a broken image.",
             "required": 0,
             "conditional_logic": 0,
             "wrapper": {
@@ -333,7 +137,7 @@
             "name": "image_position",
             "aria-label": "",
             "type": "text",
-            "instructions": "Where the photo is cropped from, as two percentages: \"50% 50%\" is the centre, \"20% 50%\" keeps the left side. Photos show at 4:5.",
+            "instructions": "Where the photo is cropped from, as two percentages: \"50% 50%\" is the centre, \"20% 50%\" keeps the left side. Shown at 4:5 on the home page tile and 16:9 behind the service page title.",
             "required": 0,
             "conditional_logic": 0,
             "wrapper": {

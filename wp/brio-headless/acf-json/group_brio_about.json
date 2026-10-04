@@ -8,7 +8,7 @@
             "name": "heading",
             "aria-label": "",
             "type": "text",
-            "instructions": "Aim for under 28 characters; longer headings show smaller. Empty uses the page title.",
+            "instructions": "The title as it reads on the page. Under 40 characters. Empty uses the page title.",
             "required": 0,
             "conditional_logic": 0,
             "wrapper": {
@@ -28,7 +28,7 @@
             "name": "lead",
             "aria-label": "",
             "type": "textarea",
-            "instructions": "One or two sentences under the heading. Under 200 characters.",
+            "instructions": "The line under the heading. Under 200 characters.",
             "required": 0,
             "conditional_logic": 0,
             "wrapper": {
@@ -41,6 +41,26 @@
             "rows": 2,
             "placeholder": "",
             "new_lines": ""
+        },
+        {
+            "key": "field_about_body",
+            "label": "Story",
+            "name": "body",
+            "aria-label": "",
+            "type": "wysiwyg",
+            "instructions": "The pull quote and the paragraphs. Paste the clinic's text as written. Headings, lists and bold come through; nothing is rewritten on the website.",
+            "required": 0,
+            "conditional_logic": 0,
+            "wrapper": {
+                "width": "",
+                "class": "",
+                "id": ""
+            },
+            "default_value": "",
+            "tabs": "all",
+            "toolbar": "basic",
+            "media_upload": 0,
+            "delay": 0
         },
         {
             "key": "field_about_portrait",
@@ -74,7 +94,7 @@
             "name": "portrait_position",
             "aria-label": "",
             "type": "text",
-            "instructions": "Where the photo is cropped from, as two percentages: \"50% 50%\" is the centre, \"20% 50%\" keeps the left side. Photos show at 4:5.",
+            "instructions": "Where the photo is cropped from, as two percentages: \"50% 50%\" is the centre, \"20% 50%\" keeps the left side. Shown at 4:5.",
             "required": 0,
             "conditional_logic": 0,
             "wrapper": {
@@ -89,76 +109,12 @@
             "append": ""
         },
         {
-            "key": "field_about_credentials",
-            "label": "Credentials",
-            "name": "credentials",
-            "aria-label": "",
-            "type": "repeater",
-            "instructions": "Four short lines.",
-            "required": 0,
-            "conditional_logic": 0,
-            "wrapper": {
-                "width": "",
-                "class": "",
-                "id": ""
-            },
-            "layout": "table",
-            "pagination": 0,
-            "min": 0,
-            "max": 6,
-            "collapsed": "",
-            "button_label": "Add line",
-            "rows_per_page": 20,
-            "sub_fields": [
-                {
-                    "key": "field_about_credentials_text",
-                    "label": "Line",
-                    "name": "text",
-                    "aria-label": "",
-                    "type": "text",
-                    "instructions": "One qualification or fact. Under 70 characters.",
-                    "required": 1,
-                    "conditional_logic": 0,
-                    "wrapper": {
-                        "width": "",
-                        "class": "",
-                        "id": ""
-                    },
-                    "default_value": "",
-                    "maxlength": 90,
-                    "placeholder": "",
-                    "prepend": "",
-                    "append": ""
-                }
-            ]
-        },
-        {
-            "key": "field_about_award",
-            "label": "Award line",
-            "name": "award",
-            "aria-label": "",
-            "type": "text",
-            "instructions": "e.g. \"Voted Best Naturopath in Best of Richmond 2025, by Richmond News.\" Under 90 characters.",
-            "required": 0,
-            "conditional_logic": 0,
-            "wrapper": {
-                "width": "",
-                "class": "",
-                "id": ""
-            },
-            "default_value": "",
-            "maxlength": 120,
-            "placeholder": "",
-            "prepend": "",
-            "append": ""
-        },
-        {
             "key": "field_about_photo_clinic",
             "label": "Second photo",
             "name": "photo_clinic",
             "aria-label": "",
             "type": "image",
-            "instructions": "In the clinic. Leave empty if the photo does not exist yet: the site shows a labelled placeholder instead of a broken image.",
+            "instructions": "Dr. Lee explaining a treatment. Leave empty if the photo does not exist yet: the site shows a labelled placeholder instead of a broken image.",
             "required": 0,
             "conditional_logic": 0,
             "wrapper": {
@@ -184,7 +140,7 @@
             "name": "photo_community",
             "aria-label": "",
             "type": "image",
-            "instructions": "In the community. Leave empty if the photo does not exist yet: the site shows a labelled placeholder instead of a broken image.",
+            "instructions": "Dr. Lee in the community. Leave empty if the photo does not exist yet: the site shows a labelled placeholder instead of a broken image.",
             "required": 0,
             "conditional_logic": 0,
             "wrapper": {

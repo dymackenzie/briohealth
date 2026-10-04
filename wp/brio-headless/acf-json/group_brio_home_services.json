@@ -1,34 +1,14 @@
 {
     "key": "group_brio_home_services",
-    "title": "Home: how we help",
+    "title": "Home: services",
     "fields": [
-        {
-            "key": "field_home_services_heading",
-            "label": "Heading",
-            "name": "heading",
-            "aria-label": "",
-            "type": "text",
-            "instructions": "Aim for under 20 characters.",
-            "required": 0,
-            "conditional_logic": 0,
-            "wrapper": {
-                "width": "",
-                "class": "",
-                "id": ""
-            },
-            "default_value": "How we help",
-            "maxlength": 40,
-            "placeholder": "",
-            "prepend": "",
-            "append": ""
-        },
         {
             "key": "field_home_services_services",
             "label": "Services, in order",
             "name": "services",
             "aria-label": "",
             "type": "relationship",
-            "instructions": "Drag to reorder. Three is the layout.",
+            "instructions": "Drag to reorder. Three tiles is the layout.",
             "required": 0,
             "conditional_logic": 0,
             "wrapper": {
@@ -63,7 +43,7 @@
             }
         ]
     ],
-    "menu_order": 3,
+    "menu_order": 2,
     "position": "normal",
     "style": "default",
     "label_placement": "top",

@@ -8,7 +8,7 @@
             "name": "heading",
             "aria-label": "",
             "type": "text",
-            "instructions": "Aim for under 28 characters; longer headings show smaller. Empty uses the page title.",
+            "instructions": "The title as it reads on the page. Under 40 characters. Empty uses the page title.",
             "required": 0,
             "conditional_logic": 0,
             "wrapper": {
@@ -23,12 +23,12 @@
             "append": ""
         },
         {
-            "key": "field_pickleball_lead",
-            "label": "Lead",
-            "name": "lead",
+            "key": "field_pickleball_intro",
+            "label": "Intro and coaching method",
+            "name": "intro",
             "aria-label": "",
-            "type": "textarea",
-            "instructions": "One or two sentences under the heading. Under 200 characters.",
+            "type": "wysiwyg",
+            "instructions": "Paste the clinic's text as written. Headings, lists and bold come through; nothing is rewritten on the website.",
             "required": 0,
             "conditional_logic": 0,
             "wrapper": {
@@ -37,10 +37,117 @@
                 "id": ""
             },
             "default_value": "",
-            "maxlength": 200,
-            "rows": 2,
-            "placeholder": "",
-            "new_lines": ""
+            "tabs": "all",
+            "toolbar": "basic",
+            "media_upload": 0,
+            "delay": 0
+        },
+        {
+            "key": "field_pickleball_video_url",
+            "label": "Video",
+            "name": "video_url",
+            "aria-label": "",
+            "type": "url",
+            "instructions": "The MP4 in the media library (copy its URL). Plays with controls.",
+            "required": 0,
+            "conditional_logic": 0,
+            "wrapper": {
+                "width": "",
+                "class": "",
+                "id": ""
+            },
+            "default_value": "",
+            "placeholder": ""
+        },
+        {
+            "key": "field_pickleball_photos",
+            "label": "Captioned photos",
+            "name": "photos",
+            "aria-label": "",
+            "type": "repeater",
+            "instructions": "The coaching photos with their captions, in order.",
+            "required": 0,
+            "conditional_logic": 0,
+            "wrapper": {
+                "width": "",
+                "class": "",
+                "id": ""
+            },
+            "layout": "row",
+            "pagination": 0,
+            "min": 0,
+            "max": 4,
+            "collapsed": "",
+            "button_label": "Add photo",
+            "rows_per_page": 20,
+            "sub_fields": [
+                {
+                    "key": "field_pickleball_photos_image",
+                    "label": "Photo",
+                    "name": "image",
+                    "aria-label": "",
+                    "type": "image",
+                    "instructions": "Leave empty if the photo does not exist yet: the site shows a labelled placeholder instead of a broken image.",
+                    "required": 0,
+                    "conditional_logic": 0,
+                    "wrapper": {
+                        "width": "",
+                        "class": "",
+                        "id": ""
+                    },
+                    "return_format": "array",
+                    "library": "all",
+                    "preview_size": "medium",
+                    "min_width": "",
+                    "min_height": "",
+                    "min_size": "",
+                    "max_width": "",
+                    "max_height": "",
+                    "max_size": "",
+                    "mime_types": "",
+                    "uploader": ""
+                },
+                {
+                    "key": "field_pickleball_photos_caption",
+                    "label": "Caption",
+                    "name": "caption",
+                    "aria-label": "",
+                    "type": "text",
+                    "instructions": "As written. Under 200 characters.",
+                    "required": 0,
+                    "conditional_logic": 0,
+                    "wrapper": {
+                        "width": "",
+                        "class": "",
+                        "id": ""
+                    },
+                    "default_value": "",
+                    "maxlength": 200,
+                    "placeholder": "",
+                    "prepend": "",
+                    "append": ""
+                }
+            ]
+        },
+        {
+            "key": "field_pickleball_services",
+            "label": "Coaching services",
+            "name": "services",
+            "aria-label": "",
+            "type": "wysiwyg",
+            "instructions": "The services and prices block. Paste the clinic's text as written. Headings, lists and bold come through; nothing is rewritten on the website.",
+            "required": 0,
+            "conditional_logic": 0,
+            "wrapper": {
+                "width": "",
+                "class": "",
+                "id": ""
+            },
+            "default_value": "",
+            "tabs": "all",
+            "toolbar": "basic",
+            "media_upload": 0,
+            "delay": 0
         },
         {
             "key": "field_pickleball_photo_court",
@@ -69,12 +176,12 @@
             "uploader": ""
         },
         {
-            "key": "field_pickleball_photo_group",
-            "label": "Group photo",
-            "name": "photo_group",
+            "key": "field_pickleball_quotes_heading",
+            "label": "Quotes heading",
+            "name": "quotes_heading",
             "aria-label": "",
-            "type": "image",
-            "instructions": "The group together. Leave empty if the photo does not exist yet: the site shows a labelled placeholder instead of a broken image.",
+            "type": "text",
+            "instructions": "e.g. \"What they are saying:\". Under 60 characters.",
             "required": 0,
             "conditional_logic": 0,
             "wrapper": {
@@ -82,17 +189,95 @@
                 "class": "",
                 "id": ""
             },
-            "return_format": "array",
-            "library": "all",
-            "preview_size": "medium",
-            "min_width": "",
-            "min_height": "",
-            "min_size": "",
-            "max_width": "",
-            "max_height": "",
-            "max_size": "",
-            "mime_types": "",
-            "uploader": ""
+            "default_value": "",
+            "maxlength": 60,
+            "placeholder": "",
+            "prepend": "",
+            "append": ""
+        },
+        {
+            "key": "field_pickleball_quotes",
+            "label": "What they are saying",
+            "name": "quotes",
+            "aria-label": "",
+            "type": "repeater",
+            "instructions": "Quotes with names, in order.",
+            "required": 0,
+            "conditional_logic": 0,
+            "wrapper": {
+                "width": "",
+                "class": "",
+                "id": ""
+            },
+            "layout": "row",
+            "pagination": 0,
+            "min": 0,
+            "max": 4,
+            "collapsed": "",
+            "button_label": "Add quote",
+            "rows_per_page": 20,
+            "sub_fields": [
+                {
+                    "key": "field_pickleball_quotes_quote",
+                    "label": "Quote",
+                    "name": "quote",
+                    "aria-label": "",
+                    "type": "textarea",
+                    "instructions": "As written. Under 600 characters.",
+                    "required": 1,
+                    "conditional_logic": 0,
+                    "wrapper": {
+                        "width": "",
+                        "class": "",
+                        "id": ""
+                    },
+                    "default_value": "",
+                    "maxlength": 600,
+                    "rows": 4,
+                    "placeholder": "",
+                    "new_lines": ""
+                },
+                {
+                    "key": "field_pickleball_quotes_name",
+                    "label": "Name",
+                    "name": "name",
+                    "aria-label": "",
+                    "type": "text",
+                    "instructions": "e.g. David C. Under 40 characters.",
+                    "required": 1,
+                    "conditional_logic": 0,
+                    "wrapper": {
+                        "width": "",
+                        "class": "",
+                        "id": ""
+                    },
+                    "default_value": "",
+                    "maxlength": 40,
+                    "placeholder": "",
+                    "prepend": "",
+                    "append": ""
+                }
+            ]
+        },
+        {
+            "key": "field_pickleball_form_heading",
+            "label": "Form heading",
+            "name": "form_heading",
+            "aria-label": "",
+            "type": "text",
+            "instructions": "Above the lesson form, e.g. \"Schedule a lesson\". Under 60 characters.",
+            "required": 0,
+            "conditional_logic": 0,
+            "wrapper": {
+                "width": "",
+                "class": "",
+                "id": ""
+            },
+            "default_value": "",
+            "maxlength": 60,
+            "placeholder": "",
+            "prepend": "",
+            "append": ""
         }
     ],
     "location": [

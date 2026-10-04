@@ -1,6 +1,6 @@
 {
     "key": "group_brio_home_plan",
-    "title": "Home: the plan",
+    "title": "Home: how it works",
     "fields": [
         {
             "key": "field_home_plan_heading",
@@ -8,7 +8,7 @@
             "name": "heading",
             "aria-label": "",
             "type": "text",
-            "instructions": "Aim for under 30 characters.",
+            "instructions": "e.g. \"Here's How It Works\". Under 50 characters.",
             "required": 0,
             "conditional_logic": 0,
             "wrapper": {
@@ -21,26 +21,6 @@
             "placeholder": "",
             "prepend": "",
             "append": ""
-        },
-        {
-            "key": "field_home_plan_intro",
-            "label": "Intro",
-            "name": "intro",
-            "aria-label": "",
-            "type": "textarea",
-            "instructions": "One sentence under the heading, under 120 characters.",
-            "required": 0,
-            "conditional_logic": 0,
-            "wrapper": {
-                "width": "",
-                "class": "",
-                "id": ""
-            },
-            "default_value": "",
-            "maxlength": 160,
-            "rows": 2,
-            "placeholder": "",
-            "new_lines": ""
         },
         {
             "key": "field_home_plan_steps",
