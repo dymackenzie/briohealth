@@ -2,12 +2,12 @@ import Image from 'next/image'
 import Link from 'next/link'
 import { notFound } from 'next/navigation'
 
+import { HideBrokenImages } from '@/components/blog/HideBrokenImages'
 import { formatDate } from '@/components/blog/PostList'
 import { Button } from '@/components/ui/Button'
 import { articleJsonLd, breadcrumbJsonLd, JsonLd } from '@/lib/jsonld'
 import { buildMetadata } from '@/lib/seo'
-import { absoluteUrl } from '@/lib/site'
-import { displayClass } from '@/lib/typography'
+import { absoluteUrl, BOOKING_PATH } from '@/lib/site'
 import { authorName, featuredImage, getPost, getSiteSettings, postCategories } from '@/lib/wp/queries'
 import { decodeTitle, postSummary, renderContent, showsImage } from '@/lib/wp/renderContent'
 
@@ -92,69 +92,68 @@ export default async function PostPage(props: { params: Promise<{ slug: string }
       />
 
       <article>
-        <header className="container-x pt-12 lg:pt-16">
-          <p className="text-small text-ink-soft">
-            <Link href="/blog" className="link-quiet">
-              Blog
-            </Link>
-            {category && (
-              <>
-                <span className="mx-2" aria-hidden>
-                  /
-                </span>
-                <Link href={`/blog/category/${category.slug}`} className="link-quiet">
-                  {decodeTitle(category.name)}
+        <div className="container-x">
+          <div className="mx-auto max-w-[68ch]">
+            <header className="pt-10 lg:pt-12">
+              <p className="text-small text-ink-soft">
+                <Link href="/blog" className="link-quiet">
+                  Blog
                 </Link>
-              </>
-            )}
-          </p>
-          <h1 className={`${displayClass(title)} mt-5 max-w-[20ch]`}>{title}</h1>
-          <p className="mt-5 text-small text-ink-soft">
-            <time dateTime={post.date}>{formatDate(post.date)}</time>
-          </p>
-        </header>
+                {category && (
+                  <>
+                    <span className="mx-2" aria-hidden>
+                      /
+                    </span>
+                    <Link href={`/blog/category/${category.slug}`} className="link-quiet">
+                      {decodeTitle(category.name)}
+                    </Link>
+                  </>
+                )}
+              </p>
+              <h1 className="text-post-title mt-5">{title}</h1>
+              <p className="mt-5 text-small text-ink-soft">
+                <time dateTime={post.date}>{formatDate(post.date)}</time>
+              </p>
+            </header>
 
-        {lead && (
-          <div className="container-x mt-10">
-            {/* The reading column's measure, at the reading column's size. */}
-            <div className="max-w-[68ch] text-[length:var(--fs-post)]">
-              {imageWidth ? (
-                <Image
-                  src={lead.url}
-                  alt={lead.alt}
-                  width={lead.width}
-                  height={lead.height}
-                  preload
-                  sizes={`(max-width: ${imageWidth}px) 100vw, ${imageWidth}px`}
-                  style={{ width: imageWidth }}
-                  className="h-auto max-w-full rounded-brand bg-grey"
-                />
-              ) : (
-                <div className="relative aspect-[3/2] overflow-hidden rounded-brand bg-grey">
+            {lead && (
+              <div className="mt-8 text-[length:var(--fs-post)]">
+                {imageWidth ? (
                   <Image
                     src={lead.url}
                     alt={lead.alt}
-                    fill
+                    width={lead.width}
+                    height={lead.height}
                     preload
-                    sizes="(max-width: 720px) 100vw, 720px"
-                    className="object-cover"
+                    sizes={`(max-width: ${imageWidth}px) 100vw, ${imageWidth}px`}
+                    style={{ width: imageWidth }}
+                    className="h-auto max-w-full rounded-brand bg-grey"
                   />
-                </div>
-              )}
+                ) : (
+                  <div className="relative aspect-[3/2] overflow-hidden rounded-brand bg-grey">
+                    <Image
+                      src={lead.url}
+                      alt={lead.alt}
+                      fill
+                      preload
+                      sizes="(max-width: 720px) 100vw, 720px"
+                      className="object-cover"
+                    />
+                  </div>
+                )}
+              </div>
+            )}
+
+            <div className="mt-8 pb-[var(--section-y)]">
+              <HideBrokenImages className="prose-post">
+                {renderContent(post.content.rendered, { title })}
+              </HideBrokenImages>
+
+              <aside className="mt-14 border-t-2 border-teal pt-6">
+                <Button href={BOOKING_PATH}>{settings.ctaLabel}</Button>
+              </aside>
             </div>
           </div>
-        )}
-
-        <div className="container-x mt-10 pb-24">
-          <div className="prose-post">{renderContent(post.content.rendered, { title })}</div>
-
-          <aside className="mt-16 max-w-[68ch] border-t-2 border-teal pt-6">
-            <h2 className="font-sans text-h3">Have a question about your health?</h2>
-            <p className="mt-2 text-ink-soft">Book a first visit and we will work through it together.</p>
-            <div className="mt-5">
-              <Button href={settings.bookingUrl}>{settings.ctaLabel}</Button>
-            </div>
-          </aside>
         </div>
       </article>
     </main>
