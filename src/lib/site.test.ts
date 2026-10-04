@@ -2,6 +2,7 @@ import { afterEach, describe, expect, it, vi } from 'vitest'
 import {
   BOOKING_PATH,
   addressLine,
+  currentState,
   formatDays,
   formatPhoneDashed,
   formatTime,
@@ -114,5 +115,40 @@ describe('map links', () => {
     expect(mapSearchUrl(site)).toBe(
       'https://www.google.com/maps/search/?api=1&query=2168-3779%20Sexsmith%20Road%2C%20Richmond%2C%20BC%20V6X%203Z9',
     )
+  })
+})
+
+describe('currentState', () => {
+  const services = nav.find((item) => item.href === '/services')!
+  const state = (href: string, pathname: string) => {
+    const item = [...nav, ...(services.children ?? [])].find((i) => i.href === href)!
+    return currentState(item.href, pathname, item.children)
+  }
+
+  it('marks nothing on the homepage', () => {
+    for (const item of nav) expect(state(item.href, '/')).toBeUndefined()
+  })
+
+  it('marks the exact link as the page', () => {
+    expect(state('/blog', '/blog')).toBe('page')
+    expect(state('/services', '/services')).toBe('page')
+    expect(state('/blog', '/services')).toBeUndefined()
+  })
+
+  it('marks a section parent as current but not as the page', () => {
+    expect(state('/blog', '/blog/some-post')).toBe('true')
+    expect(state('/services', '/services/acupuncture')).toBe('true')
+    expect(state('/services/acupuncture', '/services/acupuncture')).toBe('page')
+    expect(state('/services/naturopathic', '/services/acupuncture')).toBeUndefined()
+  })
+
+  it('marks the parent of a child outside its path, like About under Services', () => {
+    expect(state('/services', '/about')).toBe('true')
+    expect(state('/about', '/about')).toBe('page')
+    expect(state('/blog', '/about')).toBeUndefined()
+  })
+
+  it('never treats a shared prefix as a section', () => {
+    expect(currentState('/blog', '/blogroll')).toBeUndefined()
   })
 })

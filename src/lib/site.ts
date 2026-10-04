@@ -128,6 +128,18 @@ export const nav: NavItem[] = [
   { label: 'Blog', href: '/blog' },
 ]
 
+/**
+ * The nav link's `aria-current`: "page" only for the link to the page
+ * itself; "true" for a parent whose section or one of whose children is
+ * open (About sits under Services without sharing its path).
+ */
+export function currentState(href: string, pathname: string, children?: NavItem[]): 'page' | 'true' | undefined {
+  if (pathname === href) return 'page'
+  if (children?.some((child) => child.href === pathname)) return 'true'
+  if (href !== '/' && pathname.startsWith(`${href}/`)) return 'true'
+  return undefined
+}
+
 export const footerLegal: NavItem[] = [
   { label: 'Privacy Policy', href: '/privacy-policy' },
   { label: 'Terms of Use', href: '/terms-of-use' },

@@ -7,7 +7,7 @@ import { CaretDown, List, X } from '@phosphor-icons/react'
 
 import { Logo } from '@/components/brand/Logo'
 import { Button } from '@/components/ui/Button'
-import { BOOKING_PATH, nav, type NavItem, type SiteSettings } from '@/lib/site'
+import { BOOKING_PATH, currentState, nav, type SiteSettings } from '@/lib/site'
 
 /**
  * 88px, paper, a 1px ink rule under it (spec 3.6), one line at 1024px: logo
@@ -18,7 +18,9 @@ import { BOOKING_PATH, nav, type NavItem, type SiteSettings } from '@/lib/site'
  * Nothing on a page sits above z-40.
  *
  * Hover and the current page are a 3px coral underline under ink text (the
- * only coral in the header besides the button). Dropdowns open on hover
+ * only coral in the header besides the button). `currentState` gives the
+ * page's own link `aria-current="page"` and its parent "true"; the
+ * underline keys on the attribute, so both carry it. Dropdowns open on hover
  * and focus-within; Escape shuts an open dropdown or the mobile menu and
  * returns focus to its trigger.
  *
@@ -29,13 +31,10 @@ import { BOOKING_PATH, nav, type NavItem, type SiteSettings } from '@/lib/site'
 
 const underline =
   'relative after:absolute after:inset-x-3.5 after:bottom-1 after:h-[3px] after:bg-coral after:opacity-0 after:transition-opacity after:duration-200 ' +
-  'hover:after:opacity-100 aria-[current=page]:after:opacity-100 motion-reduce:after:transition-none'
+  'hover:after:opacity-100 aria-[current]:after:opacity-100 motion-reduce:after:transition-none'
 
-function isCurrent(item: NavItem, pathname: string): boolean {
-  if (pathname === item.href) return true
-  if (item.children?.some((c) => c.href === pathname)) return true
-  return item.href !== '/' && pathname.startsWith(`${item.href}/`)
-}
+const mobileCurrent =
+  'aria-[current]:underline aria-[current]:decoration-coral aria-[current]:decoration-[3px] aria-[current]:underline-offset-4'
 
 export function Header({ settings }: { settings: SiteSettings }) {
   const pathname = usePathname()
@@ -81,7 +80,6 @@ export function Header({ settings }: { settings: SiteSettings }) {
           <ul className="flex items-center gap-1">
             {nav.map((item) => {
               const shut = dismissed === item.href
-              const current = isCurrent(item, pathname)
               return (
                 <li
                   key={item.href}
@@ -94,7 +92,7 @@ export function Header({ settings }: { settings: SiteSettings }) {
                 >
                   <Link
                     href={item.href}
-                    aria-current={current ? 'page' : undefined}
+                    aria-current={currentState(item.href, pathname, item.children)}
                     className={`inline-flex items-center gap-1 rounded-brand px-3.5 py-2 font-medium text-ink ${underline}`}
                   >
                     {item.label}
@@ -116,7 +114,7 @@ export function Header({ settings }: { settings: SiteSettings }) {
                           <li key={child.href + child.label}>
                             <Link
                               href={child.href}
-                              aria-current={pathname === child.href ? 'page' : undefined}
+                              aria-current={currentState(child.href, pathname)}
                               className="block rounded-brand px-3.5 py-2.5 text-ink hover:bg-grey aria-[current=page]:font-medium"
                             >
                               {child.label}
@@ -165,9 +163,9 @@ export function Header({ settings }: { settings: SiteSettings }) {
             <li key={item.href}>
               <Link
                 href={item.href}
-                aria-current={isCurrent(item, pathname) ? 'page' : undefined}
+                aria-current={currentState(item.href, pathname, item.children)}
                 onClick={() => setOpen(false)}
-                className="block py-2.5 font-medium aria-[current=page]:underline aria-[current=page]:decoration-coral aria-[current=page]:decoration-[3px] aria-[current=page]:underline-offset-4"
+                className={`block py-2.5 font-medium ${mobileCurrent}`}
               >
                 {item.label}
               </Link>
@@ -175,7 +173,12 @@ export function Header({ settings }: { settings: SiteSettings }) {
                 <ul className="mb-2 ml-4 flex flex-col border-l border-grey pl-4">
                   {item.children.map((child) => (
                     <li key={child.href + child.label}>
-                      <Link href={child.href} onClick={() => setOpen(false)} className="block py-2 text-ink-soft">
+                      <Link
+                        href={child.href}
+                        aria-current={currentState(child.href, pathname)}
+                        onClick={() => setOpen(false)}
+                        className={`block py-2 text-ink-soft aria-[current]:text-ink ${mobileCurrent}`}
+                      >
                         {child.label}
                       </Link>
                     </li>
