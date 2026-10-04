@@ -111,7 +111,7 @@
             "name": "image",
             "aria-label": "",
             "type": "image",
-            "instructions": "Used when there is no loop still. The patient, never the doctor. Leave empty if the photo does not exist yet: the site shows a labelled placeholder instead of a broken image.",
+            "instructions": "Used on the service tiles (4:5, home page and Services) only, when there is no loop still. The service page title sits over the loop still, never this photo. The patient, never the doctor. Leave empty if the photo does not exist yet: the site shows a labelled placeholder instead of a broken image.",
             "required": 0,
             "conditional_logic": 0,
             "wrapper": {
@@ -137,7 +137,7 @@
             "name": "image_position",
             "aria-label": "",
             "type": "text",
-            "instructions": "Where the photo is cropped from, as two percentages: \"50% 50%\" is the centre, \"20% 50%\" keeps the left side. Shown at 4:5 on the home page tile and 16:9 behind the service page title.",
+            "instructions": "Where the photo is cropped from, as two percentages: \"50% 50%\" is the centre, \"20% 50%\" keeps the left side. Shown at 4:5 on the service tiles.",
             "required": 0,
             "conditional_logic": 0,
             "wrapper": {
@@ -147,6 +147,26 @@
             },
             "default_value": "50% 50%",
             "maxlength": 20,
+            "placeholder": "",
+            "prepend": "",
+            "append": ""
+        },
+        {
+            "key": "field_service_faq_heading",
+            "label": "FAQ heading",
+            "name": "faq_heading",
+            "aria-label": "",
+            "type": "text",
+            "instructions": "Above this service's questions, e.g. \"FAQ’s\". Under 40 characters.",
+            "required": 0,
+            "conditional_logic": 0,
+            "wrapper": {
+                "width": "",
+                "class": "",
+                "id": ""
+            },
+            "default_value": "FAQ’s",
+            "maxlength": 40,
             "placeholder": "",
             "prepend": "",
             "append": ""

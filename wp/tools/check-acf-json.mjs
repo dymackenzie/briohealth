@@ -81,7 +81,7 @@ if (phpNames.length < 10) problems.push(`inc/options.php: only found ${phpNames.
 
 const readers = {
   group_brio_settings: [...new Set(phpNames), 'hours.days', 'hours.opens', 'hours.closes', 'hours.closed', 'social.label', 'social.url', 'announcement.enabled', 'announcement.text', 'announcement.url'],
-  group_brio_service: ['body', 'closing', 'video_loop', 'video_poster', 'video_youtube', 'image', 'image_position', 'faqs'],
+  group_brio_service: ['body', 'closing', 'video_loop', 'video_poster', 'video_youtube', 'image', 'image_position', 'faq_heading', 'faqs'],
   group_brio_testimonial: ['quote', 'name', 'service'],
   group_brio_faq: ['question', 'answer', 'faq_group'],
 }
