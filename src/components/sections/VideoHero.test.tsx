@@ -49,6 +49,13 @@ describe('VideoHero', () => {
     expect(html).not.toContain('data-surface="teal"')
   })
 
+  it('gives the copy over the ink wash a paper focus ring, without painting a surface', () => {
+    const html = renderToStaticMarkup(<VideoHero {...base} still={still} loop={null} youtube="https://youtu.be/mYhjmq7-1q8" />)
+    const copyLayer = (html.match(/<div class="absolute inset-0 z-20[^"]*"/)?.[0] ?? '').replaceAll('&amp;', '&')
+    expect(copyLayer).toContain('[&_:focus-visible]:outline-paper')
+    expect(html).not.toContain('data-surface="ink"')
+  })
+
   it('offers Watch the video only for a YouTube link', () => {
     const yes = renderToStaticMarkup(<VideoHero {...base} still={still} loop={null} youtube="https://youtu.be/mYhjmq7-1q8" />)
     expect(yes).toContain('Watch the video')

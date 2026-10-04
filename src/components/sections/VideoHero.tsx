@@ -85,7 +85,8 @@ export function VideoHero({
         />
       )}
       <div aria-hidden className="absolute inset-0 z-10 bg-ink/45" />
-      <div className="absolute inset-0 z-20 [&_h1]:text-paper">{copy('dark')}</div>
+      {/* Paper title and a paper focus ring over the wash; data-surface="ink" would paint the layer ink. */}
+      <div className="absolute inset-0 z-20 [&_:focus-visible]:outline-paper [&_h1]:text-paper">{copy('dark')}</div>
     </section>
   )
 }
