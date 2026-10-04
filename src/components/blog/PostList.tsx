@@ -30,7 +30,7 @@ export function PostList({ posts }: { posts: WPPost[] }) {
           <li key={post.id} className="border-b border-grey">
             <Link
               href={`/blog/${post.slug}`}
-              className={`group grid items-start gap-x-5 py-8 sm:gap-x-8 ${image ? 'grid-cols-[1fr_4.5rem] sm:grid-cols-[1fr_9rem]' : ''}`}
+              className={`group grid items-start gap-x-5 py-6 sm:gap-x-8 ${image ? 'grid-cols-[1fr_4.5rem] sm:grid-cols-[1fr_9rem]' : ''}`}
             >
               <div>
                 <p className="text-small text-ink-soft">

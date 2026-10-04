@@ -106,8 +106,7 @@ export const pages = {
     formHeading: 'Schedule a lesson',
   },
   blog: {
-    title: 'Notes on getting your health back',
-    lead: 'Nutrition, treatment and what we have learned in the clinic.',
+    title: 'Blog',
     empty: 'Nothing here yet. Check back soon.',
   },
   notFound: {

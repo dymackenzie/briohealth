@@ -56,7 +56,7 @@ export default async function CategoryPage(props: {
         title={decodeTitle(category.name)}
         lead={plainExcerpt(category.description ?? '', 200) || undefined}
       />
-      <div className="container-x pb-24">
+      <div className="container-x pb-[var(--section-y)]">
         <CategoryFilter categories={categories} current={category.slug} />
         {posts.length === 0 ? (
           <div className="mt-10 border-t border-grey pt-10">
@@ -66,7 +66,7 @@ export default async function CategoryPage(props: {
             </Button>
           </div>
         ) : (
-          <div className="mt-10">
+          <div className="mt-6">
             <PostList posts={posts} />
           </div>
         )}

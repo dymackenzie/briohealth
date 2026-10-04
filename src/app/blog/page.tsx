@@ -37,8 +37,8 @@ export default async function BlogIndex(props: { searchParams: SearchParams }) {
 
   return (
     <main id="main">
-      <PageHero title={pages.blog.title} lead={pages.blog.lead} />
-      <div className="container-x pb-24">
+      <PageHero title={pages.blog.title} />
+      <div className="container-x pb-[var(--section-y)]">
         {posts.length === 0 ? (
           <div className="border-t border-grey pt-10">
             <p className="max-w-[40ch] text-lede">{pages.blog.empty}</p>
@@ -49,7 +49,7 @@ export default async function BlogIndex(props: { searchParams: SearchParams }) {
         ) : (
           <>
             <CategoryFilter categories={categories} />
-            <div className="mt-10">
+            <div className="mt-6">
               <PostList posts={posts} />
             </div>
           </>
