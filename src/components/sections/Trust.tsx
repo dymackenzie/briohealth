@@ -46,7 +46,7 @@ export function Trust({ content, items }: { content: HomeContent['trust']; items
               width={content.badge.width}
               height={content.badge.height}
               sizes="160px"
-              className="h-auto w-40 shrink-0 rounded-brand"
+              className="h-auto w-40 shrink-0 rounded-brand mix-blend-multiply"
             />
             <div>
               <p className="font-medium">{content.badgeHeading}</p>

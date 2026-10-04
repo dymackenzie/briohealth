@@ -74,7 +74,7 @@ export function Header({ settings }: { settings: SiteSettings }) {
   }, [open])
 
   return (
-    <header className="relative z-40 border-b border-ink bg-paper">
+    <header className="relative z-40 border-b border-ink">
       <div className="container-x flex h-[var(--header-h)] items-center justify-between gap-6">
         <Logo height={72} />
 

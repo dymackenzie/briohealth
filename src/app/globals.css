@@ -9,8 +9,13 @@
     -webkit-text-size-adjust: 100%;
   }
 
+  /* The paper is grained: a 180px fractal-noise tile in warm brown at a few
+   * percent alpha, inline so it costs no request. Only the body carries it;
+   * teal and sand fields paint over it flat, and the header has no fill so
+   * the grain runs under it. */
   body {
-    background: var(--color-paper);
+    background-color: var(--color-paper);
+    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='180' height='180'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.8' numOctaves='3' stitchTiles='stitch'/%3E%3CfeColorMatrix values='0 0 0 0 .2 0 0 0 0 .16 0 0 0 0 .1 .55 0 0 0 -.22'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
     color: var(--color-ink);
     font-family: var(--font-sans);
     font-size: var(--fs-body);
