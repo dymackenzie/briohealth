@@ -1,4 +1,5 @@
 import { site } from '@/lib/site'
+import { WP_UPLOADS_URL } from '@/lib/wp/client'
 import { slots, type PhotoSlot } from './photos'
 import type { ServiceSlug } from './services'
 
@@ -79,7 +80,7 @@ export const home: HomeContent = {
     ],
     // The live homepage's badge and caption (page 22731).
     badge: {
-      src: 'https://yourbriohealth.com/wp-content/uploads/2025/06/2025-best-of-richmond-logo.jpg',
+      src: `${WP_UPLOADS_URL}/2025/06/2025-best-of-richmond-logo.jpg`,
       alt: 'Best of Richmond 2025, Richmond News',
       width: 960,
       height: 540,

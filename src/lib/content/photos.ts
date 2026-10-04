@@ -1,3 +1,5 @@
+import { WP_UPLOADS_URL } from '@/lib/wp/client'
+
 /**
  * Which photo fills which slot, the crop, and why.
  *
@@ -21,7 +23,8 @@
  * and court photos only.
  */
 
-const WP = 'https://yourbriohealth.com/wp-content/uploads'
+// The live media library, wherever WP_API_URL points.
+const WP = WP_UPLOADS_URL
 
 export interface Photo {
   src: string

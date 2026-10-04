@@ -14,6 +14,9 @@ export const WP_ROOT = (process.env.WP_API_URL ?? 'https://yourbriohealth.com/wp
 /** Media lives wherever the API does; content URLs get pointed here. */
 export const WP_HOST = new URL(WP_ROOT).host
 
+/** The media library on that host: media named in code (photos, videos, the badge) follow the API at cutover. */
+export const WP_UPLOADS_URL = `https://${WP_HOST}/wp-content/uploads`
+
 // Backstop only; the save_post webhook is what normally busts the cache.
 const DEFAULT_REVALIDATE = 3600
 

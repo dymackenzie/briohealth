@@ -1,3 +1,4 @@
+import { WP_UPLOADS_URL } from '@/lib/wp/client'
 import { slots } from './photos'
 
 /** Heading and lead per page template, shaped like their SCF groups. */
@@ -22,7 +23,7 @@ export const pages = {
   // screening the live form does before it hands over to Jane.
   newPatient: {
     title: 'Welcome to Brio Health',
-    videoUrl: 'https://yourbriohealth.com/wp-content/uploads/2024/02/BrioBookNowVideo.mp4',
+    videoUrl: `${WP_UPLOADS_URL}/2024/02/BrioBookNowVideo.mp4`,
     intro: `
 <p>Whether you are booking a Naturopathic Medicine, Acupuncture or I.V. Therapy visit, all patients will begin with an <strong>assessment consultation</strong> with Dr. Lee.</p>
 <p>The assessment consultation will be done as an <strong>online virtual visit</strong> followed by an <strong>in person</strong> visit.</p>
@@ -71,7 +72,7 @@ export const pages = {
 <li>Learn how to prevent injuries so you can play for years to come.</li>
 </ul>
 `,
-    videoUrl: 'https://yourbriohealth.com/wp-content/uploads/2025/11/BRIOP.mp4',
+    videoUrl: `${WP_UPLOADS_URL}/2025/11/BRIOP.mp4`,
     photos: [
       {
         slot: slots.pickleball.benJohns,
