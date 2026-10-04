@@ -5,7 +5,8 @@ backend. Deploy it to a WP Toolkit staging clone first; deactivating Avada on
 the live clinic site with no rollback is not a thing to do on a Thursday.
 
 Content model: spec section 8 in
-`docs/superpowers/specs/2026-09-30-brio-signal-rebuild-design.md`.
+`docs/superpowers/specs/2026-09-30-brio-signal-rebuild-design.md`, as revised
+by section 9 of `docs/superpowers/specs/2026-10-02-brio-signal-revision-design.md`.
 
 ## What is in it
 
@@ -76,17 +77,20 @@ not undo it.
    |---|---|
    | About | About |
    | Contact | Contact |
-   | Book | Book |
+   | New Patient (the old Book Now page) | New Patient |
    | Pickleball | Pickleball |
 
    The home page picks its groups up from Settings, Reading (front page).
 
 8. **Fill in Site settings**: phone, address, hours, the Saturday note, the
-   Jane link, the CTA label ("Book a consultation"), socials.
+   Jane link, the CTA label ("Book Appointment"), socials.
 
 9. **Add the three services** (slugs `naturopathic`, `acupuncture`,
    `iv-therapy`; the slug is the URL), the testimonials and the FAQs. The
-   copy to paste is in `src/lib/content/` on the Next side.
+   copy to paste is in `src/lib/content/` on the Next side. The service
+   bodies are the live pages' text (`src/lib/content/services.ts`, `body` and
+   `closing`); paste them into the wysiwyg fields and keep the headings and
+   lists.
 
 10. **Check the API.** These should all return JSON:
 
@@ -117,6 +121,34 @@ not undo it.
 
 Steps 2 to 11 are reversible. The only one-way step is the DNS change in the
 2026-09-02 spec, section 10.1, and that is a separate day.
+
+## Service videos
+
+Each service has three fields: a background loop, its still, and the
+narrated video. Dr. Jeff narrates the full video; the loop is what plays
+silently on the home page tiles (on hover, or as they scroll into view on
+phones) and behind the service page title.
+
+**Loop** (`Background loop`): 8 to 15 seconds, 1280x720, H.264 MP4, no
+audio track, under about 3 MB. From the full video, in HandBrake or
+ffmpeg:
+
+    ffmpeg -ss 00:00:12 -t 10 -i full.mp4 -an -vf scale=1280:-2 -c:v libx264 -crf 24 -preset slow -movflags +faststart loop-naturopathic.mp4
+
+Upload it to the media library (Media, Add New; the install's upload limit
+must be at least 3 MB, which Plesk sets under PHP Settings), then pick it
+in the field.
+
+**Still** (`Loop still`): one frame from the loop, JPG, 1600 pixels wide:
+
+    ffmpeg -ss 00:00:02 -i loop-naturopathic.mp4 -frames:v 1 -vf scale=1600:-2 -q:v 3 still-naturopathic.jpg
+
+It shows until the loop plays, on devices that cannot play it, and for
+anyone who prefers less motion.
+
+**Narrated video** (`Narrated video`): upload the full video to YouTube
+(unlisted is fine) and paste its link. The site shows "Watch the video"
+only when this is filled in.
 
 ## What the editor sees afterwards
 
