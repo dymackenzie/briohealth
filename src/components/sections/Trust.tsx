@@ -15,7 +15,7 @@ const icons: Record<TrustIcon, Icon> = {
 /**
  * Wireframe sections 3 and 4 (spec 4.3, mockups editorial-d1-final.html
  * and scroll-three.html): three stat lines in the serif, each with a
- * Phosphor icon and a coral mark (not a big-number template: the phrases
+ * Phosphor icon and a clay mark (not a big-number template: the phrases
  * are the content); the Best of Richmond 2025 badge with the live caption;
  * the two testimonials verbatim in serif italic at the quote size, each
  * with a hanging teal quotation mark in the margin column (column 1) and
@@ -33,7 +33,7 @@ export function Trust({ content, items }: { content: HomeContent['trust']; items
                 <Reveal as="li" key={stat.text} delay={i * 70}>
                   <StatIcon size={28} aria-hidden className="text-teal" />
                   <p className="text-stat mt-3 max-w-[12ch]">{stat.text}</p>
-                  <span aria-hidden className="mt-3 block h-1 w-10 bg-coral" />
+                  <span aria-hidden className="mt-3 block h-1 w-10 bg-clay" />
                 </Reveal>
               )
             })}

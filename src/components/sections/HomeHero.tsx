@@ -8,7 +8,7 @@ import { displayClass } from '@/lib/typography'
  * Layout "H2" in the editorial direction (spec 4.1 and 3.6, mockup
  * editorial-d1-final.html). A bottom-aligned 12-column row: the serif
  * headline in columns 1-8 (two lines at 1440), the serif-italic tagline
- * with the coral button in columns 9-12, on paper, left-aligned. Below it
+ * with the clay button in columns 9-12, on paper, left-aligned. Below it
  * the photo strip (3/1 at lg, 4/3 below) standing on a teal floor, a band
  * that runs edge to edge behind the photo's lower half. Two solid layers,
  * no gradient. Teal field 1 of 2 on the page.

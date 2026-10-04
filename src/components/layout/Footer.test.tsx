@@ -15,9 +15,9 @@ describe('Footer', () => {
     expect(html).toContain('Don&#x27;t be at the Mercy of your symptoms')
   })
 
-  it('keeps coral for Book Appointment only', () => {
-    const coral = html.match(/<(?:a|button) [^>]*bg-coral[^>]*>[^<]*/g) ?? []
-    expect(coral).toHaveLength(1)
-    expect(coral[0]).toContain(site.ctaLabel)
+  it('keeps clay for Book Appointment only', () => {
+    const clay = html.match(/<(?:a|button) [^>]*bg-clay[^>]*>[^<]*/g) ?? []
+    expect(clay).toHaveLength(1)
+    expect(clay[0]).toContain(site.ctaLabel)
   })
 })

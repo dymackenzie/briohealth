@@ -137,10 +137,10 @@ describe('Accordion', () => {
 })
 
 describe('Button', () => {
-  it('fills the primary button coral with an ink label on every surface', () => {
+  it('fills the primary button clay with an ink label on every surface', () => {
     for (const on of ['light', 'teal', 'dark'] as const) {
       const html = renderToStaticMarkup(<Button on={on}>Book Appointment</Button>)
-      expect(html).toContain('bg-coral')
+      expect(html).toContain('bg-clay')
       expect(html).toContain('text-ink')
       expect(html).not.toContain('bg-ink ')
     }

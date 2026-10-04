@@ -9,7 +9,7 @@ import { BOOKING_PATH, type SiteSettings } from '@/lib/site'
 /**
  * Wireframe section 5 on a full-width teal field (teal field 2 of 2):
  * "Here's How It Works" in the serif, the three steps as a real sequence
- * (Funnel Display numerals, serif titles, sans bodies), the coral booking
+ * (Funnel Display numerals, serif titles, sans bodies), the clay booking
  * button. The medium paper bud sits near the field's top right (spec 3.7).
  * The rule down the left of the steps is `.plan-line`, drawn by scroll in
  * motion.css; it is a sibling of the list, never inside it.

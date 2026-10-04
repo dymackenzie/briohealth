@@ -25,7 +25,7 @@ const pageLinks = [
 ]
 
 /**
- * Teal-deep on grey is 4.34:1, short of AA for body text, so links on this
+ * Teal-deep on sand is 4.0:1, short of AA for body text, so links on this
  * panel stay ink and carry an underline instead of a colour.
  */
 const link = 'underline decoration-1 underline-offset-4 hover:decoration-2'

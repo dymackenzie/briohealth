@@ -1,20 +1,22 @@
 /*
- * Signal tokens, editorial revision. Monochrome plus the logo teal as large
- * fields, one coral for the primary action, Newsreader for display type.
- * Every colour on the site is one of these eight; the Tailwind palette is
- * reset so nothing else can be reached by accident.
+ * Signal tokens, "Clay and Tide". Warm cream paper and sand, the logo teal
+ * as large fields, a deep tide teal for the dark strips, one clay for the
+ * primary action, Newsreader for display type. Every colour on the site is
+ * one of these nine; the Tailwind palette is reset so nothing else can be
+ * reached by accident. `grey` keeps its name but is sand now.
  */
 
 @theme {
   --color-*: initial;
-  --color-paper: #ffffff;
-  --color-grey: #e8eeee;
+  --color-paper: #f6f1e7;
+  --color-grey: #ece3d3;
   --color-ink: #1c1c1e;
-  --color-ink-soft: #4a4f50;
+  --color-ink-soft: #4d4740;
   --color-teal: #00919d;
   --color-teal-deep: #007a85;
   --color-on-teal: #031011;
-  --color-coral: #ff7f66;
+  --color-tide: #0d4a50;
+  --color-clay: #e07a55;
 
   --font-display: var(--font-funnel-display), 'Funnel Display', ui-sans-serif, system-ui, sans-serif;
   --font-sans: var(--font-funnel-sans), 'Funnel Sans', ui-sans-serif, system-ui, sans-serif;

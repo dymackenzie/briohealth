@@ -3,9 +3,9 @@ import type { ReactNode } from 'react'
 import { ArrowRight } from '@phosphor-icons/react/dist/ssr'
 
 /**
- * The primary action is coral with an ink label (about 7:1) on every
+ * The primary action is clay with an ink label (about 5.7:1) on every
  * surface, and only "Book Appointment" and "Get Started" are primary;
- * nothing else on the site is coral except the nav underline and the trust
+ * nothing else on the site is clay except the nav underline and the trust
  * marks. The outline button is the secondary (form submits included): a 2px
  * border in the surface's text colour. On light it hovers with an ink tint,
  * which shows on paper and on grey alike. The quiet link is teal-deep on light, on-teal on a
@@ -21,7 +21,7 @@ const solidBase =
   'inline-flex items-center justify-center gap-2 rounded-brand px-6 py-3.5 font-medium leading-none whitespace-nowrap ' +
   'transition-transform duration-200 active:translate-y-px disabled:opacity-60 disabled:active:translate-y-0'
 
-const primaryFill = 'bg-coral text-ink hover:opacity-90'
+const primaryFill = 'bg-clay text-ink hover:opacity-90'
 
 const outlineColour: Record<Surface, string> = {
   light: 'border-2 border-ink text-ink hover:bg-ink/5',

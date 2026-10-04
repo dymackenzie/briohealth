@@ -10,15 +10,17 @@ import { Button } from '@/components/ui/Button'
 import { BOOKING_PATH, currentState, nav, type SiteSettings } from '@/lib/site'
 
 /**
- * 88px, paper, a 1px ink rule under it (spec 3.6), one line at 1024px: logo
- * (72px), three items, the coral booking button. The header is
- * `relative z-40`: the homepage hero's transformed layers create stacking
- * contexts painted after the header, and without a z-index the open
+ * 88px, no fill of its own so the body's grain runs under it, a 1px ink
+ * rule under it (spec 3.6), one line at 1024px: logo (72px), three items,
+ * the clay booking button. The dropdown keeps a solid paper fill. The
+ * header is `relative z-40`: the homepage hero's transformed layers
+ * create stacking contexts painted after the header, and without a
+ * z-index the open
  * dropdown sat underneath them (hovering "Acupuncture" hit the hero).
  * Nothing on a page sits above z-40.
  *
- * Hover and the current page are a 3px coral underline under ink text (the
- * only coral in the header besides the button). `currentState` gives the
+ * Hover and the current page are a 3px clay underline under ink text (the
+ * only clay in the header besides the button). `currentState` gives the
  * page's own link `aria-current="page"` and its parent "true"; the
  * underline keys on the attribute, so both carry it. Dropdowns open on hover
  * and focus-within; Escape shuts an open dropdown or the mobile menu and
@@ -30,11 +32,11 @@ import { BOOKING_PATH, currentState, nav, type SiteSettings } from '@/lib/site'
  */
 
 const underline =
-  'relative after:absolute after:inset-x-3.5 after:bottom-1 after:h-[3px] after:bg-coral after:opacity-0 after:transition-opacity after:duration-200 ' +
+  'relative after:absolute after:inset-x-3.5 after:bottom-1 after:h-[3px] after:bg-clay after:opacity-0 after:transition-opacity after:duration-200 ' +
   'hover:after:opacity-100 aria-[current]:after:opacity-100 motion-reduce:after:transition-none'
 
 const mobileCurrent =
-  'aria-[current]:underline aria-[current]:decoration-coral aria-[current]:decoration-[3px] aria-[current]:underline-offset-4'
+  'aria-[current]:underline aria-[current]:decoration-clay aria-[current]:decoration-[3px] aria-[current]:underline-offset-4'
 
 export function Header({ settings }: { settings: SiteSettings }) {
   const pathname = usePathname()
