@@ -67,7 +67,7 @@ export const f = {
   group: (group, name, label, instructions, subFields) =>
     base(group, name, label, 'group', instructions, { props: { layout: 'block', sub_fields: subFields } }),
   wysiwyg: (group, name, label, instructions) =>
-    base(group, name, label, 'wysiwyg', instructions, { props: { default_value: '', tabs: 'all', toolbar: 'basic', media_upload: 0, delay: 0 } }),
+    base(group, name, label, 'wysiwyg', instructions, { props: { default_value: '', tabs: 'all', toolbar: 'full', media_upload: 0, delay: 0 } }),
   file: (group, name, label, instructions, o = {}) =>
     base(group, name, label, 'file', instructions, { props: { return_format: 'url', library: 'all', min_size: '', max_size: o.maxSize ?? '', mime_types: o.mime ?? '' } }),
   relationship: (group, name, label, instructions, postType, o = {}) =>

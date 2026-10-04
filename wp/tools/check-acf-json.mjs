@@ -105,7 +105,7 @@ if (loop && (loop.type !== 'file' || loop.return_format !== 'url' || loop.mime_t
 const faqGroup = byPath.group_brio_faq?.faq_group
 if (faqGroup && Object.keys(faqGroup.choices).join() !== 'booking,naturopathic,acupuncture,iv-therapy') problems.push('faq faq_group must offer booking, naturopathic, acupuncture, iv-therapy (FaqGroup)')
 for (const [key, fields] of Object.entries(byPath)) for (const [path, field] of Object.entries(fields)) {
-  if (/fee|price|amount/.test(path)) problems.push(`${key}: ${path} looks like a fee field; fees live only in the FAQ answers`)
+  if (/(^|[._/])(fee|fees|price|amount)([._/]|$)/.test(path)) problems.push(`${key}: ${path} looks like a fee field; fees live only in the FAQ answers`)
   if (field.type === 'wysiwyg' && field.media_upload !== 0) problems.push(`${key}: ${path} must not allow media uploads; media go in their own fields`)
 }
 
