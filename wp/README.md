@@ -106,6 +106,12 @@ not undo it.
     still comes back with an author name. Logged out, `/wp-json/wp/v2/users/1`
     should show `id` and `name` but no `slug`, `link` or `avatar_urls`.
 
+    Then check the service video field's limits hold: on a service, pick a
+    file over 3 MB, then a non-MP4 (a .mov or a .jpg), in `Background loop`.
+    SCF should refuse both (the field's `max_size` is 3 and its mime type
+    `mp4`). If either goes through, the install's SCF version doesn't
+    enforce them, and the 3 MB rule rests on the field's instructions alone.
+
 11. **Test the webhook.** Publish anything, then check the Vercel function
     log for a hit on `/api/revalidate`. A missing `BRIO_REVALIDATE_SECRET`
     shows as an admin notice rather than failing quietly. The call goes out
