@@ -14,7 +14,7 @@ export function AnnouncementBar({ announcement }: { announcement: SiteSettings['
   )
 
   return (
-    <div data-surface="ink" className="px-4 py-2 text-center text-small">
+    <div data-surface="tide" className="px-4 py-2 text-center text-small">
       <p>{inner}</p>
     </div>
   )

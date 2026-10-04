@@ -13,7 +13,7 @@ import { youtubeEmbedUrl } from '@/lib/video'
  * The service page opener (spec 5.1). Full width, at most about 70vh on
  * desktop, 4/5 on phones. The loop plays muted behind a flat ink wash at
  * 45% (no gradient); over it the title in paper (display size, so the
- * 24px+ white rule holds), the coral booking button and, when there is a
+ * 24px+ white rule holds), the clay booking button and, when there is a
  * YouTube link, "Watch the video". No loop: the still under the same wash.
  * No still: a teal field with the same text (counts as a teal field), even
  * with a loop, because the loop needs its poster. With nothing to show, the
@@ -85,7 +85,7 @@ export function VideoHero({
         />
       )}
       <div aria-hidden className="absolute inset-0 z-10 bg-ink/45" />
-      {/* Paper title and a paper focus ring over the wash; data-surface="ink" would paint the layer ink. */}
+      {/* Paper title and a paper focus ring over the wash; data-surface="tide" would paint the layer tide. */}
       <div className="absolute inset-0 z-20 [&_:focus-visible]:outline-paper [&_h1]:text-paper">{copy('dark')}</div>
     </section>
   )

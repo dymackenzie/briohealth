@@ -53,7 +53,7 @@ describe('VideoHero', () => {
     const html = renderToStaticMarkup(<VideoHero {...base} still={still} loop={null} youtube="https://youtu.be/mYhjmq7-1q8" />)
     const copyLayer = (html.match(/<div class="absolute inset-0 z-20[^"]*"/)?.[0] ?? '').replaceAll('&amp;', '&')
     expect(copyLayer).toContain('[&_:focus-visible]:outline-paper')
-    expect(html).not.toContain('data-surface="ink"')
+    expect(html).not.toContain('data-surface="tide"')
   })
 
   it('offers Watch the video only for a YouTube link', () => {

@@ -7,12 +7,12 @@ import { formatPhoneDashed, type SiteSettings } from '@/lib/site'
  * number as a tel: link on the left; email and a jump to the footer map on
  * the right. Below md only the phone line shows, centred, and the link
  * fills the bar edge to edge at 44px tall, so a thumb finds it; from md the
- * bar is a 36px strip. Paper on ink; data-surface="ink" gives it the paper
+ * bar is a 36px strip. Paper on tide; data-surface="tide" gives it the paper
  * focus ring.
  */
 export function TopBar({ settings }: { settings: SiteSettings }) {
   return (
-    <div data-surface="ink" className="text-small">
+    <div data-surface="tide" className="text-small">
       <div className="container-x flex items-center justify-center gap-6 max-md:px-0 md:h-9 md:justify-between">
         <a
           href={settings.phoneHref}

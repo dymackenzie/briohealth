@@ -73,13 +73,13 @@
     outline-color: var(--color-paper);
   }
 
-  /* An ink strip (top bar, announcement). Paper text, paper focus ring. */
-  [data-surface='ink'] {
-    background: var(--color-ink);
+  /* A tide strip (top bar, announcement). Paper text (8.8:1), paper focus ring. */
+  [data-surface='tide'] {
+    background: var(--color-tide);
     color: var(--color-paper);
   }
 
-  [data-surface='ink'] :focus-visible {
+  [data-surface='tide'] :focus-visible {
     outline-color: var(--color-paper);
   }
 
