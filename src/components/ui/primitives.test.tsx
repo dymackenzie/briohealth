@@ -172,11 +172,18 @@ describe('Bud', () => {
     expect(html).toContain('aria-hidden="true"')
   })
 
-  it('sizes medium and small, colours paper, and hides below md unless told not to', () => {
+  it('sizes medium and small, colours paper, and hides below md unless told otherwise', () => {
     expect(renderToStaticMarkup(<Bud size="medium" colour="paper" />)).toContain('w-[70px]')
     expect(renderToStaticMarkup(<Bud size="small" colour="paper" />)).toContain('w-[45px]')
     expect(renderToStaticMarkup(<Bud size="small" colour="paper" />)).toContain('text-paper')
     expect(renderToStaticMarkup(<Bud size="small" colour="teal" />)).toContain('hidden md:block')
-    expect(renderToStaticMarkup(<Bud size="small" colour="teal" hideBelowMd={false} />)).not.toContain('hidden md:block')
+    const always = renderToStaticMarkup(<Bud size="small" colour="teal" hideBelow={false} />).match(/<div [^>]*class="([^"]*)"/)?.[1] ?? ''
+    expect(always.split(/\s+/)).not.toContain('hidden')
+  })
+
+  it('can wait for lg, where a tablet layout leaves it no open space', () => {
+    const html = renderToStaticMarkup(<Bud size="medium" colour="teal" hideBelow="lg" />)
+    expect(html).toContain('hidden lg:block')
+    expect(html).not.toContain('md:block')
   })
 })

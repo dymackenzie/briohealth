@@ -69,10 +69,10 @@ export default async function ServicePage(props: { params: Promise<{ slug: strin
       />
 
       <div className="container-x section-y relative overflow-x-clip">
-        <Bud size="medium" colour="teal" className="top-[calc(var(--section-y)+4rem)] right-[9%]" />
+        <Bud size="medium" colour="teal" hideBelow="lg" className="top-[calc(var(--section-y)+4rem)] right-[9%]" />
         <div className="max-w-[68ch]">
-          {/* Not a Reveal: the body is thousands of pixels tall, so the observer's 5% threshold is not met
-              while only its top shows under the hero, and on a phone it would stay hidden until a scroll. */}
+          {/* Not a Reveal: the body opens under the hero, and on a phone its top can sit below Reveal's line
+              (threshold 0, 10% above the viewport's bottom), so the page's main text would wait for a scroll. */}
           <div className="prose-post prose-page">{renderContent(service.body)}</div>
 
           <Reveal delay={80} className="mt-8">

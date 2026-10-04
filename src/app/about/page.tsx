@@ -23,7 +23,8 @@ export const metadata = buildMetadata({
  * a person block, so it is not read at runtime (the SCF `body` field will
  * be, once wiring lands). This is one of the two pages he appears on. Two
  * buds (spec 3.7 allows up to three): small teal in the hero's right side,
- * medium teal in the empty columns between the two lower photos.
+ * medium teal in the empty columns between the two lower photos, from lg
+ * only: between sm and lg the photos are half the width each, with no gap.
  */
 export default async function AboutPage() {
   const settings = await getSiteSettings()
@@ -32,7 +33,7 @@ export default async function AboutPage() {
   return (
     <main id="main">
       <JsonLd data={clinicJsonLd(settings)} />
-      <PageHero title={about.title} lead={about.lead} bud={<Bud size="small" colour="teal" hideBelowMd={false} className="top-[5.75rem] right-[6%] md:top-14 md:right-[14%]" />} />
+      <PageHero title={about.title} lead={about.lead} bud={<Bud size="small" colour="teal" hideBelow={false} className="top-[5.75rem] right-[6%] md:top-14 md:right-[14%]" />} />
 
       <section aria-label="Story" className="container-x pb-[var(--section-y)] grid-12 gap-y-10">
         <Reveal className="col-span-12 self-start sm:col-span-8 lg:sticky lg:top-10 lg:col-span-5">
@@ -50,7 +51,7 @@ export default async function AboutPage() {
       </section>
 
       <section aria-label="In the clinic and the community" className="container-x relative pb-[var(--section-y)] grid-12 gap-y-8">
-        <Bud size="medium" colour="teal" className="top-6 left-[47%]" />
+        <Bud size="medium" colour="teal" hideBelow="lg" className="top-6 left-[47%]" />
         <Reveal className="col-span-12 sm:col-span-6 lg:col-span-5">
           <Figure
             subject={about.photos.explaining.subject}

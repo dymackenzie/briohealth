@@ -16,7 +16,7 @@ export const metadata = buildMetadata({
 export default function ServicesPage() {
   return (
     <main id="main">
-      <PageHero title="Services" bud={<Bud size="small" colour="teal" hideBelowMd={false} className="top-10 right-[18%]" />} />
+      <PageHero title="Services" bud={<Bud size="small" colour="teal" hideBelow={false} className="top-10 right-[18%]" />} />
       <div className="container-x pb-[var(--section-y)]">
         <ServiceTiles order={services.map((s) => s.slug)} />
       </div>
