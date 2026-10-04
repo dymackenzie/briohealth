@@ -32,7 +32,7 @@ export default async function AboutPage() {
   return (
     <main id="main">
       <JsonLd data={clinicJsonLd(settings)} />
-      <PageHero title={about.title} lead={about.lead} bud={<Bud size="small" colour="teal" className="top-14 right-[14%]" />} />
+      <PageHero title={about.title} lead={about.lead} bud={<Bud size="small" colour="teal" hideBelowMd={false} className="top-[5.75rem] right-[6%] md:top-14 md:right-[14%]" />} />
 
       <section aria-label="Story" className="container-x pb-[var(--section-y)] grid-12 gap-y-10">
         <Reveal className="col-span-12 self-start sm:col-span-8 lg:sticky lg:top-10 lg:col-span-5">

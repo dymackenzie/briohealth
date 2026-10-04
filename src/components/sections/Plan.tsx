@@ -17,7 +17,7 @@ import { BOOKING_PATH, type SiteSettings } from '@/lib/site'
 export function Plan({ content, settings }: { content: HomeContent['plan']; settings: SiteSettings }) {
   return (
     <Field as="section" aria-labelledby="plan-heading" className="section-y relative overflow-x-clip">
-      <Bud size="medium" colour="paper" className="top-10 right-[4%] lg:right-[3%]" />
+      <Bud size="medium" colour="paper" hideBelowMd={false} className="top-10 right-[4%] lg:right-[3%]" />
       <div className="container-x grid gap-8 lg:grid-cols-12 lg:gap-10">
         <Reveal className="lg:col-span-4">
           <h2 id="plan-heading" className="max-w-[12ch] text-h2">

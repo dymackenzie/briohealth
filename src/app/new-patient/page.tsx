@@ -29,7 +29,7 @@ export default async function NewPatientPage() {
 
   return (
     <main id="main">
-      <PageHero title={page.title} bud={<Bud size="medium" colour="teal" className="top-12 right-[12%]" />} />
+      <PageHero title={page.title} bud={<Bud size="medium" colour="teal" hideBelowMd={false} className="top-12 right-[5%] md:right-[12%]" />} />
 
       <div className="container-x pb-[var(--section-y)]">
         <div className="max-w-[68ch]">

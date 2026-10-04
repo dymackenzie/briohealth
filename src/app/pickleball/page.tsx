@@ -30,7 +30,7 @@ export default async function PickleballPage() {
 
   return (
     <main id="main">
-      <PageHero title={page.title} bud={<Bud size="medium" colour="teal" className="top-8 right-[22%]" />} />
+      <PageHero title={page.title} bud={<Bud size="medium" colour="teal" hideBelowMd={false} className="top-8 right-[6%] md:right-[22%]" />} />
 
       <div className="container-x pb-[var(--section-y)]">
         <div className="grid gap-10 lg:grid-cols-12 lg:gap-12">
