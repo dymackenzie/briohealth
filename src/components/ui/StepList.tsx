@@ -1,7 +1,7 @@
 /**
- * A numbered sequence: the homepage plan, a service's session steps, the
- * booking page. These are real sequences, so the numerals show. Numerals in
- * Funnel Display, titles in Newsreader, bodies in Funnel Sans. It renders
+ * A numbered sequence; its one user is the homepage plan. It is a real
+ * sequence, so the numerals show. Numerals in Funnel Display, titles in
+ * Newsreader, bodies in Funnel Sans. It renders
  * only the <ol>, so a caller that wants a decorative line beside the steps
  * places it as a sibling, never inside the list.
  */

@@ -27,7 +27,7 @@ const panelLink = 'underline underline-offset-4 decoration-1 hover:decoration-2'
  * The live Contact page: "Contact Us", "Call or email us if you have any
  * questions", the booking line and button, then the form beside the
  * phone, email, address and hours on a grey panel. Linked from the footer
- * and the top bar; not in the main nav.
+ * only; not in the main nav or the top bar.
  */
 export default async function ContactPage() {
   const settings = await getSiteSettings()

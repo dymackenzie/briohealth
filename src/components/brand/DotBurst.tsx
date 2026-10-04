@@ -7,9 +7,9 @@ import type { CSSProperties } from 'react'
  * as a Bud (src/components/brand/Bud.tsx): three per page at most,
  * scattered, varied sizes.
  *
- * Static by itself. With `animate`, Task 15's CSS scales each dot in from the
- * origin at a 40ms stagger, inner ring first; `--i` on each circle is that
- * order. No JavaScript, and without the `.js` class or with reduced motion
+ * Static by itself. With `animate`, the `burst` keyframes in motion.css
+ * scale each dot in from the origin at a 40ms stagger, inner ring first;
+ * `--i` on each circle is that order. No JavaScript, and without the `.js` class or with reduced motion
  * the dots are simply there.
  */
 
