@@ -9,7 +9,7 @@ import { Hours } from './Hours'
 import { StepList } from './StepList'
 
 const steps = [
-  { title: 'Book a consultation', body: 'Pick a time that suits you.' },
+  { title: 'Book a visit', body: 'Pick a time that suits you.' },
   { title: 'Talk it through', body: 'A 30-minute virtual assessment.' },
   { title: 'Start your plan', body: 'Treatment built around you.' },
 ]
