@@ -10,7 +10,7 @@ describe('displayClass', () => {
     expect(displayClass('a'.repeat(LONG_HEADING))).toBe('text-display')
   })
 
-  it('drops to the 60px cap one character over the limit', () => {
+  it('picks the long-heading utility one character over the limit', () => {
     expect(displayClass('a'.repeat(LONG_HEADING + 1))).toBe('text-display-long')
   })
 

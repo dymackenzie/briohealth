@@ -138,13 +138,14 @@
   letter-spacing: -0.02em;
 }
 
-/* Same size as text-display now; displayClass() still picks it for long
- * headings, and 68px is already the small end of the old scale. */
+/* Same as text-display now, line-height included (0.98, spec 3.6);
+ * displayClass() still picks it for long headings, and 68px is already the
+ * small end of the old scale. */
 @utility text-display-long {
   font-family: var(--font-serif);
   font-weight: 500;
   font-size: var(--fs-display-long);
-  line-height: 1;
+  line-height: 0.98;
   letter-spacing: -0.02em;
 }
 
