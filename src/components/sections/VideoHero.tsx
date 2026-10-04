@@ -16,7 +16,8 @@ import { youtubeEmbedUrl } from '@/lib/video'
  * 24px+ white rule holds), the coral booking button and, when there is a
  * YouTube link, "Watch the video". No loop: the still under the same wash.
  * No still: a teal field with the same text (counts as a teal field), even
- * with a loop, because the loop needs its poster. The still is the video
+ * with a loop, because the loop needs its poster. With nothing to show, the
+ * field is sized to its text on the section rhythm, not the media's box. The still is the video
  * poster, never the service's 4/5 shoot crop (Dr. Lee shows at full width).
  *
  * Layers, bottom to top: the video, the wash (z-10), the copy (z-20), the
@@ -39,7 +40,7 @@ export function VideoHero({
   const embed = youtubeEmbedUrl(youtube)
 
   const copy = (surface: 'teal' | 'dark') => (
-    <div className="container-x relative flex h-full flex-col justify-end pb-10 lg:pb-14">
+    <div className={`container-x relative flex h-full flex-col justify-end ${surface === 'dark' ? 'pb-10 lg:pb-14' : ''}`}>
       <h1 className={`${displayClass(title)} max-w-[14ch] ${surface === 'dark' ? 'text-paper' : ''}`}>{title}</h1>
       <div className="mt-6 flex flex-wrap gap-3">
         <Button href={BOOKING_PATH}>{ctaLabel}</Button>
@@ -50,7 +51,7 @@ export function VideoHero({
 
   if (!still) {
     return (
-      <Field as="section" aria-label={title} className="flex min-h-[50vh] flex-col justify-end pt-16">
+      <Field as="section" aria-label={title} className="section-y">
         {copy('teal')}
       </Field>
     )
