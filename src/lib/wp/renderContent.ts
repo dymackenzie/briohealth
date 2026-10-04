@@ -372,7 +372,8 @@ function imageRatios() {
       if (node.tagName !== 'img') return
       const width = Number(node.properties.width)
       const height = Number(node.properties.height)
-      if (width > 0 && height > 0) node.properties.style = `--ratio:${(width / height).toFixed(4)}`
+      const ratio = width / height
+      if (width > 0 && height > 0 && Number.isFinite(ratio) && ratio >= 0.01) node.properties.style = `--ratio:${ratio.toFixed(4)}`
     })
   }
 }

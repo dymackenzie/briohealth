@@ -219,6 +219,14 @@ describe('renderContent', () => {
       expect(render('<img src="https://a.b/c.jpg" width="300" alt="">')).not.toContain('style=')
     })
 
+    it('gives no ratio when the dimensions are zero or infinite, and still gives one for normal dimensions', () => {
+      expect(render('<img src="https://a.b/c.jpg" width="0" height="0" alt="">')).not.toContain('--ratio')
+      expect(render('<img src="https://a.b/c.jpg" width="Infinity" height="5" alt="">')).not.toContain('--ratio')
+      expect(render('<img src="https://a.b/c.jpg" width="5" height="Infinity" alt="">')).not.toContain('--ratio')
+      expect(render('<img src="https://a.b/c.jpg" width="-2" height="-1" alt="">')).not.toContain('--ratio')
+      expect(render('<img src="https://a.b/c.jpg" width="900" height="729" alt="">')).toContain('style="--ratio:1.2346"')
+    })
+
     it('keeps a style a post sets on an image out, even with a ratio added', () => {
       const out = render('<img src="https://a.b/c.jpg" width="2" height="1" style="position:fixed" alt="">')
       expect(out).toContain('style="--ratio:2.0000"')

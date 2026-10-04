@@ -334,6 +334,7 @@
    * stays within 80% of the screen's height without distorting. */
   & img {
     margin-inline: auto;
+    /* No --ratio (no usable dimensions): 100 means no width cap from the height limit. */
     max-width: min(100%, 80vh * var(--ratio, 100));
     max-height: 80vh;
   }
