@@ -9,6 +9,7 @@ const base: LoopDecision = {
   canHover: true,
   reducedMotion: false,
   saveData: false,
+  paused: false,
 }
 
 describe('shouldPlayLoop', () => {
@@ -26,6 +27,15 @@ describe('shouldPlayLoop', () => {
   it('plays the hero while in view, whatever the pointer does', () => {
     expect(shouldPlayLoop({ ...base, mode: 'hero', inView: true })).toBe(true)
     expect(shouldPlayLoop({ ...base, mode: 'hero', inView: false, hovered: true, focused: true })).toBe(false)
+  })
+
+  it('stays paused once the visitor pauses it, in view or not, on a tile or the hero', () => {
+    const touchTile = { ...base, canHover: false, inView: true }
+    expect(shouldPlayLoop({ ...touchTile, paused: true })).toBe(false)
+    expect(shouldPlayLoop({ ...base, mode: 'hero', inView: true, paused: true })).toBe(false)
+    expect(shouldPlayLoop({ ...base, hovered: true, focused: true, paused: true })).toBe(false)
+    // Resuming is the only way back.
+    expect(shouldPlayLoop({ ...touchTile, paused: false })).toBe(true)
   })
 
   it('never plays under reduced motion or save-data, even on hover and in view', () => {

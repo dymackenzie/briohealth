@@ -1,9 +1,9 @@
 /**
  * Loop playback is decided by a pure function so the gates are testable:
- * reduced motion and save-data win over everything; a tile plays on hover
- * or focus where hover exists and while in view where it does not; the
- * service hero plays while in view. The component feeds this the live
- * values and calls play()/pause().
+ * the visitor's own pause, reduced motion and save-data win over
+ * everything; a tile plays on hover or focus where hover exists and while
+ * in view where it does not; the service hero plays while in view. The
+ * component feeds this the live values and calls play()/pause().
  */
 
 export interface LoopDecision {
@@ -14,10 +14,12 @@ export interface LoopDecision {
   canHover: boolean
   reducedMotion: boolean
   saveData: boolean
+  /** The visitor pressed pause (WCAG 2.2.2); only their play undoes it. */
+  paused: boolean
 }
 
 export function shouldPlayLoop(d: LoopDecision): boolean {
-  if (d.reducedMotion || d.saveData) return false
+  if (d.paused || d.reducedMotion || d.saveData) return false
   if (d.mode === 'hero') return d.inView
   if (d.canHover) return d.hovered || d.focused
   return d.inView
