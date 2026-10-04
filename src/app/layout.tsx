@@ -31,14 +31,30 @@ const sans = Funnel_Sans({
    weight range (next/font/google won't pin a weight while `axes` is set).
    Source: fonts.googleapis.com/css2?family=Newsreader:ital,opsz,wght@0,6..72,500;1,6..72,400
    Serif text set heavier than 500 would get synthetic bold. The const's
-   name is the font-family name. */
+   name is the font-family name.
+
+   The overrides recentre the font's box on its capitals. Newsreader's own
+   ascent (0.735em) clears the caps (0.67em) by a hair while the descent
+   is 0.265em, so a selection highlight, which paints that box, sat low
+   under every serif word. Equal room above the caps and below the
+   baseline (0.935 / 0.265) centres it; glyphs sit 0.1em lower in each
+   line box as a result. next/font sizes its generated fallback from the
+   file's own metrics, which would no longer match, so the fallback face
+   is ours: `Newsreader Fallback` in globals.css carries the same overrides
+   over Times New Roman. */
 const newsreader = localFont({
   src: [
     { path: '../fonts/newsreader-roman-500-latin.woff2', weight: '500', style: 'normal' },
     { path: '../fonts/newsreader-italic-400-latin.woff2', weight: '400', style: 'italic' },
   ],
   display: 'swap',
-  adjustFontFallback: 'Times New Roman',
+  declarations: [
+    { prop: 'ascent-override', value: '93.5%' },
+    { prop: 'descent-override', value: '26.5%' },
+    { prop: 'line-gap-override', value: '0%' },
+  ],
+  adjustFontFallback: false,
+  fallback: ["'Newsreader Fallback'"],
   variable: '--font-newsreader',
 })
 

@@ -4,6 +4,18 @@
 
 @custom-variant pointer-fine (@media (hover: hover) and (pointer: fine));
 
+/* Newsreader's swap fallback, metric-matched to the overridden face in
+ * layout.tsx: size-adjust is what next/font computed for Times New Roman
+ * (91.64%), the vertical overrides are 93.5% and 26.5% divided by it. */
+@font-face {
+  font-family: 'Newsreader Fallback';
+  src: local('Times New Roman');
+  size-adjust: 91.64%;
+  ascent-override: 102.03%;
+  descent-override: 28.92%;
+  line-gap-override: 0%;
+}
+
 @layer base {
   html {
     -webkit-text-size-adjust: 100%;
