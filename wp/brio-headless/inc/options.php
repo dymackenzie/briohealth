@@ -96,7 +96,6 @@ function brio_settings_response(): WP_REST_Response {
 			'postal'   => $text( 'address_postal' ),
 			'country'  => $text( 'address_country' ) ?? 'CA',
 		),
-		'mapUrl'       => $text( 'map_url' ),
 		'bookingUrl'   => $text( 'booking_url' ),
 		'ctaLabel'     => $text( 'cta_label' ),
 		'hours'        => $hours,

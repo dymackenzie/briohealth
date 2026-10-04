@@ -81,7 +81,6 @@ describe('mergeSettings', () => {
       phone: false,
       email: false,
       address: false,
-      mapUrl: false,
       bookingUrl: false,
       ctaLabel: false,
       hours: false,

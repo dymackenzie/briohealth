@@ -129,7 +129,6 @@ const settings = group('brio_settings', 'Site settings', [
   f.text(s, 'address_region', 'Province', 'Two letters, e.g. BC.', { width: '25', default: 'BC', maxlength: 2 }),
   f.text(s, 'address_postal', 'Postal code', 'e.g. V6X 3Z9.', { width: '25', maxlength: 7 }),
   f.text(s, 'address_country', 'Country', 'Two letters, e.g. CA.', { width: '25', default: 'CA', maxlength: 2 }),
-  f.url(s, 'map_url', 'Map link', 'A Google Maps link for the address. The "Get directions" link opens it.', { width: '25' }),
   f.tab(s, 'hours', 'Hours'),
   f.repeater(s, 'hours', 'Opening hours', 'These show on the site and tell Google when the clinic is open. Group days that share the same hours onto one row. Days left off every row read as closed.', [
     f.checkbox(s, 'hours_days', 'Days', 'Days the clinic is physically open. These feed Google, so leave the remote Saturday off and use the Saturday note instead.', DAYS, { required: true, width: '40' }),

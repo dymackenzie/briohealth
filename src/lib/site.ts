@@ -36,7 +36,6 @@ export interface SiteSettings {
     postal: string
     country: string
   }
-  mapUrl: string
   /** Physical hours only. */
   hours: HoursRow[]
   /** Shown on the page, never in JSON-LD: nobody is physically there. */
@@ -67,7 +66,6 @@ export const site: SiteSettings = {
     postal: 'V6X 3Z9',
     country: 'CA',
   },
-  mapUrl: 'https://maps.google.com/?q=3779+Sexsmith+Road+Richmond+BC+V6X+3Z9',
 
   /**
    * Confirmed by the client on the phone, 2026-09-04. Closed Wednesday,

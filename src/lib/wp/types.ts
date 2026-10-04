@@ -128,7 +128,6 @@ export interface WPSettings {
     postal?: string | false | null
     country?: string | false | null
   } | false | null
-  mapUrl?: string | false | null
   bookingUrl?: string | false | null
   ctaLabel?: string | false | null
   hours?: { days: string[] | false; opens: string | false | null; closes: string | false | null; closed: boolean }[] | false

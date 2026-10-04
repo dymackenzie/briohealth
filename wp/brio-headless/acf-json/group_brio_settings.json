@@ -160,23 +160,6 @@
             "append": ""
         },
         {
-            "key": "field_settings_map_url",
-            "label": "Map link",
-            "name": "map_url",
-            "aria-label": "",
-            "type": "url",
-            "instructions": "A Google Maps link for the address. The \"Get directions\" link opens it.",
-            "required": 0,
-            "conditional_logic": 0,
-            "wrapper": {
-                "width": "25",
-                "class": "",
-                "id": ""
-            },
-            "default_value": "",
-            "placeholder": ""
-        },
-        {
             "key": "field_settings_tab_hours",
             "label": "Hours",
             "name": "",

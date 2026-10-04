@@ -190,7 +190,6 @@ export function mergeSettings(wp: WPSettings | null, fallback: SiteSettings): Si
             country: present(address.country),
           }
         : undefined,
-      mapUrl: present(wp.mapUrl),
       bookingUrl: present(wp.bookingUrl),
       ctaLabel: present(wp.ctaLabel),
       saturdayNote: present(wp.saturdayNote),
