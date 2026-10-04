@@ -38,4 +38,12 @@ describe('NewPatientForm', () => {
     expect(html).toContain('href="https://yourbriohealth.janeapp.com"')
     expect(html.indexOf('Returning patient? Book directly')).toBeLessThan(html.indexOf('type="checkbox"'))
   })
+
+  it('opens Jane in the same tab, as Get Started does', () => {
+    const link = html.match(/<a [^>]*>Returning patient\? Book directly<\/a>/)?.[0] ?? ''
+    expect(link).toContain('href="https://yourbriohealth.janeapp.com"')
+    expect(link).not.toContain('target=')
+    expect(link).not.toContain('rel=')
+    expect(html).not.toContain('target=')
+  })
 })

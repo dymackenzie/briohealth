@@ -5,7 +5,8 @@ import { Button } from '@/components/ui/Button'
  * with no `name`, so a GET to Jane carries nothing, and the browser's own
  * validation blocks "Get Started" until all three are ticked, with or
  * without JavaScript. No noValidate: the native bubble is the point here.
- * The returning-patient link skips the screening.
+ * The returning-patient link skips the screening, in the same tab as
+ * "Get Started".
  */
 export function NewPatientForm({
   bookingUrl,
@@ -22,7 +23,7 @@ export function NewPatientForm({
     <form method="get" action={bookingUrl} className="grid gap-6">
       <div className="flex flex-wrap items-baseline justify-between gap-x-6 gap-y-2">
         <h2 className="text-h3">{heading}</h2>
-        <a href={bookingUrl} target="_blank" rel="noopener noreferrer" className="link-quiet text-small">
+        <a href={bookingUrl} className="link-quiet text-small">
           {returningLabel}
         </a>
       </div>
