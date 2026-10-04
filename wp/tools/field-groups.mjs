@@ -66,6 +66,10 @@ export const f = {
     }),
   group: (group, name, label, instructions, subFields) =>
     base(group, name, label, 'group', instructions, { props: { layout: 'block', sub_fields: subFields } }),
+  wysiwyg: (group, name, label, instructions) =>
+    base(group, name, label, 'wysiwyg', instructions, { props: { default_value: '', tabs: 'all', toolbar: 'basic', media_upload: 0, delay: 0 } }),
+  file: (group, name, label, instructions, o = {}) =>
+    base(group, name, label, 'file', instructions, { props: { return_format: 'url', library: 'all', min_size: '', max_size: o.maxSize ?? '', mime_types: o.mime ?? '' } }),
   relationship: (group, name, label, instructions, postType, o = {}) =>
     base(group, name, label, 'relationship', instructions, {
       props: { post_type: [postType], taxonomy: [], post_status: ['publish'], filters: ['search'], return_format: 'id', min: '', max: o.max ?? '', elements: '', bidirectional: 0, bidirectional_target: [] },
@@ -107,17 +111,18 @@ function group(key, title, fields, loc, o = {}) {
 }
 
 const DAYS = Object.fromEntries(['Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday', 'Sunday'].map((d) => [d, d]))
-const FAQ_GROUPS = { general: 'General', naturopathic: 'Naturopathic', acupuncture: 'Acupuncture', 'iv-therapy': 'I.V. therapy' }
-const FEE_KINDS = { initial: 'Initial assessment', 'follow-up': 'Follow-up', treatment: 'Treatment' }
+const FAQ_GROUPS = { booking: 'Booking (New Patient page)', naturopathic: 'Naturopathic', acupuncture: 'Acupuncture', 'iv-therapy': 'I.V. therapy' }
 const PHOTO_NOTE = 'Leave empty if the photo does not exist yet: the site shows a labelled placeholder instead of a broken image.'
-const CROP_NOTE = 'Where the photo is cropped from, as two percentages: "50% 50%" is the centre, "20% 50%" keeps the left side. Photos show at 4:5.'
+const VERBATIM = 'Paste the clinic\'s text as written. Headings, lists and bold come through; nothing is rewritten on the website.'
+/** The crop instructions, with the shape the photo is shown at. */
+const cropNote = (shape) => `Where the photo is cropped from, as two percentages: "50% 50%" is the centre, "20% 50%" keeps the left side. Shown at ${shape}.`
 
 /* Site settings: every name here is read by inc/options.php. */
 
 const s = 'settings'
 const settings = group('brio_settings', 'Site settings', [
   f.tab(s, 'contact', 'Contact'),
-  f.text(s, 'phone', 'Phone', 'As it should read on the page, e.g. (604) 271-9355. Under 20 characters.', { required: true, width: '50', maxlength: 30 }),
+  f.text(s, 'phone', 'Phone', 'As it should read on the page, e.g. (604) 271-9355. The top bar shows a ten-digit number as 604-271-9355. Under 20 characters.', { required: true, width: '50', maxlength: 30 }),
   f.email(s, 'email', 'Email', 'Where the contact form sends messages and the footer points.', { required: true, width: '50' }),
   f.text(s, 'address_street', 'Street', 'Unit and street, e.g. 2168-3779 Sexsmith Road. Under 60 characters.', { required: true, width: '50', maxlength: 80 }),
   f.text(s, 'address_locality', 'City', 'e.g. Richmond.', { width: '50', default: 'Richmond', maxlength: 40 }),
@@ -134,8 +139,8 @@ const settings = group('brio_settings', 'Site settings', [
   ].map(unprefix('hours_')), { layout: 'table', button: 'Add hours' }),
   f.text(s, 'saturday_note', 'Saturday note', 'Shown under the hours, never sent to Google. e.g. "Remote appointments every other Saturday. Ask when you book." Under 120 characters.', { maxlength: 120 }),
   f.tab(s, 'booking', 'Booking'),
-  f.url(s, 'booking_url', 'Jane booking link', 'Every booking button on the site points here.', { required: true }),
-  f.text(s, 'cta_label', 'Booking button label', 'The one label used on every booking button. Keep it to three words, under 30 characters.', { default: 'Book a consultation', maxlength: 30 }),
+  f.url(s, 'booking_url', 'Jane booking link', 'Where the New Patient page\'s "Get Started" button and its "Returning patient? Book directly" link go. Every other booking button goes to the New Patient page.', { required: true }),
+  f.text(s, 'cta_label', 'Booking button label', 'The one label used on every booking button. Keep it to three words, under 30 characters.', { default: 'Book Appointment', maxlength: 30 }),
   f.tab(s, 'social', 'Social'),
   f.repeater(s, 'social', 'Profiles', 'The clinic\'s social profiles, shown as links in the footer. Rows without a link are skipped.', [
     f.select(s, 'social_label', 'Network', 'Which network the link goes to.', { Instagram: 'Instagram', Facebook: 'Facebook', X: 'X', LinkedIn: 'LinkedIn', YouTube: 'YouTube' }, { width: '30' }),
@@ -158,91 +163,65 @@ const h = (section) => `home_${section}`
 
 const homeGroups = [
   group('brio_home_hero', 'Home: hero', [
-    f.text(h('hero'), 'heading', 'Heading', 'Aim for under 28 characters; longer headings show smaller. e.g. "Feel like yourself again."', { maxlength: 60 }),
-    f.textarea(h('hero'), 'sentence', 'One sentence', 'Twenty words at most, under 160 characters.', { rows: 2, maxlength: 160 }),
-    f.image(h('hero'), 'image', 'Photo', `A patient, not the doctor. ${PHOTO_NOTE}`),
-    f.text(h('hero'), 'image_position', 'Photo crop', CROP_NOTE, { default: '50% 50%', maxlength: 20 }),
-    f.text(h('hero'), 'award', 'Award line', 'Sits beside the photo. e.g. "Voted Best Naturopath, Best of Richmond 2025, Richmond News." Under 90 characters.', { maxlength: 90 }),
+    f.text(h('hero'), 'heading', 'Heading', 'Dr. Jeff\'s headline, e.g. "Transform Your Health, Regain Your Life:". Under 60 characters.', { maxlength: 60 }),
+    f.textarea(h('hero'), 'sentence', 'One sentence', 'Under the heading, e.g. "A Natural Approach to Building Vitality and Increasing Energy". Under 120 characters.', { rows: 2, maxlength: 120 }),
+    f.image(h('hero'), 'image', 'Photo', `Wide (3:1 on desktop), happy and healthy; licensed stock is fine. ${PHOTO_NOTE}`),
+    f.text(h('hero'), 'image_position', 'Photo crop', cropNote('3:1 on desktop and 4:3 on phones'), { default: '50% 62%', maxlength: 20 }),
   ], front, { order: 0 }),
-  group('brio_home_stakes', 'Home: sound familiar?', [
-    f.text(h('stakes'), 'statement', 'Statement', 'One big line. Aim for under 50 characters.', { maxlength: 80 }),
-    f.repeater(h('stakes'), 'items', 'Symptoms', 'Five short lines, in the patient\'s words.', lineRow(h('stakes'), 'items', 'One symptom. Under 70 characters.', 90), { layout: 'table', max: 6, button: 'Add line' }),
+  group('brio_home_stakes', 'Home: stakes', [
+    f.text(h('stakes'), 'heading', 'Heading', 'e.g. "Have you been frustrated with your level of health?" Under 80 characters.', { maxlength: 80 }),
+    f.repeater(h('stakes'), 'questions', 'Questions', 'Four short questions, in order.', lineRow(h('stakes'), 'questions', 'One question. Under 70 characters.', 90), { layout: 'table', max: 6, button: 'Add question' }),
+    f.repeater(h('stakes'), 'paragraphs', 'Paragraphs', 'The two paragraphs after the questions, as written.', [
+      f.textarea(h('stakes'), 'paragraphs_text', 'Paragraph', 'One paragraph. Under 400 characters.', { required: true, rows: 3, maxlength: 400 }),
+    ].map(unprefix('paragraphs_')), { max: 3, button: 'Add paragraph' }),
   ], front, { order: 1 }),
-  group('brio_home_guide', 'Home: your guide', [
-    f.text(h('guide'), 'heading', 'Heading', 'Aim for under 40 characters.', { maxlength: 60 }),
-    f.textarea(h('guide'), 'quote', 'Quote', "In Dr. Lee's own words. Under 140 characters.", { rows: 3, maxlength: 160 }),
-    f.text(h('guide'), 'attribution', 'Attribution', 'Who said the quote, e.g. Dr. Jeffrey Lee, N.D., R.Ac. Under 40 characters.', { maxlength: 60 }),
-    f.textarea(h('guide'), 'credentials', 'Credentials', 'One sentence, under 200 characters.', { rows: 2, maxlength: 220 }),
-    f.text(h('guide'), 'award', 'Award line', 'e.g. "Voted Best Naturopath in Best of Richmond 2025, by Richmond News." Under 90 characters.', { maxlength: 120 }),
-    f.image(h('guide'), 'portrait', 'Portrait', `The one photo of Dr. Lee on the home page. ${PHOTO_NOTE}`),
-    f.text(h('guide'), 'portrait_position', 'Portrait crop', CROP_NOTE, { default: '50% 30%', maxlength: 20 }),
+  group('brio_home_services', 'Home: services', [
+    f.relationship(h('services'), 'services', 'Services, in order', 'Drag to reorder. Three tiles is the layout.', 'service', { max: 3 }),
   ], front, { order: 2 }),
-  group('brio_home_services', 'Home: how we help', [
-    f.text(h('services'), 'heading', 'Heading', 'Aim for under 20 characters.', { default: 'How we help', maxlength: 40 }),
-    f.relationship(h('services'), 'services', 'Services, in order', 'Drag to reorder. Three is the layout.', 'service', { max: 3 }),
+  group('brio_home_trust', 'Home: trust', [
+    f.repeater(h('trust'), 'stats', 'Three statements', 'Short lines with an icon, e.g. "Serving Richmond Since 2006".', [
+      f.select(h('trust'), 'stats_icon', 'Icon', 'The icon beside the line.', { certificate: 'Certificate', 'map-pin': 'Map pin', users: 'People' }, { width: '30' }),
+      f.text(h('trust'), 'stats_text', 'Line', 'Under 40 characters.', { required: true, width: '70', maxlength: 40 }),
+    ].map(unprefix('stats_')), { layout: 'table', min: 3, max: 3, button: 'Add line' }),
+    f.image(h('trust'), 'badge', 'Award badge', `The Best of Richmond badge. ${PHOTO_NOTE}`),
+    f.text(h('trust'), 'badge_heading', 'Award line', 'e.g. the Best of Richmond sentence from the current homepage. Under 160 characters.', { maxlength: 160 }),
+    f.text(h('trust'), 'badge_thanks', 'Second line', 'e.g. "Thank you, Richmond!" Under 60 characters.', { maxlength: 60 }),
+    f.relationship(h('trust'), 'testimonials', 'Testimonials to show', 'Two, in order.', 'testimonial', { max: 2 }),
   ], front, { order: 3 }),
-  group('brio_home_plan', 'Home: the plan', [
-    f.text(h('plan'), 'heading', 'Heading', 'Aim for under 30 characters.', { maxlength: 50 }),
-    f.textarea(h('plan'), 'intro', 'Intro', 'One sentence under the heading, under 120 characters.', { rows: 2, maxlength: 160 }),
+  group('brio_home_plan', 'Home: how it works', [
+    f.text(h('plan'), 'heading', 'Heading', 'e.g. "Here\'s How It Works". Under 50 characters.', { maxlength: 50 }),
     f.repeater(h('plan'), 'steps', 'Steps', 'Exactly three, in order. They are numbered on the page.', stepRows(h('plan'), 'steps'), { min: 3, max: 3, button: 'Add step' }),
   ], front, { order: 4 }),
-  // Fees are edited once, on the service. This section reads its fee figure
-  // from `fee_service`'s Initial assessment row and never types an amount.
-  group('brio_home_first_visit', 'Home: your first visit', [
-    f.text(h('first_visit'), 'heading', 'Heading', 'Aim for under 20 characters.', { default: 'Your first visit', maxlength: 40 }),
-    f.relationship(h('first_visit'), 'fee_service', 'Fee from which service', 'The first big figure is this service\'s Initial assessment fee, read from the service itself, so a fee is only ever typed in one place. Empty uses Naturopathic Medicine.', 'service', { max: 1 }),
-    f.repeater(h('first_visit'), 'figures', 'Other big figures', 'Shown after the fee. Never a price: prices live on the services. One at most, and only what the clinic states, e.g. "30 min" and "Virtual, from wherever you are".', [
-      f.text(h('first_visit'), 'figures_value', 'Figure', 'Short. e.g. 30 min. Under 10 characters.', { required: true, width: '30', maxlength: 12 }),
-      f.text(h('first_visit'), 'figures_label', 'Label', 'What the figure means. e.g. Virtual, from wherever you are. Under 40 characters.', { required: true, width: '70', maxlength: 50 }),
-    ].map(unprefix('figures_')), { layout: 'table', max: 1, button: 'Add figure' }),
-    f.repeater(h('first_visit'), 'happens', 'What happens', 'Three short lines, in order. They are numbered on the page.', lineRow(h('first_visit'), 'happens', 'One step of the first visit. Under 120 characters.', 160), { layout: 'table', max: 4, button: 'Add line' }),
-    f.text(h('first_visit'), 'leave_with_heading', 'What you leave with: heading', 'Aim for under 30 characters.', { default: 'What you leave with', maxlength: 40 }),
-    f.textarea(h('first_visit'), 'leave_with', 'What you leave with', 'One sentence, under 160 characters.', { rows: 2, maxlength: 200 }),
+  group('brio_home_explain', 'Home: the explanatory paragraph', [
+    f.text(h('explain'), 'heading', 'Heading', 'e.g. "At Brio Health we know you want to be healthy, vibrant and full of energy." Under 120 characters.', { maxlength: 120 }),
+    f.repeater(h('explain'), 'paragraphs', 'Paragraphs', 'In order, as written.', [
+      f.textarea(h('explain'), 'paragraphs_text', 'Paragraph', 'One paragraph. Under 500 characters.', { required: true, rows: 3, maxlength: 500 }),
+    ].map(unprefix('paragraphs_')), { max: 6, button: 'Add paragraph' }),
+    f.text(h('explain'), 'steps_intro', 'Line before the steps', 'e.g. "Here are the steps to transform your health:". Under 80 characters.', { maxlength: 80 }),
+    f.repeater(h('explain'), 'steps', 'Steps', 'Three, in order; the page adds "Step 1:" and so on.', stepRows(h('explain'), 'steps'), { min: 3, max: 3, button: 'Add step' }),
+    f.textarea(h('explain'), 'closing', 'Closing line', 'The sentence above the booking button. Under 300 characters.', { rows: 2, maxlength: 300 }),
   ], front, { order: 5 }),
-  group('brio_home_proof', 'Home: what patients say', [
-    f.text(h('proof'), 'heading', 'Heading', 'Aim for under 25 characters.', { default: 'What patients say', maxlength: 40 }),
-    f.relationship(h('proof'), 'testimonials', 'Reviews to show', 'The first is shown large, the next two small.', 'testimonial', { max: 3 }),
-  ], front, { order: 6 }),
-  group('brio_home_questions', 'Home: questions', [
-    f.text(h('questions'), 'heading', 'Heading', 'Aim for under 25 characters.', { default: 'Before you book', maxlength: 40 }),
-    f.text(h('questions'), 'aside', 'Line under the heading', 'One short line. Under 60 characters.', { default: 'Something else on your mind? Call us and ask.', maxlength: 80 }),
-    f.relationship(h('questions'), 'faqs', 'Questions to show', 'Five or six, in the order they should appear.', 'faq', { max: 8 }),
-  ], front, { order: 7 }),
-  group('brio_home_close', 'Home: close', [
-    f.text(h('close'), 'heading', 'Heading', 'Aim for under 30 characters.', { default: 'Ready when you are.', maxlength: 50 }),
-    f.textarea(h('close'), 'sentence', 'One sentence', 'Under the heading, above the booking button. Under 120 characters.', { rows: 2, maxlength: 160 }),
-  ], front, { order: 8 }),
 ]
 
 /* Custom post types: names match WPService, WPTestimonial and WPFaq in src/lib/wp/types.ts. */
 
 const sv = 'service'
 const service = group('brio_service', 'Service', [
-  f.textarea(sv, 'summary', 'Summary', 'One or two sentences for the service page. Under 220 characters.', { required: true, rows: 3, maxlength: 220 }),
-  f.text(sv, 'who_for', 'Who it is for', 'One line for the lists. e.g. "For when pain, stress or poor sleep is wearing you down." Under 120 characters.', { required: true, maxlength: 120 }),
-  f.text(sv, 'lead', 'Lead line', 'Under the heading on the service page. Under 80 characters.', { maxlength: 80 }),
-  f.repeater(sv, 'helps_with', 'This is for you if', 'Five or six lines, written to the reader.', lineRow(sv, 'helps_with', 'One line, e.g. "You can\'t sleep, or you\'re dealing with fatigue". Under 100 characters.', 120), { layout: 'table', max: 8, button: 'Add line' }),
-  f.repeater(sv, 'steps', 'What a visit involves', 'Three steps, in order. They are numbered on the page.', stepRows(sv, 'steps'), { min: 1, max: 4, button: 'Add step' }),
-  f.repeater(sv, 'fees', 'Fees', 'Edited once here; shown on the home page, the services list, this service and the book page. Exactly one row per service must be the Initial assessment: the home page and the services list look for it.', [
-    f.select(sv, 'fee_kind', 'Kind', 'What this fee is for. Pick Initial assessment on exactly one row.', FEE_KINDS, { required: true, allowNull: true, placeholder: 'Choose', width: '20' }),
-    f.text(sv, 'fee_label', 'Label', 'As it reads on the page, e.g. Initial assessment. Under 30 characters.', { required: true, width: '30', maxlength: 40 }),
-    f.text(sv, 'fee_note', 'Note', 'Optional. e.g. 30 minutes, virtual. Under 30 characters.', { width: '30', maxlength: 40 }),
-    f.text(sv, 'fee_amount', 'Amount', 'e.g. $150, or a range with a hyphen: $115-$250.', { required: true, width: '20', maxlength: 20 }),
-  ].map(unprefix('fee_')), { layout: 'table', button: 'Add fee' }),
-  f.text(sv, 'fees_note', 'Fees note', 'One line under the fees. Under 60 characters.', { default: 'Fees subject to change.', maxlength: 80 }),
-  f.image(sv, 'image', 'Photo', `The patient, never the doctor. ${PHOTO_NOTE}`),
-  f.text(sv, 'image_position', 'Photo crop', CROP_NOTE, { default: '50% 50%', maxlength: 20 }),
+  f.wysiwyg(sv, 'body', 'Page text', `The service page, top to bottom, up to the booking button. ${VERBATIM}`),
+  f.wysiwyg(sv, 'closing', 'Closing block', `The "... at Brio Health" block shown after the FAQs. Leave empty if the page has none. ${VERBATIM}`),
+  f.file(sv, 'video_loop', 'Background loop', 'An 8 to 15 second MP4, 1280x720, no sound, under 3 MB. It plays muted on the home page tile and behind the service page title. See wp/README.md, "Service videos".', { maxSize: 3, mime: 'mp4' }),
+  f.image(sv, 'video_poster', 'Loop still', 'A frame from the loop, JPG, 1600 pixels wide. Shown until the loop plays, and instead of it for people who prefer less motion.'),
+  f.url(sv, 'video_youtube', 'Narrated video', 'The YouTube link to the full video (unlisted is fine). Adds a "Watch the video" button.', { placeholder: 'https://youtu.be/...' }),
+  f.image(sv, 'image', 'Photo', `Used when there is no loop still. The patient, never the doctor. ${PHOTO_NOTE}`),
+  f.text(sv, 'image_position', 'Photo crop', cropNote('4:5 on the home page tile and 16:9 behind the service page title'), { default: '50% 50%', maxlength: 20 }),
   f.relationship(sv, 'faqs', 'Questions for this service', 'Shown on this service\'s page, in this order.', 'faq'),
 ], location('post_type', 'service'), { hide: ['discussion', 'comments'] })
 
 const t = 'testimonial'
 const testimonial = group('brio_testimonial', 'Testimonial', [
-  f.textarea(t, 'quote', 'Full quote', "The patient's own words, pasted in full from the review.", { required: true, rows: 5, maxlength: 2000 }),
-  f.textarea(t, 'short_quote', 'Short quote', 'What the site shows: three lines at most, under 160 characters, trimmed from the full quote.', { required: true, rows: 3, maxlength: 160 }),
-  f.text(t, 'name', 'Name', 'First name and last initial, e.g. Diane C. Under 30 characters.', { required: true, width: '40', maxlength: 40 }),
-  f.text(t, 'source', 'Source', 'Where the review was posted, e.g. Google review.', { default: 'Google review', width: '30', maxlength: 30 }),
-  f.text(t, 'date', 'When', 'Month and year, e.g. November 2024.', { width: '30', maxlength: 30 }),
-  f.relationship(t, 'service', 'About which service', 'Optional. Lets the review show on that service\'s page.', 'service', { max: 1 }),
+  f.textarea(t, 'quote', 'Quote', 'The patient\'s words, as written. Under 600 characters.', { required: true, rows: 5, maxlength: 600 }),
+  f.text(t, 'name', 'Name', 'First name and last initial, e.g. April B. Under 30 characters.', { required: true, width: '50', maxlength: 40 }),
+  f.relationship(t, 'service', 'About which service', 'Optional.', 'service', { max: 1 }),
 ], location('post_type', 'testimonial'), {
   hide: ['the_content', 'excerpt', 'discussion', 'comments', 'featured_image'],
   description: 'The title is only a label for this list; it never appears on the website.',
@@ -250,9 +229,9 @@ const testimonial = group('brio_testimonial', 'Testimonial', [
 
 const q = 'faq'
 const faq = group('brio_faq', 'FAQ', [
-  f.text(q, 'question', 'Question', 'As the patient would ask it. Under 80 characters.', { required: true, maxlength: 80 }),
-  f.textarea(q, 'answer', 'Answer', 'Two or three sentences. Plain text, under 400 characters.', { required: true, rows: 4, maxlength: 400 }),
-  f.select(q, 'faq_group', 'Where it belongs', 'General questions can show anywhere; the others belong with their service.', FAQ_GROUPS),
+  f.text(q, 'question', 'Question', 'As it reads on the page. Under 120 characters.', { required: true, maxlength: 120 }),
+  f.textarea(q, 'answer', 'Answer', 'As written. Line breaks are kept. Under 600 characters.', { required: true, rows: 5, maxlength: 600 }),
+  f.select(q, 'faq_group', 'Which page', 'Booking questions show on the New Patient page; the others on their service page.', FAQ_GROUPS),
 ], location('post_type', 'faq'), { hide: ['the_content', 'excerpt', 'discussion', 'comments', 'featured_image'] })
 
 const seo = group('brio_seo', 'Search and sharing', [
@@ -270,36 +249,58 @@ const seo = group('brio_seo', 'Search and sharing', [
 const pageGroup = (key, title, template, fields) =>
   group(key, title, fields, location('page_template', template), { hide: ['discussion', 'comments'] })
 
+/** The page title block. New Patient and Pickleball have no lead line, so they take the heading alone. */
+const headingField = (g) =>
+  f.text(g, 'heading', 'Heading', 'The title as it reads on the page. Under 40 characters. Empty uses the page title.', { maxlength: 60 })
 const heroFields = (g) => [
-  f.text(g, 'heading', 'Heading', 'Aim for under 28 characters; longer headings show smaller. Empty uses the page title.', { maxlength: 60 }),
-  f.textarea(g, 'lead', 'Lead', 'One or two sentences under the heading. Under 200 characters.', { rows: 2, maxlength: 200 }),
+  headingField(g),
+  f.textarea(g, 'lead', 'Lead', 'The line under the heading. Under 200 characters.', { rows: 2, maxlength: 200 }),
 ]
 
 const about = pageGroup('brio_about', 'About page', 'template-about.php', [
   ...heroFields('about'),
+  f.wysiwyg('about', 'body', 'Story', `The pull quote and the paragraphs. ${VERBATIM}`),
   f.image('about', 'portrait', 'Portrait', `Dr. Lee. ${PHOTO_NOTE}`),
-  f.text('about', 'portrait_position', 'Portrait crop', CROP_NOTE, { default: '50% 30%', maxlength: 20 }),
-  f.repeater('about', 'credentials', 'Credentials', 'Four short lines.', lineRow('about', 'credentials', 'One qualification or fact. Under 70 characters.', 90), { layout: 'table', max: 6, button: 'Add line' }),
-  f.text('about', 'award', 'Award line', 'e.g. "Voted Best Naturopath in Best of Richmond 2025, by Richmond News." Under 90 characters.', { maxlength: 120 }),
-  f.image('about', 'photo_clinic', 'Second photo', `In the clinic. ${PHOTO_NOTE}`),
-  f.image('about', 'photo_community', 'Third photo', `In the community. ${PHOTO_NOTE}`),
+  f.text('about', 'portrait_position', 'Portrait crop', cropNote('4:5'), { default: '50% 30%', maxlength: 20 }),
+  f.image('about', 'photo_clinic', 'Second photo', `Dr. Lee explaining a treatment. ${PHOTO_NOTE}`),
+  f.image('about', 'photo_community', 'Third photo', `Dr. Lee in the community. ${PHOTO_NOTE}`),
 ])
 
 const contact = pageGroup('brio_contact', 'Contact page', 'template-contact.php', [
   ...heroFields('contact'),
-  f.textarea('contact', 'privacy_note', 'Note under the form', 'A reminder not to send medical details by email. Under 160 characters.', { rows: 2, maxlength: 200, default: "Please don't include medical details you wouldn't want sent by email. For anything sensitive, call us instead." }),
+  f.text('contact', 'book_line', 'Booking line', 'Above the booking button, e.g. "If you want to book an appointment use the link below." Under 120 characters.', { maxlength: 120 }),
 ])
 
-const book = pageGroup('brio_book', 'Book page', 'template-book.php', [
-  ...heroFields('book'),
-  f.textarea('book', 'intro', 'Intro', 'One or two sentences above the booking button. Under 200 characters.', { rows: 2, maxlength: 220 }),
-  f.text('book', 'first_note', 'Note under "What happens first"', 'e.g. "For naturopathic medicine. Acupuncture and I.V. therapy each start with their own consultation." Under 120 characters.', { maxlength: 160 }),
+const np = 'new_patient'
+const newPatient = pageGroup('brio_new_patient', 'New Patient page', 'template-new-patient.php', [
+  headingField(np),
+  f.url(np, 'video_url', 'Welcome video', 'The MP4 in the media library (copy its URL). Plays with controls, never by itself.'),
+  f.wysiwyg(np, 'intro', 'Intro', `The paragraphs and the three booking steps above the questions. ${VERBATIM}`),
+  f.text(np, 'statements_heading', 'Questions heading', 'e.g. "Step 1: Answer the 3 questions below". Under 80 characters.', { maxlength: 80 }),
+  f.repeater(np, 'statements', 'The three statements', 'Each must be ticked before "Get Started" works. Exactly three.', [
+    f.textarea(np, 'statements_statement', 'Statement', 'One "I understand..." statement. Under 400 characters.', { required: true, rows: 3, maxlength: 400 }),
+  ].map(unprefix('statements_')), { min: 3, max: 3, button: 'Add statement' }),
+  f.text(np, 'faq_heading', 'FAQ heading', 'Above the booking questions, e.g. "FAQ’s". Under 40 characters.', { maxlength: 40 }),
+  f.relationship(np, 'faqs', 'Booking questions', 'Shown under the form, in this order.', 'faq'),
 ])
 
+const pb = 'pickleball'
 const pickleball = pageGroup('brio_pickleball', 'Pickleball page', 'template-pickleball.php', [
-  ...heroFields('pickleball'),
-  f.image('pickleball', 'photo_court', 'Court photo', `On the court. ${PHOTO_NOTE}`),
-  f.image('pickleball', 'photo_group', 'Group photo', `The group together. ${PHOTO_NOTE}`),
+  headingField(pb),
+  f.wysiwyg(pb, 'intro', 'Intro and coaching method', VERBATIM),
+  f.url(pb, 'video_url', 'Video', 'The MP4 in the media library (copy its URL). Plays with controls.'),
+  f.repeater(pb, 'photos', 'Captioned photos', 'The coaching photos with their captions, in order.', [
+    f.image(pb, 'photos_image', 'Photo', PHOTO_NOTE),
+    f.text(pb, 'photos_caption', 'Caption', 'As written. Under 200 characters.', { maxlength: 200 }),
+  ].map(unprefix('photos_')), { max: 4, button: 'Add photo' }),
+  f.wysiwyg(pb, 'services', 'Coaching services', `The services and prices block. ${VERBATIM}`),
+  f.image(pb, 'photo_court', 'Court photo', `On the court. ${PHOTO_NOTE}`),
+  f.text(pb, 'quotes_heading', 'Quotes heading', 'e.g. "What they are saying:". Under 60 characters.', { maxlength: 60 }),
+  f.repeater(pb, 'quotes', 'What they are saying', 'Quotes with names, in order.', [
+    f.textarea(pb, 'quotes_quote', 'Quote', 'As written. Under 600 characters.', { required: true, rows: 4, maxlength: 600 }),
+    f.text(pb, 'quotes_name', 'Name', 'e.g. David C. Under 40 characters.', { required: true, maxlength: 40 }),
+  ].map(unprefix('quotes_')), { max: 4, button: 'Add quote' }),
+  f.text(pb, 'form_heading', 'Form heading', 'Above the lesson form, e.g. "Schedule a lesson". Under 60 characters.', { maxlength: 60 }),
 ])
 
-export const groups = [settings, ...homeGroups, service, testimonial, faq, seo, about, contact, book, pickleball]
+export const groups = [settings, ...homeGroups, service, testimonial, faq, seo, about, contact, newPatient, pickleball]

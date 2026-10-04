@@ -63,10 +63,9 @@ for (const file of files) {
 }
 
 const expected = [
-  'group_brio_settings', 'group_brio_home_hero', 'group_brio_home_stakes', 'group_brio_home_guide', 'group_brio_home_services',
-  'group_brio_home_plan', 'group_brio_home_first_visit', 'group_brio_home_proof', 'group_brio_home_questions', 'group_brio_home_close',
-  'group_brio_service', 'group_brio_testimonial', 'group_brio_faq', 'group_brio_seo', 'group_brio_about', 'group_brio_contact',
-  'group_brio_book', 'group_brio_pickleball',
+  'group_brio_settings', 'group_brio_home_hero', 'group_brio_home_stakes', 'group_brio_home_services', 'group_brio_home_trust',
+  'group_brio_home_plan', 'group_brio_home_explain', 'group_brio_service', 'group_brio_testimonial', 'group_brio_faq',
+  'group_brio_seo', 'group_brio_about', 'group_brio_contact', 'group_brio_new_patient', 'group_brio_pickleball',
 ]
 for (const key of expected) if (!files.includes(`${key}.json`)) problems.push(`missing ${key}.json`)
 for (const file of files) if (!expected.includes(file.replace(/\.json$/, ''))) problems.push(`${file}: not an expected group`)
@@ -82,8 +81,8 @@ if (phpNames.length < 10) problems.push(`inc/options.php: only found ${phpNames.
 
 const readers = {
   group_brio_settings: [...new Set(phpNames), 'hours.days', 'hours.opens', 'hours.closes', 'hours.closed', 'social.label', 'social.url', 'announcement.enabled', 'announcement.text', 'announcement.url'],
-  group_brio_service: ['summary', 'who_for', 'lead', 'helps_with.text', 'steps.title', 'steps.body', 'fees.kind', 'fees.label', 'fees.note', 'fees.amount', 'fees_note', 'image', 'image_position', 'faqs'],
-  group_brio_testimonial: ['quote', 'short_quote', 'name', 'source', 'date', 'service'],
+  group_brio_service: ['body', 'closing', 'video_loop', 'video_poster', 'video_youtube', 'image', 'image_position', 'faqs'],
+  group_brio_testimonial: ['quote', 'name', 'service'],
   group_brio_faq: ['question', 'answer', 'faq_group'],
 }
 let readCount = 0
@@ -93,16 +92,22 @@ for (const [groupKey, paths] of Object.entries(readers)) {
     if (!byPath[groupKey]?.[path]) problems.push(`${groupKey}: the reader expects ${path}, which is not defined`)
   }
 }
+// The post types define nothing the reader leaves out: an unread field is text the editor types and the site never shows.
+for (const groupKey of ['group_brio_service', 'group_brio_testimonial', 'group_brio_faq']) {
+  for (const path of Object.keys(byPath[groupKey] ?? {})) if (!readers[groupKey].includes(path)) problems.push(`${groupKey}: ${path} is not read by src/lib/wp/types.ts`)
+}
 
 // Shapes the readers depend on, not just names.
 const days = byPath.group_brio_settings?.['hours.days']
 if (days && (days.type !== 'checkbox' || days.return_format !== 'value')) problems.push('settings hours.days must be a checkbox returning values')
-const kind = byPath.group_brio_service?.['fees.kind']
-if (kind && (kind.type !== 'select' || kind.required !== 1 || kind.return_format !== 'value' || kind.allow_null !== 1 || kind.default_value !== '' || Object.keys(kind.choices).join() !== 'initial,follow-up,treatment')) {
-  problems.push('service fees.kind must be a required select with no default (allow_null 1, default_value empty) returning initial, follow-up or treatment (FeeKind)')
+const loop = byPath.group_brio_service?.video_loop
+if (loop && (loop.type !== 'file' || loop.return_format !== 'url' || loop.mime_types !== 'mp4')) problems.push('service video_loop must be a file field returning a url, mp4 only')
+const faqGroup = byPath.group_brio_faq?.faq_group
+if (faqGroup && Object.keys(faqGroup.choices).join() !== 'booking,naturopathic,acupuncture,iv-therapy') problems.push('faq faq_group must offer booking, naturopathic, acupuncture, iv-therapy (FaqGroup)')
+for (const [key, fields] of Object.entries(byPath)) for (const [path, field] of Object.entries(fields)) {
+  if (/fee|price|amount/.test(path)) problems.push(`${key}: ${path} looks like a fee field; fees live only in the FAQ answers`)
+  if (field.type === 'wysiwyg' && field.media_upload !== 0) problems.push(`${key}: ${path} must not allow media uploads; media go in their own fields`)
 }
-const firstVisit = byPath.group_brio_home_first_visit ?? {}
-for (const path of Object.keys(firstVisit)) if (/fee|price|amount/.test(path) && path !== 'fee_service') problems.push(`home first visit: ${path} looks like a second place to type a fee`)
 
 if (problems.length) {
   console.error(problems.join('\n'))
