@@ -89,6 +89,7 @@ export interface WPService extends WPContentBase {
     video_youtube?: string | false | null
     image?: WPImageField | false | null
     image_position?: string
+    faq_heading?: string
     faqs?: number[] | false
   }
 }

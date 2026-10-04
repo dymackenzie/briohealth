@@ -32,6 +32,10 @@ describe('services carry the live pages verbatim', () => {
     expect(getService('iv-therapy')?.closing).toBe('')
   })
 
+  it('heads the FAQs with the live page heading, as content, not markup', () => {
+    for (const s of services) expect(s.faqHeading).toBe('FAQ’s')
+  })
+
   it('renders the Dr. Lee quote as a blockquote with his name', () => {
     expect(getService('naturopathic')?.body).toMatch(
       /<blockquote>[\s\S]*“I was introduced to the Naturopathic principles[\s\S]*Dr\. Lee<\/p>\s*<\/blockquote>/,

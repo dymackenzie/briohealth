@@ -15,7 +15,10 @@ import { slots, type Photo, type PhotoSlot } from './photos'
 export interface ServiceVideo {
   /** MP4 loop, 8-15s, muted; null until the client supplies it. */
   loop: string | null
-  /** Still for the loop; null falls back to `image.photo`. */
+  /**
+   * Still for the loop and the service page hero; null makes the hero the
+   * teal field, and the tiles fall back to `image.photo`.
+   */
   poster: Photo | null
   /** The narrated video on YouTube; null hides "Watch the video". */
   youtube: string | null
@@ -174,11 +177,14 @@ export interface ServiceContent {
   title: string
   /** Lower-case, for running text: "more about acupuncture". */
   short: string
+  /** The tiles' 4/5 still when there is no poster; never the page hero. */
   image: PhotoSlot
   /** The live page, verbatim, as HTML for renderContent. */
   body: string
   /** The live page's closing "X at Brio Health" block; empty when it has none. */
   closing: string
+  /** Above the FAQ accordion, as the live page heads it. */
+  faqHeading: string
   video: ServiceVideo
 }
 
@@ -190,6 +196,7 @@ export const services: ServiceContent[] = [
     image: slots.services.naturopathic,
     body: naturopathicBody,
     closing: naturopathicClosing,
+    faqHeading: 'FAQ’s',
     video: NO_VIDEO,
   },
   {
@@ -199,6 +206,7 @@ export const services: ServiceContent[] = [
     image: slots.services.acupuncture,
     body: acupunctureBody,
     closing: acupunctureClosing,
+    faqHeading: 'FAQ’s',
     video: NO_VIDEO,
   },
   {
@@ -208,6 +216,7 @@ export const services: ServiceContent[] = [
     image: slots.services['iv-therapy'],
     body: ivBody,
     closing: '',
+    faqHeading: 'FAQ’s',
     video: NO_VIDEO,
   },
 ]

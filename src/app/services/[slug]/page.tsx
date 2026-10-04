@@ -39,10 +39,12 @@ export async function generateMetadata(props: { params: Promise<{ slug: string }
 
 /**
  * Video hero, then the live page verbatim in one left-aligned column: the
- * body, the booking button, "FAQ's" as an accordion, the closing block
- * where the live page has one, and the booking button again where the
- * live page's closing ends in BOOK NOW. The page's one bud (spec 3.7)
- * sits in the open space right of the body's opening. The hero's still is
+ * body, the booking button, the FAQs under the live page's heading
+ * ("FAQ's", `faqHeading`) as an accordion, the closing block where the
+ * live page has one, and the booking button again where the live page's
+ * closing ends in BOOK NOW. The page's one bud (spec 3.7) sits in the open
+ * space right of the body's opening, from lg: below that the 68ch column
+ * fills the width and the bud would land on the text. The hero's still is
  * the video poster only: the 4/5 shoot crops in `image` show Dr. Lee at
  * full width (spec 7.5), so without a poster the hero is the teal field.
  */
@@ -81,7 +83,7 @@ export default async function ServicePage(props: { params: Promise<{ slug: strin
 
           {faqs.length > 0 && (
             <Reveal delay={80} className="mt-14">
-              <h2 className="text-h2">FAQ’s</h2>
+              <h2 className="text-h2">{service.faqHeading}</h2>
               <div className="mt-6">
                 <Accordion items={faqs.map(({ question, answer }) => ({ question, answer }))} />
               </div>
