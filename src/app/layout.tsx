@@ -1,5 +1,6 @@
 import type { Metadata } from 'next'
-import { Funnel_Display, Funnel_Sans, Newsreader } from 'next/font/google'
+import { Funnel_Display, Funnel_Sans } from 'next/font/google'
+import localFont from 'next/font/local'
 import { Analytics } from '@vercel/analytics/next'
 
 import { AnnouncementBar } from '@/components/layout/AnnouncementBar'
@@ -11,7 +12,7 @@ import { defaultDescription, site } from '@/lib/site'
 import { getSiteSettings } from '@/lib/wp/queries'
 import './globals.css'
 
-/* All three are variable fonts on Google Fonts, so no weight list is needed. */
+/* Both are variable fonts on Google Fonts, so no weight list is needed. */
 const display = Funnel_Display({
   subsets: ['latin'],
   display: 'swap',
@@ -24,13 +25,20 @@ const sans = Funnel_Sans({
   variable: '--font-funnel-sans',
 })
 
-/* The editorial serif: variable weight with the optical-size axis, roman
-   and italic. Weight is not listed because the font is variable. */
-const serif = Newsreader({
-  subsets: ['latin'],
+/* The editorial serif. The site sets it at two points only, roman 500 and
+   italic 400, so these are Google's static-weight files for exactly those,
+   optical-size axis kept, latin subset: 124KB against 279KB for the full
+   weight range (next/font/google won't pin a weight while `axes` is set).
+   Source: fonts.googleapis.com/css2?family=Newsreader:ital,opsz,wght@0,6..72,500;1,6..72,400
+   Serif text set heavier than 500 would get synthetic bold. The const's
+   name is the font-family name. */
+const newsreader = localFont({
+  src: [
+    { path: '../fonts/newsreader-roman-500-latin.woff2', weight: '500', style: 'normal' },
+    { path: '../fonts/newsreader-italic-400-latin.woff2', weight: '400', style: 'italic' },
+  ],
   display: 'swap',
-  style: ['normal', 'italic'],
-  axes: ['opsz'],
+  adjustFontFallback: 'Times New Roman',
   variable: '--font-newsreader',
 })
 
@@ -52,7 +60,7 @@ export default async function RootLayout({ children }: { children: React.ReactNo
   return (
     // The inline script adds a class before React hydrates, so server and
     // client markup differ here on purpose.
-    <html lang="en-CA" className={`${display.variable} ${sans.variable} ${serif.variable}`} suppressHydrationWarning>
+    <html lang="en-CA" className={`${display.variable} ${sans.variable} ${newsreader.variable}`} suppressHydrationWarning>
       <head>
         {/* Gates every hidden-until-revealed state. Inline and synchronous so
             nothing flashes; with no JavaScript the class never lands and the
