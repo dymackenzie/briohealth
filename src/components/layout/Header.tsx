@@ -11,7 +11,7 @@ import { BOOKING_PATH, currentState, nav, type SiteSettings } from '@/lib/site'
 
 /**
  * 88px, no fill of its own so the body's grain runs under it, a 1px ink
- * rule under it (spec 3.6), one line at 1024px: logo (72px), three items,
+ * rule under it (spec 3.6), one line at 1024px: logo (56px), three items,
  * the clay booking button. The dropdown keeps a solid paper fill. The
  * header is `relative z-40`: the homepage hero's transformed layers
  * create stacking contexts painted after the header, and without a
@@ -76,7 +76,7 @@ export function Header({ settings }: { settings: SiteSettings }) {
   return (
     <header className="relative z-40 border-b border-ink">
       <div className="container-x flex h-[var(--header-h)] items-center justify-between gap-6">
-        <Logo height={72} />
+        <Logo height={56} />
 
         <nav aria-label="Primary" className="hidden lg:block">
           <ul className="flex items-center gap-1">

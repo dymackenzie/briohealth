@@ -3,8 +3,10 @@ import Link from 'next/link'
 /**
  * The mark is two-tone (ink wordmark, teal dots), so it is an <img>, not an
  * inline SVG that could be recoloured. It only ever sits on paper or grey.
+ * The SVG is traced from the clinic's own 1081px lockup (brio_social_1.png)
+ * with the fan's dots as true circles; its viewBox is the ink plus 2 units.
  */
-const ASPECT = 778 / 650
+const ASPECT = 784 / 657
 
 export function Logo({ height = 40, className = '' }: { height?: number; className?: string }) {
   return (
