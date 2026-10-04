@@ -8,7 +8,7 @@ import { Address } from '@/components/ui/Address'
 import { Button } from '@/components/ui/Button'
 import { Hours } from '@/components/ui/Hours'
 import { services } from '@/lib/content/services'
-import { BOOKING_PATH, footerLegal, mapEmbedUrl, mapSearchUrl, type SiteSettings } from '@/lib/site'
+import { BOOKING_PATH, footerLegal, mapEmbedUrl, type SiteSettings } from '@/lib/site'
 
 const socialIcons: Record<string, Icon> = {
   Instagram: InstagramLogo,
@@ -33,8 +33,9 @@ const link = 'underline decoration-1 underline-offset-4 hover:decoration-2'
 /**
  * The wireframe's junk drawer, on grey (not a teal field), in its order:
  * the three service buttons, "Don't be at the Mercy of your symptoms" with
- * the booking button, the map (patients get lost), the clinic's details
- * and hours with the About link, the newsletter, then legal, Contact,
+ * the booking button, the map (patients get lost; toned into the sand by
+ * `map-tone`, with Google's own "Open in Maps" inside it), the clinic's
+ * details and hours with the About link, the newsletter, then legal, Contact,
  * Pickleball, socials and the copyright. NAP here must match the contact
  * page and the JSON-LD: all three read the same settings object.
  */
@@ -64,11 +65,8 @@ export function Footer({ settings }: { settings: SiteSettings }) {
               title={`Map showing ${settings.legalName} at ${settings.address.street}, ${settings.address.locality}`}
               loading="lazy"
               referrerPolicy="no-referrer-when-downgrade"
-              className="h-[280px] w-full rounded-brand border-0 bg-paper"
+              className="map-tone h-[280px] w-full rounded-brand border-0"
             />
-            <a href={mapSearchUrl(settings)} target="_blank" rel="noopener noreferrer" className={`mt-3 inline-block ${link}`}>
-              Open in Google Maps
-            </a>
           </section>
 
           <div className="lg:col-span-5">

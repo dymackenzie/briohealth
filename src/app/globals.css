@@ -254,6 +254,16 @@
   font-variant-numeric: tabular-nums;
 }
 
+/* The footer's Google Maps embed, toned into the sand panel: mostly
+ * grey, softened, then multiplied so the map's white land takes the
+ * panel's sand. Enough colour is left that the pin still reads as a warm
+ * red against the grey streets. A filter, not an overlay, so the map
+ * stays usable. */
+@utility map-tone {
+  filter: grayscale(0.8) contrast(0.95) brightness(1.03);
+  mix-blend-mode: multiply;
+}
+
 /* Small teal text link on light grounds (teal-deep, 5.1:1). */
 @utility link-quiet {
   color: var(--color-teal-deep);
