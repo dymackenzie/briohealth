@@ -152,6 +152,14 @@ describe('Button', () => {
     expect(renderToStaticMarkup(<Button variant="outline" on="dark">x</Button>)).toContain('border-paper')
   })
 
+  it('sizes solid buttons md by default and lg on request', () => {
+    expect(renderToStaticMarkup(<Button>x</Button>)).toContain('px-6 py-3.5')
+    const lg = renderToStaticMarkup(<Button size="lg">x</Button>)
+    expect(lg).toContain('px-7')
+    expect(lg).toContain('text-xl')
+    expect(lg).not.toContain('px-6')
+  })
+
   it('renders an internal href as a link and an external one in a new tab', () => {
     // next/link writes class before href, so match the tag, not the order.
     const internal = renderToStaticMarkup(<Button href="/new-patient">x</Button>)

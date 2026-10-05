@@ -16,10 +16,17 @@ import { ArrowRight } from '@phosphor-icons/react/dist/ssr'
 
 type Surface = 'light' | 'teal' | 'dark'
 type Variant = 'primary' | 'quiet' | 'outline'
+type Size = 'md' | 'lg'
 
 const solidBase =
-  'inline-flex items-center justify-center gap-2 rounded-brand px-6 py-3.5 font-medium leading-none whitespace-nowrap ' +
+  'inline-flex items-center justify-center gap-2 rounded-brand font-medium leading-none whitespace-nowrap ' +
   'transition-transform duration-200 active:translate-y-px disabled:opacity-60 disabled:active:translate-y-0'
+
+/** `lg` is the homepage hero's, one step above the header's button in the same view. */
+const solidSize: Record<Size, string> = {
+  md: 'px-6 py-3.5',
+  lg: 'px-7 py-[1.125rem] text-xl',
+}
 
 const primaryFill = 'bg-clay text-ink hover:opacity-90'
 
@@ -42,6 +49,7 @@ export function Button({
   href,
   on = 'light',
   variant = 'primary',
+  size = 'md',
   type = 'button',
   disabled = false,
   onClick,
@@ -51,6 +59,8 @@ export function Button({
   href?: string
   on?: Surface
   variant?: Variant
+  /** Solid buttons only; the quiet link takes the text size around it. */
+  size?: Size
   type?: 'button' | 'submit'
   disabled?: boolean
   onClick?: () => void
@@ -59,9 +69,9 @@ export function Button({
 }) {
   const classes =
     variant === 'primary'
-      ? `${solidBase} ${primaryFill} ${className}`
+      ? `${solidBase} ${solidSize[size]} ${primaryFill} ${className}`
       : variant === 'outline'
-        ? `${solidBase} ${outlineColour[on]} ${className}`
+        ? `${solidBase} ${solidSize[size]} ${outlineColour[on]} ${className}`
         : `${quietBase} ${quietColour[on]} ${className}`
 
   const content =
