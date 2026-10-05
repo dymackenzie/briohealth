@@ -1,17 +1,19 @@
 /**
  * Loop playback is decided by a pure function so the gates are testable:
  * the visitor's own pause, reduced motion and save-data win over
- * everything; a tile plays on hover or focus where hover exists and while
- * in view where it does not; the service hero plays while in view. The
- * component feeds this the live values and calls play()/pause().
+ * everything; a service row plays while it is open and its media is in
+ * view (open means hovered or focused where the device can hover, toggled
+ * by the row's disclosure button where it cannot; a closed row's media is
+ * clipped to nothing, so it is never in view); the service hero plays
+ * while in view. The component feeds this the live values and calls
+ * play()/pause().
  */
 
 export interface LoopDecision {
-  mode: 'tile' | 'hero'
-  hovered: boolean
-  focused: boolean
+  mode: 'row' | 'hero'
+  /** Row mode: the row is expanded. Ignored by the hero. */
+  open: boolean
   inView: boolean
-  canHover: boolean
   reducedMotion: boolean
   saveData: boolean
   /** The visitor pressed pause (WCAG 2.2.2); only their play undoes it. */
@@ -21,8 +23,7 @@ export interface LoopDecision {
 export function shouldPlayLoop(d: LoopDecision): boolean {
   if (d.paused || d.reducedMotion || d.saveData) return false
   if (d.mode === 'hero') return d.inView
-  if (d.canHover) return d.hovered || d.focused
-  return d.inView
+  return d.open && d.inView
 }
 
 const YOUTUBE_HOSTS = new Set(['www.youtube.com', 'youtube.com', 'm.youtube.com', 'youtu.be', 'www.youtube-nocookie.com'])

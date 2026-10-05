@@ -58,18 +58,18 @@ export function LoopPauseButton({
  * thing that starts it is shouldPlayLoop saying yes. preload="none": the
  * file is not fetched until it plays.
  *
- * Tile mode takes `active` (hover or focus of the whole tile) and `paused`
- * from its parent; on a device without hover it plays while 60% in view,
- * and the tile puts a LoopPauseButton beside its link (a button cannot sit
- * inside a link). Hero mode plays while 25% in view and shows its own
- * pause button, on z-30 so it stays above VideoHero's wash and copy layers.
- * Either way a pause holds until the visitor presses play.
+ * Row mode takes `open` (the service row is expanded) and `paused` from
+ * its parent and plays while open and 60% in view; on a device without
+ * hover the row puts a LoopPauseButton on the media (outside its link: a
+ * button cannot sit inside one). Hero mode plays while 25% in view and
+ * shows its own pause button, on z-30 so it stays above VideoHero's wash
+ * and copy layers. Either way a pause holds until the visitor presses play.
  */
 export function LoopVideo({
   src,
   poster,
   mode,
-  active = false,
+  open = false,
   paused = false,
   aspect = '4/5',
   sizes,
@@ -78,9 +78,10 @@ export function LoopVideo({
 }: {
   src: string
   poster: Photo
-  mode: 'tile' | 'hero'
-  active?: boolean
-  /** Tile mode only: the state of the tile's pause button. */
+  mode: 'row' | 'hero'
+  /** Row mode only: the row is expanded. */
+  open?: boolean
+  /** Row mode only: the state of the row's pause button. */
   paused?: boolean
   aspect?: keyof typeof ASPECTS
   sizes?: string
@@ -89,7 +90,7 @@ export function LoopVideo({
 }) {
   const box = useRef<HTMLDivElement>(null)
   const video = useRef<HTMLVideoElement>(null)
-  const { hydrated, canHover, reducedMotion, saveData, showVideo } = useLoopGates()
+  const { hydrated, reducedMotion, saveData, showVideo } = useLoopGates()
   const inView = useInView(box, mode === 'hero' ? 0.25 : 0.6)
   const [heroPaused, setHeroPaused] = useState(false)
   const [playing, setPlaying] = useState(false)
@@ -98,10 +99,8 @@ export function LoopVideo({
     hydrated &&
     shouldPlayLoop({
       mode,
-      hovered: active,
-      focused: active,
+      open,
       inView,
-      canHover,
       reducedMotion,
       saveData,
       paused: mode === 'hero' ? heroPaused : paused,
