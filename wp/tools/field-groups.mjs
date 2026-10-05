@@ -164,8 +164,6 @@ const homeGroups = [
   group('brio_home_hero', 'Home: hero', [
     f.text(h('hero'), 'heading', 'Heading', 'Dr. Jeff\'s headline, e.g. "Transform Your Health, Regain Your Life:". Under 60 characters.', { maxlength: 60 }),
     f.textarea(h('hero'), 'sentence', 'One sentence', 'Under the heading, e.g. "A Natural Approach to Building Vitality and Increasing Energy". Under 120 characters.', { rows: 2, maxlength: 120 }),
-    f.image(h('hero'), 'image', 'Photo', `Wide (3:1 on desktop), happy and healthy; licensed stock is fine. ${PHOTO_NOTE}`),
-    f.text(h('hero'), 'image_position', 'Photo crop', cropNote('3:1 on desktop and 4:3 on phones'), { default: '50% 62%', maxlength: 20 }),
   ], front, { order: 0 }),
   group('brio_home_stakes', 'Home: stakes', [
     f.text(h('stakes'), 'heading', 'Heading', 'e.g. "Have you been frustrated with your level of health?" Under 80 characters.', { maxlength: 80 }),

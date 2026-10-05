@@ -41,52 +41,6 @@
             "rows": 2,
             "placeholder": "",
             "new_lines": ""
-        },
-        {
-            "key": "field_home_hero_image",
-            "label": "Photo",
-            "name": "image",
-            "aria-label": "",
-            "type": "image",
-            "instructions": "Wide (3:1 on desktop), happy and healthy; licensed stock is fine. Leave empty if the photo does not exist yet: the site shows a labelled placeholder instead of a broken image.",
-            "required": 0,
-            "conditional_logic": 0,
-            "wrapper": {
-                "width": "",
-                "class": "",
-                "id": ""
-            },
-            "return_format": "array",
-            "library": "all",
-            "preview_size": "medium",
-            "min_width": "",
-            "min_height": "",
-            "min_size": "",
-            "max_width": "",
-            "max_height": "",
-            "max_size": "",
-            "mime_types": "",
-            "uploader": ""
-        },
-        {
-            "key": "field_home_hero_image_position",
-            "label": "Photo crop",
-            "name": "image_position",
-            "aria-label": "",
-            "type": "text",
-            "instructions": "Where the photo is cropped from, as two percentages: \"50% 50%\" is the centre, \"20% 50%\" keeps the left side. Shown at 3:1 on desktop and 4:3 on phones.",
-            "required": 0,
-            "conditional_logic": 0,
-            "wrapper": {
-                "width": "",
-                "class": "",
-                "id": ""
-            },
-            "default_value": "50% 62%",
-            "maxlength": 20,
-            "placeholder": "",
-            "prepend": "",
-            "append": ""
         }
     ],
     "location": [

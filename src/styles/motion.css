@@ -26,8 +26,7 @@
 }
 
 /* Hero entrance, once: the teal floor wipes in from the left, then the serif
- * headline and the tagline/button column rise. The photo never animates: it
- * is the LCP image. */
+ * headline rises, and the tagline and button after it. */
 
 @media (prefers-reduced-motion: no-preference) {
   .js .hero-field {
@@ -44,7 +43,7 @@
     animation-delay: 0.45s;
   }
 
-  .js .hero-copy > :nth-child(2) {
+  .js .hero-copy > :nth-child(n + 2) {
     animation-delay: 0.55s;
   }
 

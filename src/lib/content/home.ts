@@ -1,6 +1,5 @@
 import { site } from '@/lib/site'
 import { WP_UPLOADS_URL } from '@/lib/wp/client'
-import { slots, type PhotoSlot } from './photos'
 import type { ServiceSlug } from './services'
 
 /**
@@ -18,7 +17,6 @@ export interface HomeContent {
   hero: {
     heading: string
     sentence: string
-    image: PhotoSlot
   }
   stakes: {
     heading: string
@@ -51,7 +49,6 @@ export const home: HomeContent = {
   hero: {
     heading: 'Transform Your Health, Regain Your Life:',
     sentence: 'A Natural Approach to Building Vitality and Increasing Energy',
-    image: slots.hero,
   },
 
   stakes: {

@@ -7,8 +7,7 @@ describe('homepage content is the wireframe, verbatim', () => {
   it('hero', () => {
     expect(home.hero.heading).toBe('Transform Your Health, Regain Your Life:')
     expect(home.hero.sentence).toBe('A Natural Approach to Building Vitality and Increasing Energy')
-    expect(home.hero.image.photo?.src.startsWith('/photos/stock/')).toBe(true)
-    expect(home.hero.image.photo?.credit?.url).toContain('unsplash.com')
+    expect(Object.keys(home.hero)).toEqual(['heading', 'sentence'])
   })
 
   it('stakes', () => {
