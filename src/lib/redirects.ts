@@ -15,6 +15,7 @@ export const TOP_LEVEL_ROUTES = new Set([
   'privacy-policy',
   'terms-of-use',
   'api',
+  'garden', // the hero garden's static stills, /garden/<breakpoint>.svg
   'sitemap.xml',
   'robots.txt',
 ])
