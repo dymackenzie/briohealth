@@ -39,20 +39,26 @@ export function Trust({ content, items }: { content: HomeContent['trust']; items
             })}
           </ul>
 
-          <Reveal delay={200} className="flex items-center gap-5 lg:col-span-5 lg:col-start-8">
-            <Image
-              src={content.badge.src}
-              alt={content.badge.alt}
-              width={content.badge.width}
-              height={content.badge.height}
-              sizes="160px"
-              className="h-auto w-40 shrink-0 rounded-brand mix-blend-multiply"
-            />
-            <div>
+          <div className="flex items-center gap-5 lg:col-span-5 lg:col-start-8">
+            {/* The badge is a white-backed JPG multiplied into the paper. The
+             * blend sits on the Reveal: while it fades it is its own stacking
+             * context, and a blend inside it would only see that empty group,
+             * so the white would show until the fade ended. */}
+            <Reveal delay={200} className="w-40 shrink-0 mix-blend-multiply">
+              <Image
+                src={content.badge.src}
+                alt={content.badge.alt}
+                width={content.badge.width}
+                height={content.badge.height}
+                sizes="160px"
+                className="h-auto w-full rounded-brand"
+              />
+            </Reveal>
+            <Reveal delay={200}>
               <p className="font-medium">{content.badgeHeading}</p>
               <p className="mt-1 text-ink-soft">{content.badgeThanks}</p>
-            </div>
-          </Reveal>
+            </Reveal>
+          </div>
         </div>
 
         {items.length > 0 && (
