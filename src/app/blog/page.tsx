@@ -3,7 +3,6 @@ import { notFound } from 'next/navigation'
 import { CategoryFilter } from '@/components/blog/CategoryFilter'
 import { Pagination } from '@/components/blog/Pagination'
 import { PostList } from '@/components/blog/PostList'
-import { PageHero } from '@/components/layout/PageHero'
 import { Button } from '@/components/ui/Button'
 import { pages } from '@/lib/content/pages'
 import { buildMetadata, paged } from '@/lib/seo'
@@ -22,8 +21,10 @@ export async function generateMetadata(props: { searchParams: SearchParams }) {
 }
 
 /**
- * Reads `?page=`, so it renders per request; the WordPress reads behind it
- * stay cached under their tags.
+ * The archive, Substack's way: one narrow centred column, a plain heading,
+ * the categories as tabs, then the posts by month. Reads `?page=`, so it
+ * renders per request; the WordPress reads behind it stay cached under
+ * their tags.
  */
 export default async function BlogIndex(props: { searchParams: SearchParams }) {
   const { page: raw } = await props.searchParams
@@ -37,24 +38,26 @@ export default async function BlogIndex(props: { searchParams: SearchParams }) {
 
   return (
     <main id="main">
-      <PageHero title={pages.blog.title} />
       <div className="container-x pb-[var(--section-y)]">
-        {posts.length === 0 ? (
-          <div className="border-t border-grey pt-10">
-            <p className="max-w-[40ch] text-lede">{pages.blog.empty}</p>
-            <Button href="/services" variant="quiet" className="mt-6">
-              See how we help
-            </Button>
-          </div>
-        ) : (
-          <>
-            <CategoryFilter categories={categories} />
-            <div className="mt-6">
-              <PostList posts={posts} />
+        <div className="mx-auto max-w-[38rem] pt-10 lg:pt-14">
+          <h1 className="text-post-title">{pages.blog.title}</h1>
+          {posts.length === 0 ? (
+            <div className="mt-8 border-t border-grey pt-10">
+              <p className="max-w-[40ch] text-lede">{pages.blog.empty}</p>
+              <Button href="/services" variant="quiet" className="mt-6">
+                See how we help
+              </Button>
             </div>
-          </>
-        )}
-        <Pagination page={page} totalPages={totalPages} basePath="/blog" />
+          ) : (
+            <>
+              <div className="mt-6">
+                <CategoryFilter categories={categories} />
+              </div>
+              <PostList posts={posts} />
+            </>
+          )}
+          <Pagination page={page} totalPages={totalPages} basePath="/blog" />
+        </div>
       </div>
     </main>
   )

@@ -234,14 +234,28 @@
   letter-spacing: -0.01em;
 }
 
-/* A blog post's title: serif, capped at 48px. */
+/* The blog's titles (a post, the archive's heading), Substack's way: bold
+ * sans, capped at 32px. */
 @utility text-post-title {
-  font-family: var(--font-serif);
-  font-weight: 500;
+  font-family: var(--font-sans);
+  font-weight: 700;
   font-size: var(--fs-post-title);
-  line-height: 1.1;
-  letter-spacing: -0.02em;
+  line-height: 1.15;
+  letter-spacing: -0.01em;
   text-wrap: balance;
+}
+
+/* The blog's metadata (dates, bylines, the archive's month headings):
+ * small capitals in ink-soft. Below the 15px floor on purpose: capitals at
+ * 13px stand as tall as lowercase at 18px. Never an eyebrow over a heading. */
+@utility text-meta {
+  font-family: var(--font-sans);
+  font-weight: 500;
+  font-size: 0.8125rem;
+  line-height: 1.4;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+  color: var(--color-ink-soft);
 }
 
 /* Numerals only (the plan's step numbers): Funnel Display's last job. */

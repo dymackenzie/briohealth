@@ -8,16 +8,18 @@ export function Pagination({ page, totalPages, basePath }: { page: number; total
   const nearby = new Set([1, totalPages, page - 1, page, page + 1])
   const shown = [...nearby].filter((n) => n >= 1 && n <= totalPages).sort((a, b) => a - b)
 
-  const cell = 'flex h-11 min-w-11 items-center justify-center rounded-brand px-3 tabular-nums'
+  // Quiet, like the rest of the archive: no boxes, the current page filled sand.
+  const cell = 'flex h-11 min-w-11 items-center justify-center rounded-brand px-3 text-small tabular-nums'
+  const idle = 'text-ink-soft hover:text-ink'
 
   return (
-    <nav aria-label="Pagination" className="mt-14 flex flex-wrap items-center justify-center gap-2">
+    <nav aria-label="Pagination" className="mt-10 flex flex-wrap items-center justify-center gap-1">
       {page > 1 && (
         <Link
           href={href(page - 1)}
           rel="prev"
           aria-label="Previous page"
-          className={`${cell} border border-grey hover:border-ink`}
+          className={`${cell} ${idle}`}
         >
           <ArrowLeft size={18} aria-hidden />
         </Link>
@@ -32,7 +34,7 @@ export function Pagination({ page, totalPages, basePath }: { page: number; total
           <Link
             href={href(n)}
             aria-current={n === page ? 'page' : undefined}
-            className={`${cell} ${n === page ? 'bg-ink text-paper' : 'border border-grey hover:border-ink'}`}
+            className={`${cell} ${n === page ? 'bg-grey font-medium text-ink' : idle}`}
           >
             {n}
           </Link>
@@ -43,7 +45,7 @@ export function Pagination({ page, totalPages, basePath }: { page: number; total
           href={href(page + 1)}
           rel="next"
           aria-label="Next page"
-          className={`${cell} border border-grey hover:border-ink`}
+          className={`${cell} ${idle}`}
         >
           <ArrowRight size={18} aria-hidden />
         </Link>

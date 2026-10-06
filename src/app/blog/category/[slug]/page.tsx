@@ -3,7 +3,6 @@ import { notFound } from 'next/navigation'
 import { CategoryFilter } from '@/components/blog/CategoryFilter'
 import { Pagination } from '@/components/blog/Pagination'
 import { PostList } from '@/components/blog/PostList'
-import { PageHero } from '@/components/layout/PageHero'
 import { Button } from '@/components/ui/Button'
 import { buildMetadata, paged } from '@/lib/seo'
 import { getCategories, getCategory, getPosts, parsePage } from '@/lib/wp/queries'
@@ -31,8 +30,10 @@ export async function generateMetadata(props: {
 }
 
 /**
- * Like the index, it reads `?page=` and so renders per request. No
- * generateStaticParams: a page that reads searchParams can't be prerendered.
+ * The index's layout with the category's name as the heading and its
+ * description under it; the "All" tab leads back. Like the index, it reads
+ * `?page=` and so renders per request. No generateStaticParams: a page
+ * that reads searchParams can't be prerendered.
  */
 export default async function CategoryPage(props: {
   params: Promise<{ slug: string }>
@@ -48,29 +49,29 @@ export default async function CategoryPage(props: {
     categoryId: category.id,
   })
   if (page > 1 && posts.length === 0) notFound()
+  const lead = plainExcerpt(category.description ?? '', 200)
 
   return (
     <main id="main">
-      <PageHero
-        parent={{ label: 'All posts', href: '/blog' }}
-        title={decodeTitle(category.name)}
-        lead={plainExcerpt(category.description ?? '', 200) || undefined}
-      />
       <div className="container-x pb-[var(--section-y)]">
-        <CategoryFilter categories={categories} current={category.slug} />
-        {posts.length === 0 ? (
-          <div className="mt-10 border-t border-grey pt-10">
-            <p className="max-w-[40ch] text-lede">Nothing filed here yet.</p>
-            <Button href="/blog" variant="quiet" className="mt-6">
-              All posts
-            </Button>
-          </div>
-        ) : (
+        <div className="mx-auto max-w-[38rem] pt-10 lg:pt-14">
+          <h1 className="text-post-title">{decodeTitle(category.name)}</h1>
+          {lead && <p className="mt-3 text-ink-soft">{lead}</p>}
           <div className="mt-6">
-            <PostList posts={posts} />
+            <CategoryFilter categories={categories} current={category.slug} />
           </div>
-        )}
-        <Pagination page={page} totalPages={totalPages} basePath={`/blog/category/${category.slug}`} />
+          {posts.length === 0 ? (
+            <div className="mt-10 border-t border-grey pt-10">
+              <p className="max-w-[40ch] text-lede">Nothing filed here yet.</p>
+              <Button href="/blog" variant="quiet" className="mt-6">
+                All posts
+              </Button>
+            </div>
+          ) : (
+            <PostList posts={posts} />
+          )}
+          <Pagination page={page} totalPages={totalPages} basePath={`/blog/category/${category.slug}`} />
+        </div>
       </div>
     </main>
   )
