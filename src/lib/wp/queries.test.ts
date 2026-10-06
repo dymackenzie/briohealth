@@ -1,6 +1,6 @@
 import { describe, expect, it } from 'vitest'
-import { mergeSettings, parsePage } from './queries'
-import type { WPSettings } from './types'
+import { authorName, mergeSettings, parsePage } from './queries'
+import type { WPPost, WPSettings } from './types'
 import { site } from '@/lib/site'
 
 describe('parsePage', () => {
@@ -100,5 +100,22 @@ describe('mergeSettings', () => {
     )
     expect(partlyFalse.address).toEqual({ ...site.address, postal: 'V6X 0A1' })
     expect(partlyFalse.hours).toEqual(site.hours)
+  })
+})
+
+describe('authorName', () => {
+  const by = (slug: string, name: string) => ({ _embedded: { author: [{ id: 1, slug, name }] } }) as unknown as WPPost
+
+  it('credits the clinicians by name, without their letters', () => {
+    expect(authorName(by('drjeff', 'Dr. Jeffrey Lee, BSc ND RAc'))).toBe('Dr. Jeffrey Lee')
+    expect(authorName(by('dr-carin', 'Dr Carin Matsushita, BSc (Kin), ND, RAc'))).toBe('Dr. Carin Matsushita')
+    expect(authorName(by('drneetu', 'Dr. Neetu Dhiman, BSc ND'))).toBe('Dr. Neetu Dhiman')
+  })
+
+  it('reads every house account, and a post with no author, as the clinic', () => {
+    for (const [slug, name] of [['drjeff_u6rsc3fr', 'admin'], ['support', 'support'], ['brio-integrative', 'Brio Living'], ['brioblogging', 'Brio Integrative Health Centre']]) {
+      expect(authorName(by(slug, name))).toBe('Brio Health')
+    }
+    expect(authorName({} as WPPost)).toBe('Brio Health')
   })
 })

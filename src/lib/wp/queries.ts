@@ -132,8 +132,20 @@ export function postCategories(post: WPPost) {
     .filter((t) => t.taxonomy === 'category' && !HIDDEN_CATEGORIES.has(t.slug))
 }
 
+/**
+ * The clinicians, by WordPress user slug, as a byline reads. Every other
+ * account (admin, support, Brio Living, Brio Integrative Health Centre,
+ * Brio Health Clinic) is the clinic, not a person to credit.
+ */
+const CLINICIANS: Record<string, string> = {
+  drjeff: 'Dr. Jeffrey Lee',
+  'dr-carin': 'Dr. Carin Matsushita',
+  drneetu: 'Dr. Neetu Dhiman',
+}
+
 export function authorName(post: WPPost) {
-  return post._embedded?.author?.[0]?.name ?? 'Brio Health'
+  const slug = post._embedded?.author?.[0]?.slug
+  return (slug && CLINICIANS[slug]) || 'Brio Health'
 }
 
 /* Site settings */
