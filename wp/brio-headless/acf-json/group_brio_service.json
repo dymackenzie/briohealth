@@ -48,7 +48,7 @@
             "name": "video_loop",
             "aria-label": "",
             "type": "file",
-            "instructions": "An 8 to 15 second MP4, 1280x720, no sound, under 3 MB. It plays muted on the home page tile and behind the service page title. See wp/README.md, \"Service videos\".",
+            "instructions": "An 8 to 15 second MP4, horizontal 16:9 at 1280x720, no sound, under 3 MB. It plays muted beside the service list on the home page and Services (under the name on phones) and behind the service page title. See wp/README.md, \"Service videos\".",
             "required": 0,
             "conditional_logic": 0,
             "wrapper": {
@@ -68,7 +68,7 @@
             "name": "video_poster",
             "aria-label": "",
             "type": "image",
-            "instructions": "A frame from the loop, JPG, 1600 pixels wide. Shown until the loop plays, and instead of it for people who prefer less motion.",
+            "instructions": "A frame from the loop, horizontal 16:9, JPG, 1600 pixels wide. Shown until the loop plays, and instead of it for people who prefer less motion. Without it the loop is not shown in the service list.",
             "required": 0,
             "conditional_logic": 0,
             "wrapper": {
@@ -89,12 +89,12 @@
             "uploader": ""
         },
         {
-            "key": "field_service_video_youtube",
+            "key": "field_service_video_narrated",
             "label": "Narrated video",
-            "name": "video_youtube",
+            "name": "video_narrated",
             "aria-label": "",
-            "type": "url",
-            "instructions": "The YouTube link to the full video (unlisted is fine). Adds a \"Watch the video\" button.",
+            "type": "file",
+            "instructions": "Dr. Jeff's full video: an MP4, horizontal 16:9 at 1280x720, compressed for the web. Shown on the service page beside the text, as a player with sound that starts when the visitor presses play. See wp/README.md, \"Service videos\".",
             "required": 0,
             "conditional_logic": 0,
             "wrapper": {
@@ -102,42 +102,19 @@
                 "class": "",
                 "id": ""
             },
-            "default_value": "",
-            "placeholder": "https://youtu.be/..."
-        },
-        {
-            "key": "field_service_image",
-            "label": "Photo",
-            "name": "image",
-            "aria-label": "",
-            "type": "image",
-            "instructions": "Used on the service tiles (4:5, home page and Services) only, when there is no loop still. The service page title sits over the loop still, never this photo. The patient, never the doctor. Leave empty if the photo does not exist yet: the site shows a labelled placeholder instead of a broken image.",
-            "required": 0,
-            "conditional_logic": 0,
-            "wrapper": {
-                "width": "",
-                "class": "",
-                "id": ""
-            },
-            "return_format": "array",
+            "return_format": "url",
             "library": "all",
-            "preview_size": "medium",
-            "min_width": "",
-            "min_height": "",
             "min_size": "",
-            "max_width": "",
-            "max_height": "",
             "max_size": "",
-            "mime_types": "",
-            "uploader": ""
+            "mime_types": "mp4"
         },
         {
-            "key": "field_service_image_position",
-            "label": "Photo crop",
-            "name": "image_position",
+            "key": "field_service_video_captions",
+            "label": "Captions",
+            "name": "video_captions",
             "aria-label": "",
-            "type": "text",
-            "instructions": "Where the photo is cropped from, as two percentages: \"50% 50%\" is the centre, \"20% 50%\" keeps the left side. Shown at 4:5 on the service tiles.",
+            "type": "file",
+            "instructions": "What is said in the narrated video, as a WebVTT file (.vtt). Shown on the video, switched on. Leave empty and the video plays without captions.",
             "required": 0,
             "conditional_logic": 0,
             "wrapper": {
@@ -145,11 +122,11 @@
                 "class": "",
                 "id": ""
             },
-            "default_value": "50% 50%",
-            "maxlength": 20,
-            "placeholder": "",
-            "prepend": "",
-            "append": ""
+            "return_format": "url",
+            "library": "all",
+            "min_size": "",
+            "max_size": "",
+            "mime_types": "vtt"
         },
         {
             "key": "field_service_faq_heading",

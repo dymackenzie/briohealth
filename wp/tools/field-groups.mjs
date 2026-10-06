@@ -206,11 +206,10 @@ const sv = 'service'
 const service = group('brio_service', 'Service', [
   f.wysiwyg(sv, 'body', 'Page text', `The service page, top to bottom, up to the booking button. ${VERBATIM}`),
   f.wysiwyg(sv, 'closing', 'Closing block', `The "... at Brio Health" block shown after the FAQs. Leave empty if the page has none. ${VERBATIM}`),
-  f.file(sv, 'video_loop', 'Background loop', 'An 8 to 15 second MP4, 1280x720, no sound, under 3 MB. It plays muted on the home page tile and behind the service page title. See wp/README.md, "Service videos".', { maxSize: 3, mime: 'mp4' }),
-  f.image(sv, 'video_poster', 'Loop still', 'A frame from the loop, JPG, 1600 pixels wide. Shown until the loop plays, and instead of it for people who prefer less motion.'),
-  f.url(sv, 'video_youtube', 'Narrated video', 'The YouTube link to the full video (unlisted is fine). Adds a "Watch the video" button.', { placeholder: 'https://youtu.be/...' }),
-  f.image(sv, 'image', 'Photo', `Used on the service tiles (4:5, home page and Services) only, when there is no loop still. The service page title sits over the loop still, never this photo. The patient, never the doctor. ${PHOTO_NOTE}`),
-  f.text(sv, 'image_position', 'Photo crop', cropNote('4:5 on the service tiles'), { default: '50% 50%', maxlength: 20 }),
+  f.file(sv, 'video_loop', 'Background loop', 'An 8 to 15 second MP4, horizontal 16:9 at 1280x720, no sound, under 3 MB. It plays muted beside the service list on the home page and Services (under the name on phones) and behind the service page title. See wp/README.md, "Service videos".', { maxSize: 3, mime: 'mp4' }),
+  f.image(sv, 'video_poster', 'Loop still', 'A frame from the loop, horizontal 16:9, JPG, 1600 pixels wide. Shown until the loop plays, and instead of it for people who prefer less motion. Without it the loop is not shown in the service list.'),
+  f.file(sv, 'video_narrated', 'Narrated video', 'Dr. Jeff\'s full video: an MP4, horizontal 16:9 at 1280x720, compressed for the web. Shown on the service page beside the text, as a player with sound that starts when the visitor presses play. See wp/README.md, "Service videos".', { mime: 'mp4' }),
+  f.file(sv, 'video_captions', 'Captions', 'What is said in the narrated video, as a WebVTT file (.vtt). Shown on the video, switched on. Leave empty and the video plays without captions.', { mime: 'vtt' }),
   f.text(sv, 'faq_heading', 'FAQ heading', 'Above this service\'s questions, e.g. "FAQ’s". Under 40 characters.', { default: 'FAQ’s', maxlength: 40 }),
   f.relationship(sv, 'faqs', 'Questions for this service', 'Shown on this service\'s page, in this order.', 'faq'),
 ], location('post_type', 'service'), { hide: ['discussion', 'comments'] })

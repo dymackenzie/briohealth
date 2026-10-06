@@ -81,7 +81,7 @@ if (phpNames.length < 10) problems.push(`inc/options.php: only found ${phpNames.
 
 const readers = {
   group_brio_settings: [...new Set(phpNames), 'hours.days', 'hours.opens', 'hours.closes', 'hours.closed', 'social.label', 'social.url', 'announcement.enabled', 'announcement.text', 'announcement.url'],
-  group_brio_service: ['body', 'closing', 'video_loop', 'video_poster', 'video_youtube', 'image', 'image_position', 'faq_heading', 'faqs'],
+  group_brio_service: ['body', 'closing', 'video_loop', 'video_poster', 'video_narrated', 'video_captions', 'faq_heading', 'faqs'],
   group_brio_testimonial: ['quote', 'name', 'service'],
   group_brio_faq: ['question', 'answer', 'faq_group'],
 }
@@ -102,6 +102,10 @@ const days = byPath.group_brio_settings?.['hours.days']
 if (days && (days.type !== 'checkbox' || days.return_format !== 'value')) problems.push('settings hours.days must be a checkbox returning values')
 const loop = byPath.group_brio_service?.video_loop
 if (loop && (loop.type !== 'file' || loop.return_format !== 'url' || loop.mime_types !== 'mp4')) problems.push('service video_loop must be a file field returning a url, mp4 only')
+const narrated = byPath.group_brio_service?.video_narrated
+if (narrated && (narrated.type !== 'file' || narrated.return_format !== 'url' || narrated.mime_types !== 'mp4')) problems.push('service video_narrated must be a file field returning a url, mp4 only')
+const captions = byPath.group_brio_service?.video_captions
+if (captions && (captions.type !== 'file' || captions.return_format !== 'url' || captions.mime_types !== 'vtt')) problems.push('service video_captions must be a file field returning a url, vtt only')
 const faqGroup = byPath.group_brio_faq?.faq_group
 if (faqGroup && Object.keys(faqGroup.choices).join() !== 'booking,naturopathic,acupuncture,iv-therapy') problems.push('faq faq_group must offer booking, naturopathic, acupuncture, iv-therapy (FaqGroup)')
 for (const [key, fields] of Object.entries(byPath)) for (const [path, field] of Object.entries(fields)) {

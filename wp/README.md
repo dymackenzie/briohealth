@@ -130,14 +130,16 @@ Steps 2 to 11 are reversible. The only one-way step is the DNS change in the
 
 ## Service videos
 
-Each service has three fields: a background loop, its still, and the
-narrated video. Dr. Jeff narrates the full video; the loop is what plays
-silently on the home page tiles (on hover, or as they scroll into view on
-phones) and behind the service page title.
+Each service has four fields: a background loop, its still, the narrated
+video and its captions. All of it is horizontal, 16:9. Dr. Jeff narrates the full
+video; the loop is what plays silently in the panel beside the service
+list on the home page and Services (on hover or keyboard focus; on phones
+and tablets, under the service's name once its preview button is pressed)
+and behind the service page title.
 
-**Loop** (`Background loop`): 8 to 15 seconds, 1280x720, H.264 MP4, no
-audio track, under about 3 MB. From the full video, in HandBrake or
-ffmpeg:
+**Loop** (`Background loop`): 8 to 15 seconds, horizontal 16:9 at
+1280x720, H.264 MP4, no audio track, under about 3 MB. From the full
+video, in HandBrake or ffmpeg:
 
     ffmpeg -ss 00:00:12 -t 10 -i full.mp4 -an -vf scale=1280:-2 -c:v libx264 -crf 24 -preset slow -movflags +faststart loop-naturopathic.mp4
 
@@ -145,16 +147,35 @@ Upload it to the media library (Media, Add New; the install's upload limit
 must be at least 3 MB, which Plesk sets under PHP Settings), then pick it
 in the field.
 
-**Still** (`Loop still`): one frame from the loop, JPG, 1600 pixels wide:
+**Still** (`Loop still`): one frame from the loop, 16:9, JPG, 1600 pixels
+wide. The service list only shows the loop when its still is set:
 
     ffmpeg -ss 00:00:02 -i loop-naturopathic.mp4 -frames:v 1 -vf scale=1600:-2 -q:v 3 still-naturopathic.jpg
 
 It shows until the loop plays, on devices that cannot play it, and for
 anyone who prefers less motion.
 
-**Narrated video** (`Narrated video`): upload the full video to YouTube
-(unlisted is fine) and paste its link. The site shows "Watch the video"
-only when this is filled in.
+**Narrated video** (`Narrated video`): the full video, served from the
+media library and shown on the service page beside the text as a player
+with sound, under the loop's still until the visitor presses play. Every
+view comes off this host, so compress it first. In HandBrake: preset Fast
+1080p30, then Web Optimized on, 1280x720, H.264, constant framerate same
+as source, RF 22, encoder preset Slow, AAC stereo 128 kbps, extra audio
+tracks removed. Or:
+
+    ffmpeg -i full.mp4 -vf scale=1280:-2 -c:v libx264 -crf 22 -preset slow -c:a aac -b:a 128k -ac 2 -movflags +faststart narrated-naturopathic.mp4
+
+A few minutes of talking head comes out around 30 to 50 MB. Media, Add New
+shows the install's upload limit; if the file is bigger, raise
+`upload_max_filesize` and `post_max_size` under Plesk's PHP Settings.
+
+**Captions** (`Captions`): what is said in the narrated video, as a WebVTT
+file (`.vtt`). The site shows them by default. Write
+or correct them by hand, or export them from a transcription tool (YouTube
+Studio, Descript, Premiere) as WebVTT, and check names and medical terms.
+WordPress accepts `.vtt` uploads; confirm it on staging. The site loads the
+file through its own `/api/captions/` route, because this host sends no
+CORS headers and a browser won't load captions across domains without them.
 
 ## What the editor sees afterwards
 
