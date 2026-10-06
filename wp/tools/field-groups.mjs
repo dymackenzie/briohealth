@@ -258,10 +258,8 @@ const heroFields = (g) => [
 const about = pageGroup('brio_about', 'About page', 'template-about.php', [
   ...heroFields('about'),
   f.wysiwyg('about', 'body', 'Story', `The pull quote and the paragraphs. ${VERBATIM}`),
-  f.image('about', 'portrait', 'Portrait', `Dr. Lee. ${PHOTO_NOTE}`),
-  f.text('about', 'portrait_position', 'Portrait crop', cropNote('4:5'), { default: '50% 30%', maxlength: 20 }),
-  f.image('about', 'photo_clinic', 'Second photo', `Dr. Lee explaining a treatment. ${PHOTO_NOTE}`),
-  f.image('about', 'photo_community', 'Third photo', `Dr. Lee in the community. ${PHOTO_NOTE}`),
+  f.image('about', 'portrait', 'Portrait', `Dr. Lee, beside the story. A tall 2:3 photo, shown whole. ${PHOTO_NOTE}`),
+  f.text('about', 'portrait_position', 'Portrait crop', cropNote('2:3, so a 2:3 photo is not cropped at all'), { default: '50% 50%', maxlength: 20 }),
 ])
 
 const contact = pageGroup('brio_contact', 'Contact page', 'template-contact.php', [

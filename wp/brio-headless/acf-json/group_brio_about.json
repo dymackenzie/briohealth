@@ -68,7 +68,7 @@
             "name": "portrait",
             "aria-label": "",
             "type": "image",
-            "instructions": "Dr. Lee. Leave empty if the photo does not exist yet: the site shows a labelled placeholder instead of a broken image.",
+            "instructions": "Dr. Lee, beside the story. A tall 2:3 photo, shown whole. Leave empty if the photo does not exist yet: the site shows a labelled placeholder instead of a broken image.",
             "required": 0,
             "conditional_logic": 0,
             "wrapper": {
@@ -94,7 +94,7 @@
             "name": "portrait_position",
             "aria-label": "",
             "type": "text",
-            "instructions": "Where the photo is cropped from, as two percentages: \"50% 50%\" is the centre, \"20% 50%\" keeps the left side. Shown at 4:5.",
+            "instructions": "Where the photo is cropped from, as two percentages: \"50% 50%\" is the centre, \"20% 50%\" keeps the left side. Shown at 2:3, so a 2:3 photo is not cropped at all.",
             "required": 0,
             "conditional_logic": 0,
             "wrapper": {
@@ -102,63 +102,11 @@
                 "class": "",
                 "id": ""
             },
-            "default_value": "50% 30%",
+            "default_value": "50% 50%",
             "maxlength": 20,
             "placeholder": "",
             "prepend": "",
             "append": ""
-        },
-        {
-            "key": "field_about_photo_clinic",
-            "label": "Second photo",
-            "name": "photo_clinic",
-            "aria-label": "",
-            "type": "image",
-            "instructions": "Dr. Lee explaining a treatment. Leave empty if the photo does not exist yet: the site shows a labelled placeholder instead of a broken image.",
-            "required": 0,
-            "conditional_logic": 0,
-            "wrapper": {
-                "width": "",
-                "class": "",
-                "id": ""
-            },
-            "return_format": "array",
-            "library": "all",
-            "preview_size": "medium",
-            "min_width": "",
-            "min_height": "",
-            "min_size": "",
-            "max_width": "",
-            "max_height": "",
-            "max_size": "",
-            "mime_types": "",
-            "uploader": ""
-        },
-        {
-            "key": "field_about_photo_community",
-            "label": "Third photo",
-            "name": "photo_community",
-            "aria-label": "",
-            "type": "image",
-            "instructions": "Dr. Lee in the community. Leave empty if the photo does not exist yet: the site shows a labelled placeholder instead of a broken image.",
-            "required": 0,
-            "conditional_logic": 0,
-            "wrapper": {
-                "width": "",
-                "class": "",
-                "id": ""
-            },
-            "return_format": "array",
-            "library": "all",
-            "preview_size": "medium",
-            "min_width": "",
-            "min_height": "",
-            "min_size": "",
-            "max_width": "",
-            "max_height": "",
-            "max_size": "",
-            "mime_types": "",
-            "uploader": ""
         }
     ],
     "location": [

@@ -5,7 +5,7 @@ import { slots } from './photos'
 export const pages = {
   // The live About page (about-2, 5907): the first, longer block verbatim.
   // Title and lead are its h2/h3; the body is the pull quote and the five
-  // paragraphs. The photos are the clinic's own (slots.about).
+  // paragraphs. The photo is the clinic's own (slots.about).
   about: {
     title: 'Dr. Jeffrey Lee, N.D., R.Ac.',
     lead: 'Naturopathic Physician & Registered Acupuncturist',
