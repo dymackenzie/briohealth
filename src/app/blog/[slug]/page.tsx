@@ -1,14 +1,13 @@
 import Image from 'next/image'
-import Link from 'next/link'
 import { notFound } from 'next/navigation'
 
 import { HideBrokenImages } from '@/components/blog/HideBrokenImages'
-import { formatDate } from '@/components/blog/PostList'
 import { Button } from '@/components/ui/Button'
+import { shortDate } from '@/lib/dates'
 import { articleJsonLd, breadcrumbJsonLd, JsonLd } from '@/lib/jsonld'
 import { buildMetadata } from '@/lib/seo'
 import { absoluteUrl, BOOKING_PATH } from '@/lib/site'
-import { authorName, featuredImage, getPost, getSiteSettings, postCategories } from '@/lib/wp/queries'
+import { authorName, featuredImage, getPost, getSiteSettings } from '@/lib/wp/queries'
 import { decodeTitle, postSummary, renderContent, showsImage } from '@/lib/wp/renderContent'
 
 export const revalidate = 3600
@@ -67,9 +66,9 @@ export default async function PostPage(props: { params: Promise<{ slug: string }
   // Still the share image and the JSON-LD image either way.
   const lead = image && !showsImage(post.content.rendered, image.url) ? image : null
   const imageWidth = imageBox(lead?.width, lead?.height)
-  const category = postCategories(post)[0]
   const title = decodeTitle(post.title.rendered)
   const url = absoluteUrl(`/blog/${post.slug}`)
+  const author = authorName(post)
 
   return (
     <main id="main">
@@ -81,7 +80,7 @@ export default async function PostPage(props: { params: Promise<{ slug: string }
           image: image?.url,
           published: post.date,
           modified: post.modified,
-          author: authorName(post),
+          author,
         })}
       />
       <JsonLd
@@ -94,25 +93,12 @@ export default async function PostPage(props: { params: Promise<{ slug: string }
       <article>
         <div className="container-x">
           <div className="mx-auto max-w-[68ch]">
-            <header className="pt-10 lg:pt-12">
-              <p className="text-small text-ink-soft">
-                <Link href="/blog" className="link-quiet">
-                  Blog
-                </Link>
-                {category && (
-                  <>
-                    <span className="mx-2" aria-hidden>
-                      /
-                    </span>
-                    <Link href={`/blog/category/${category.slug}`} className="link-quiet">
-                      {decodeTitle(category.name)}
-                    </Link>
-                  </>
-                )}
-              </p>
-              <h1 className="text-post-title mt-5">{title}</h1>
-              <p className="mt-5 text-small text-ink-soft">
-                <time dateTime={post.date}>{formatDate(post.date)}</time>
+            {/* Substack's header: the title, then the byline (author over date) closed by a 1px ink rule. */}
+            <header className="border-b border-ink pt-10 pb-5 lg:pt-14">
+              <h1 className="text-post-title">{title}</h1>
+              <p className="text-meta mt-5 text-ink">{author}</p>
+              <p className="text-meta mt-1">
+                <time dateTime={post.date}>{shortDate(post.date, true)}</time>
               </p>
             </header>
 
@@ -149,7 +135,7 @@ export default async function PostPage(props: { params: Promise<{ slug: string }
                 {renderContent(post.content.rendered, { title })}
               </HideBrokenImages>
 
-              <aside className="mt-14 border-t-2 border-teal pt-6">
+              <aside className="mt-14 border-t border-ink pt-8">
                 <Button href={BOOKING_PATH}>{settings.ctaLabel}</Button>
               </aside>
             </div>
