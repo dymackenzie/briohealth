@@ -34,7 +34,7 @@ export default async function NewPatientPage() {
       <div className="container-x pb-[var(--section-y)]">
         <div className="max-w-[68ch]">
           <Reveal>
-            <video controls preload="metadata" className="w-full rounded-brand bg-grey" aria-label="Welcome to Brio Health">
+            <video controls preload="metadata" width={1280} height={720} className="w-full rounded-brand bg-grey" aria-label="Welcome to Brio Health">
               <source src={page.videoUrl} type="video/mp4" />
             </video>
           </Reveal>

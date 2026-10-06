@@ -23,7 +23,7 @@ export const pages = {
   // screening the live form does before it hands over to Jane.
   newPatient: {
     title: 'Welcome to Brio Health',
-    videoUrl: `${WP_UPLOADS_URL}/2024/02/BrioBookNowVideo.mp4`,
+    videoUrl: `${WP_UPLOADS_URL}/2026/10/new-patient-welcome.mp4`,
     intro: `
 <p>Whether you are booking a Naturopathic Medicine, Acupuncture or I.V. Therapy visit, all patients will begin with an <strong>assessment consultation</strong> with Dr. Lee.</p>
 <p>The assessment consultation will be done as an <strong>online virtual visit</strong> followed by an <strong>in person</strong> visit.</p>

@@ -7,7 +7,12 @@ describe('services carry the live pages verbatim', () => {
     expect(services.map((s) => s.slug)).toEqual(['naturopathic', 'acupuncture', 'iv-therapy'])
     for (const s of services) {
       expect(s.body.trim().startsWith('<')).toBe(true)
-      expect(s.video).toEqual({ loop: null, poster: null, narrated: null, captions: null })
+      const files = `/2026/10/${s.slug}-`
+      expect(s.video.loop?.endsWith(`${files}loop.mp4`)).toBe(true)
+      expect(s.video.poster?.src.endsWith(`${files}still.jpg`)).toBe(true)
+      expect(s.video.poster?.alt).toBeTruthy()
+      expect(s.video.narrated?.endsWith(`${files}narrated.mp4`)).toBe(true)
+      expect(s.video.captions).toBeNull()
     }
   })
 

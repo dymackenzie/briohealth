@@ -1,3 +1,5 @@
+import { WP_UPLOADS_URL } from '@/lib/wp/client'
+
 import type { Photo } from './photos'
 
 /**
@@ -28,7 +30,22 @@ export interface ServiceVideo {
   captions: string | null
 }
 
-const NO_VIDEO: ServiceVideo = { loop: null, poster: null, narrated: null, captions: null }
+/**
+ * The clinic's own footage (2026-10-06), in the media library as
+ * `<slug>-loop.mp4`, `<slug>-still.jpg` (1280x720, the original upload, not
+ * WordPress's smaller `-scaled` copy) and `<slug>-narrated.mp4`. The still is
+ * one patient-side frame of the loop; `position` keeps the patient in the
+ * hero's 4/5 crop on phones. No captions yet.
+ */
+function footage(slug: string, alt: string, position: string): ServiceVideo {
+  const file = (name: string) => `${WP_UPLOADS_URL}/2026/10/${slug}-${name}`
+  return {
+    loop: file('loop.mp4'),
+    poster: { src: file('still.jpg'), alt, position },
+    narrated: file('narrated.mp4'),
+    captions: null,
+  }
+}
 
 const naturopathicBody = `
 <p><strong>Do you wake up feeling refreshed and ready to start your day, or do you lack the energy to complete your daily tasks? Or even worse, are you totally exhausted trying to balance work and family responsibilities?</strong></p>
@@ -205,7 +222,7 @@ export const services: ServiceContent[] = [
     body: naturopathicBody,
     closing: naturopathicClosing,
     faqHeading: 'FAQ’s',
-    video: NO_VIDEO,
+    video: footage('naturopathic', 'A patient listening during a naturopathic consultation', '30% 50%'),
   },
   {
     slug: 'acupuncture',
@@ -215,7 +232,7 @@ export const services: ServiceContent[] = [
     body: acupunctureBody,
     closing: acupunctureClosing,
     faqHeading: 'FAQ’s',
-    video: NO_VIDEO,
+    video: footage('acupuncture', 'Hands at work on the back of a patient’s neck during acupuncture', '45% 50%'),
   },
   {
     slug: 'iv-therapy',
@@ -225,7 +242,7 @@ export const services: ServiceContent[] = [
     body: ivBody,
     closing: '',
     faqHeading: 'FAQ’s',
-    video: NO_VIDEO,
+    video: footage('iv-therapy', 'Gloved hands setting an I.V. line in a patient’s forearm', '60% 50%'),
   },
 ]
 
