@@ -22,11 +22,13 @@ export interface ServiceVideo {
    * shown.
    */
   poster: Photo | null
-  /** The narrated video on YouTube; null hides "Watch the video". */
-  youtube: string | null
+  /** The narrated MP4 in the media library, played beside the page text; null leaves it out. */
+  narrated: string | null
+  /** Its captions, a .vtt in the media library; null plays it without. */
+  captions: string | null
 }
 
-const NO_VIDEO: ServiceVideo = { loop: null, poster: null, youtube: null }
+const NO_VIDEO: ServiceVideo = { loop: null, poster: null, narrated: null, captions: null }
 
 const naturopathicBody = `
 <p><strong>Do you wake up feeling refreshed and ready to start your day, or do you lack the energy to complete your daily tasks? Or even worse, are you totally exhausted trying to balance work and family responsibilities?</strong></p>

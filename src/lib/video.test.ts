@@ -1,5 +1,5 @@
 import { describe, expect, it } from 'vitest'
-import { shouldPlayLoop, youtubeEmbedUrl, type LoopDecision } from './video'
+import { shouldPlayLoop, type LoopDecision } from './video'
 
 const base: LoopDecision = {
   mode: 'row',
@@ -37,26 +37,5 @@ describe('shouldPlayLoop', () => {
     expect(shouldPlayLoop({ ...on, mode: 'hero', reducedMotion: true })).toBe(false)
     expect(shouldPlayLoop({ ...on, saveData: true })).toBe(false)
     expect(shouldPlayLoop({ ...on, mode: 'hero', saveData: true })).toBe(false)
-  })
-})
-
-describe('youtubeEmbedUrl', () => {
-  const embed = 'https://www.youtube-nocookie.com/embed/mYhjmq7-1q8?autoplay=1&cc_load_policy=1&rel=0'
-
-  it('reads watch, short and embed forms', () => {
-    expect(youtubeEmbedUrl('https://www.youtube.com/watch?v=mYhjmq7-1q8&t=10')).toBe(embed)
-    expect(youtubeEmbedUrl('https://youtu.be/mYhjmq7-1q8')).toBe(embed)
-    expect(youtubeEmbedUrl('https://www.youtube.com/embed/mYhjmq7-1q8')).toBe(embed)
-    expect(youtubeEmbedUrl('https://youtube.com/shorts/mYhjmq7-1q8?feature=share')).toBe(embed)
-  })
-
-  it('returns null for anything that is not a YouTube video', () => {
-    expect(youtubeEmbedUrl('https://vimeo.com/123')).toBeNull()
-    expect(youtubeEmbedUrl('https://evil.example/watch?v=mYhjmq7-1q8')).toBeNull()
-    expect(youtubeEmbedUrl('https://www.youtube.com/user/brio')).toBeNull()
-    expect(youtubeEmbedUrl('not a url')).toBeNull()
-    expect(youtubeEmbedUrl('')).toBeNull()
-    expect(youtubeEmbedUrl(null)).toBeNull()
-    expect(youtubeEmbedUrl(undefined)).toBeNull()
   })
 })

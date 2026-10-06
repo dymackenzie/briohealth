@@ -1,8 +1,8 @@
-import { Bud } from '@/components/brand/Bud'
 import { VideoHero } from '@/components/sections/VideoHero'
 import { Accordion } from '@/components/ui/Accordion'
 import { Button } from '@/components/ui/Button'
 import { Reveal } from '@/components/ui/Reveal'
+import { NarratedVideo } from '@/components/video/NarratedVideo'
 import { faqsFor } from '@/lib/content/faqs'
 import { getService, services } from '@/lib/content/services'
 import { breadcrumbJsonLd, JsonLd } from '@/lib/jsonld'
@@ -42,11 +42,12 @@ export async function generateMetadata(props: { params: Promise<{ slug: string }
  * body, the booking button, the FAQs under the live page's heading
  * ("FAQ's", `faqHeading`) as an accordion, the closing block where the
  * live page has one, and the booking button again where the live page's
- * closing ends in BOOK NOW. The page's one bud (spec 3.7) sits in the open
- * space right of the body's opening, from lg: below that the 68ch column
- * fills the width and the bud would land on the text. The hero's still is
- * the video poster only: the 4/5 shoot crops in `image` show Dr. Lee at
- * full width (spec 7.5), so without a poster the hero is the teal field.
+ * closing ends in BOOK NOW. The narrated video sits in columns 8-12 beside
+ * the text from lg, sticky, so it stays in reach while the visitor reads;
+ * below lg it comes first, at the text's width. It took the open space the
+ * page's bud used, so service pages have no bud. The hero's still is the
+ * video poster only: the 4/5 shoot crops in `image` show Dr. Lee at full
+ * width (spec 7.5), so without a poster the hero is the teal field.
  */
 export default async function ServicePage(props: { params: Promise<{ slug: string }> }) {
   const service = getService((await props.params).slug)!
@@ -66,13 +67,22 @@ export default async function ServicePage(props: { params: Promise<{ slug: strin
         title={service.title}
         still={service.video.poster}
         loop={service.video.loop}
-        youtube={service.video.youtube}
         ctaLabel={settings.ctaLabel}
       />
 
-      <div className="container-x section-y relative overflow-x-clip">
-        <Bud size="medium" colour="teal" hideBelow="lg" className="top-[calc(var(--section-y)+4rem)] right-[9%]" />
-        <div className="max-w-[68ch]">
+      <div className="container-x section-y grid-12 gap-y-10">
+        {service.video.narrated && (
+          <div className="col-span-12 max-w-[68ch] lg:col-span-5 lg:col-start-8 lg:row-start-1 lg:max-w-none">
+            <NarratedVideo
+              src={service.video.narrated}
+              captions={service.video.captions}
+              poster={service.video.poster}
+              label={`${service.title} video`}
+              className="lg:sticky lg:top-10"
+            />
+          </div>
+        )}
+        <div className="col-span-12 max-w-[68ch] lg:col-span-7 lg:row-start-1">
           {/* Not a Reveal: the body opens under the hero, and on a phone its top can sit below Reveal's line
               (threshold 0, 10% above the viewport's bottom), so the page's main text would wait for a scroll. */}
           <div className="prose-post prose-page">{renderContent(service.body)}</div>

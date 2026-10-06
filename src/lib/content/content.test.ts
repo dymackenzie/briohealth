@@ -7,7 +7,7 @@ describe('services carry the live pages verbatim', () => {
     expect(services.map((s) => s.slug)).toEqual(['naturopathic', 'acupuncture', 'iv-therapy'])
     for (const s of services) {
       expect(s.body.trim().startsWith('<')).toBe(true)
-      expect(s.video).toEqual({ loop: null, poster: null, youtube: null })
+      expect(s.video).toEqual({ loop: null, poster: null, narrated: null, captions: null })
     }
   })
 

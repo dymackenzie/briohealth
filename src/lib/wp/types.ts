@@ -86,9 +86,9 @@ export interface WPService extends WPContentBase {
     /** File field, return format url. */
     video_loop?: string | false | null
     video_poster?: WPImageField | false | null
-    video_youtube?: string | false | null
-    image?: WPImageField | false | null
-    image_position?: string
+    /** File fields, return format url: the narrated MP4 and its .vtt. */
+    video_narrated?: string | false | null
+    video_captions?: string | false | null
     faq_heading?: string
     faqs?: number[] | false
   }

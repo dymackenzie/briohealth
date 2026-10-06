@@ -25,29 +25,3 @@ export function shouldPlayLoop(d: LoopDecision): boolean {
   if (d.mode === 'hero') return d.inView
   return d.open && d.inView
 }
-
-const YOUTUBE_HOSTS = new Set(['www.youtube.com', 'youtube.com', 'm.youtube.com', 'youtu.be', 'www.youtube-nocookie.com'])
-const ID = /^[\w-]{11}$/
-
-/** The privacy-enhanced embed for a YouTube link in any of its usual forms, or null. */
-export function youtubeEmbedUrl(url: string | null | undefined): string | null {
-  if (!url?.trim()) return null
-  let parsed: URL
-  try {
-    parsed = new URL(url.trim())
-  } catch {
-    return null
-  }
-  if (!YOUTUBE_HOSTS.has(parsed.hostname)) return null
-
-  const segments = parsed.pathname.split('/').filter(Boolean)
-  const candidate =
-    parsed.hostname === 'youtu.be'
-      ? segments[0]
-      : segments[0] === 'embed' || segments[0] === 'shorts'
-        ? segments[1]
-        : parsed.searchParams.get('v')
-  if (!candidate || !ID.test(candidate)) return null
-
-  return `https://www.youtube-nocookie.com/embed/${candidate}?autoplay=1&cc_load_policy=1&rel=0`
-}
