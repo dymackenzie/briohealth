@@ -1,7 +1,7 @@
 import { Explain } from '@/components/sections/Explain'
 import { HomeHero } from '@/components/sections/HomeHero'
 import { Plan } from '@/components/sections/Plan'
-import { ServiceTiles } from '@/components/sections/ServiceTiles'
+import { ServiceList } from '@/components/sections/ServiceList'
 import { Stakes } from '@/components/sections/Stakes'
 import { Trust } from '@/components/sections/Trust'
 import { home } from '@/lib/content/home'
@@ -20,7 +20,7 @@ export const metadata = buildMetadata({
   path: '/',
 })
 
-/** Wireframe order: hero, stakes (with the service tiles), trust, plan, explanatory paragraph; the footer is the junk drawer. */
+/** Wireframe order: hero, stakes (with the service list), trust, plan, explanatory paragraph; the footer is the junk drawer. */
 export default async function HomePage() {
   const settings = await getSiteSettings()
 
@@ -29,7 +29,7 @@ export default async function HomePage() {
       <JsonLd data={clinicJsonLd(settings)} />
       <HomeHero content={home.hero} settings={settings} />
       <Stakes content={home.stakes}>
-        <ServiceTiles order={home.services.order} />
+        <ServiceList order={home.services.order} />
       </Stakes>
       <Trust content={home.trust} items={testimonials} />
       <Plan content={home.plan} settings={settings} />

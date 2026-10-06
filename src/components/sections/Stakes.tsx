@@ -9,7 +9,7 @@ import type { ReactNode } from 'react'
  * 20px, teal-deep) as the section's real h2, no eyebrow; the four
  * questions as the dominant element in large serif, one per line; the
  * two paragraphs in columns 7-12 below them; the large teal bud in the
- * open space right of the questions. `children` is the service tiles,
+ * open space right of the questions. `children` is the service list,
  * which the spec places after the paragraphs inside this section.
  */
 export function Stakes({ content, children }: { content: HomeContent['stakes']; children?: ReactNode }) {

@@ -173,7 +173,7 @@ const homeGroups = [
     ].map(unprefix('paragraphs_')), { max: 3, button: 'Add paragraph' }),
   ], front, { order: 1 }),
   group('brio_home_services', 'Home: services', [
-    f.relationship(h('services'), 'services', 'Services, in order', 'Drag to reorder. Three tiles is the layout.', 'service', { max: 3 }),
+    f.relationship(h('services'), 'services', 'Services, in order', 'Drag to reorder. The layout is three rows.', 'service', { max: 3 }),
   ], front, { order: 2 }),
   group('brio_home_trust', 'Home: trust', [
     f.repeater(h('trust'), 'stats', 'Three statements', 'Short lines with an icon, e.g. "Serving Richmond Since 2006".', [

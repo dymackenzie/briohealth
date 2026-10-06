@@ -11,6 +11,14 @@ describe('services carry the live pages verbatim', () => {
     }
   })
 
+  it('briefs each loop for the placeholder, horizontal, in UI chrome without dashes, and has no photo slot', () => {
+    for (const s of services) {
+      expect(s.loopBrief).toMatch(/^A short horizontal loop of /)
+      expect(s.loopBrief).not.toMatch(/[–—]/)
+      expect(s).not.toHaveProperty('image')
+    }
+  })
+
   it('carries no fee or summary fields any more', () => {
     for (const s of services) {
       expect(s).not.toHaveProperty('fees')

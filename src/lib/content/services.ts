@@ -1,4 +1,4 @@
-import { slots, type Photo, type PhotoSlot } from './photos'
+import type { Photo } from './photos'
 
 /**
  * The service page bodies are the live WordPress pages (naturopathic 6066,
@@ -13,11 +13,13 @@ import { slots, type Photo, type PhotoSlot } from './photos'
  */
 
 export interface ServiceVideo {
-  /** MP4 loop, 8-15s, muted; null until the client supplies it. */
+  /** Horizontal 16:9 MP4 loop, 8-15s, muted; null until the client supplies it. */
   loop: string | null
   /**
-   * Still for the loop and the service page hero; null makes the hero the
-   * teal field, and the tiles fall back to `image.photo`.
+   * A 16:9 frame of the loop: its still in the service rows and on the
+   * service page hero. Null makes the hero the teal field and the rows show
+   * the labelled placeholder (`loopBrief`); a loop without a still is not
+   * shown.
    */
   poster: Photo | null
   /** The narrated video on YouTube; null hides "Watch the video". */
@@ -165,7 +167,7 @@ const ivBody = `
 /**
  * Three services, the ones the clinic advertises. Each is its live
  * WordPress page verbatim (`body`, `closing`) plus the video fields and the
- * photo slot. Shaped like the `service` SCF field group so it becomes the
+ * loop's brief. Shaped like the `service` SCF field group so it becomes the
  * fallback. Fees are not a field: they appear only inside the live cost FAQ
  * answers (faqs.ts).
  */
@@ -177,8 +179,12 @@ export interface ServiceContent {
   title: string
   /** Lower-case, for running text: "more about acupuncture". */
   short: string
-  /** The tiles' 4/5 still when there is no poster; never the page hero. */
-  image: PhotoSlot
+  /**
+   * The brief for the loop, shown as the service rows' placeholder until
+   * the client supplies the video. Never a shoot crop instead: the 4/5
+   * crops show Dr. Lee once they are cut wide.
+   */
+  loopBrief: string
   /** The live page, verbatim, as HTML for renderContent. */
   body: string
   /** The live page's closing "X at Brio Health" block; empty when it has none. */
@@ -193,7 +199,7 @@ export const services: ServiceContent[] = [
     slug: 'naturopathic',
     title: 'Naturopathic Medicine',
     short: 'naturopathic medicine',
-    image: slots.services.naturopathic,
+    loopBrief: 'A short horizontal loop of a naturopathic visit: the patient listening, at ease',
     body: naturopathicBody,
     closing: naturopathicClosing,
     faqHeading: 'FAQ’s',
@@ -203,7 +209,7 @@ export const services: ServiceContent[] = [
     slug: 'acupuncture',
     title: 'Acupuncture',
     short: 'acupuncture',
-    image: slots.services.acupuncture,
+    loopBrief: 'A short horizontal loop of acupuncture: needles in place on a forearm, calm room, no faces',
     body: acupunctureBody,
     closing: acupunctureClosing,
     faqHeading: 'FAQ’s',
@@ -213,7 +219,7 @@ export const services: ServiceContent[] = [
     slug: 'iv-therapy',
     title: 'I.V. Therapy',
     short: 'I.V. therapy',
-    image: slots.services['iv-therapy'],
+    loopBrief: 'A short horizontal loop of I.V. therapy: the patient settled in the chair, line in, resting. No clinician in frame',
     body: ivBody,
     closing: '',
     faqHeading: 'FAQ’s',

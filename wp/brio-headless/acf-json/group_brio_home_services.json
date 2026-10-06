@@ -8,7 +8,7 @@
             "name": "services",
             "aria-label": "",
             "type": "relationship",
-            "instructions": "Drag to reorder. Three tiles is the layout.",
+            "instructions": "Drag to reorder. The layout is three rows.",
             "required": 0,
             "conditional_logic": 0,
             "wrapper": {
