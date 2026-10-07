@@ -138,7 +138,9 @@ if (captions && (captions.type !== 'file' || captions.return_format !== 'url' ||
 const faqGroup = byPath.group_brio_faq?.faq_group
 if (faqGroup && Object.keys(faqGroup.choices).join() !== 'booking,naturopathic,acupuncture,iv-therapy') problems.push('faq faq_group must offer booking, naturopathic, acupuncture, iv-therapy (FaqGroup)')
 for (const [key, fields] of Object.entries(byPath)) for (const [path, field] of Object.entries(fields)) {
-  if (/(^|[._/])(fee|fees|price|amount)([._/]|$)/.test(path)) problems.push(`${key}: ${path} looks like a fee field; fees live only in the FAQ answers`)
+  // Pickleball lesson prices are the live page's, not clinic fees.
+  const lessonPrice = key === 'group_brio_pickleball' && path === 'offerings.price'
+  if (!lessonPrice && /(^|[._/])(fee|fees|price|amount)([._/]|$)/.test(path)) problems.push(`${key}: ${path} looks like a fee field; fees live only in the FAQ answers`)
   if (field.type === 'wysiwyg' && field.media_upload !== 0) problems.push(`${key}: ${path} must not allow media uploads; media go in their own fields`)
 }
 

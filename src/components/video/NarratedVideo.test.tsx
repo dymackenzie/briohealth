@@ -10,12 +10,16 @@ const src = `${WP_UPLOADS_URL}/2026/10/acupuncture-narrated.mp4`
 const poster: Photo = { src: `${WP_UPLOADS_URL}/2026/10/acupuncture-still.jpg`, alt: 'Hands at work', position: '50% 50%' }
 
 describe('NarratedVideo', () => {
-  it('is a plain player that loads nothing until played, behind the still, with its box reserved', () => {
+  // The server render is also all a visitor without JavaScript gets; muting and playing happen in the browser
+  // (narratedAutoplay in src/lib/video.ts), so a player started by hand without JavaScript has its sound.
+  it('renders a plain player that loads nothing until played, behind the still, with its box reserved', () => {
     const html = renderToStaticMarkup(<NarratedVideo src={src} captions={null} poster={poster} label="Acupuncture video" />)
     const video = html.match(/<video [^>]*>/)?.[0] ?? ''
     expect(video).toContain('controls')
     expect(video).toContain('preload="none"')
     expect(video).not.toContain('autoplay')
+    expect(video).not.toContain('muted')
+    expect(video).toContain('playsInline')
     expect(video).toContain(`poster="${poster.src}"`)
     expect(video).toContain('width="1280"')
     expect(video).toContain('height="720"')

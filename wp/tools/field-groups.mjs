@@ -287,13 +287,27 @@ const newPatient = pageGroup('brio_new_patient', 'New Patient page', 'template-n
 const pb = 'pickleball'
 const pickleball = pageGroup('brio_pickleball', 'Pickleball page', 'template-pickleball.php', [
   headingField(pb),
-  f.wysiwyg(pb, 'intro', 'Intro and coaching method', VERBATIM),
+  f.repeater(pb, 'questions', 'Opening questions', 'Set large under the heading, one per row, in order.', lineRow(pb, 'questions', 'One question. Under 90 characters.', 120), { layout: 'table', max: 4, button: 'Add question' }),
+  f.textarea(pb, 'intro', 'Intro', 'The paragraph beside the questions, as written. Under 400 characters.', { rows: 3, maxlength: 400 }),
+  f.text(pb, 'steps_heading', 'Coaching steps heading', 'e.g. "Our Coaching methodology follows these 3 steps". Under 80 characters.', { maxlength: 80 }),
+  f.repeater(pb, 'steps', 'Coaching steps', 'In order; they are numbered on the page.', [
+    f.text(pb, 'steps_title', 'Title', 'e.g. "Better Movement". Under 40 characters.', { required: true, maxlength: 40 }),
+    f.textarea(pb, 'steps_points', 'Points', 'One point per line, as written. Under 300 characters.', { required: true, rows: 3, maxlength: 300 }),
+  ].map(unprefix('steps_')), { max: 4, button: 'Add step' }),
   f.url(pb, 'video_url', 'Video', 'The MP4 in the media library (copy its URL). Plays with controls.'),
+  f.image(pb, 'video_poster', 'Video still', `Shown on the video until it is played: a 16:9 frame from the film with no subtitles on it, 1280 pixels wide. ${PHOTO_NOTE}`),
   f.repeater(pb, 'photos', 'Captioned photos', 'The coaching photos with their captions, in order.', [
     f.image(pb, 'photos_image', 'Photo', PHOTO_NOTE),
     f.text(pb, 'photos_caption', 'Caption', 'As written. Under 200 characters.', { maxlength: 200 }),
   ].map(unprefix('photos_')), { max: 4, button: 'Add photo' }),
-  f.wysiwyg(pb, 'services', 'Coaching services', `The services and prices block. ${VERBATIM}`),
+  f.text(pb, 'services_heading', 'Coaching services heading', 'e.g. "Pickleball Coaching Services". Under 60 characters.', { maxlength: 60 }),
+  f.textarea(pb, 'services_intro', 'Coaching services intro', 'The paragraph under that heading, as written. Under 400 characters.', { rows: 3, maxlength: 400 }),
+  f.text(pb, 'offerings_heading', 'Services list heading', 'e.g. "Coaching Services offered:". Under 60 characters.', { maxlength: 60 }),
+  f.repeater(pb, 'offerings', 'Coaching services', 'One row per service, in order; the price shows beside the name.', [
+    f.text(pb, 'offerings_name', 'Name', 'e.g. "Private Coaching Sessions". Under 40 characters.', { required: true, width: '60', maxlength: 40 }),
+    f.text(pb, 'offerings_price', 'Price', 'As written, e.g. "$110+GST/hour". Under 30 characters.', { required: true, width: '40', maxlength: 30 }),
+    f.textarea(pb, 'offerings_detail', 'Description', 'Who it is for and what it includes, as written. Under 300 characters.', { required: true, rows: 3, maxlength: 300 }),
+  ].map(unprefix('offerings_')), { max: 4, button: 'Add service' }),
   f.image(pb, 'photo_court', 'Court photo', `On the court. ${PHOTO_NOTE}`),
   f.text(pb, 'quotes_heading', 'Quotes heading', 'e.g. "What they are saying:". Under 60 characters.', { maxlength: 60 }),
   f.repeater(pb, 'quotes', 'What they are saying', 'Quotes with names, in order.', [

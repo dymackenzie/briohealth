@@ -6,6 +6,7 @@ import { Button } from '@/components/ui/Button'
 import { Hours } from '@/components/ui/Hours'
 import { Reveal } from '@/components/ui/Reveal'
 import { pages } from '@/lib/content/pages'
+import { features } from '@/lib/features'
 import { clinicJsonLd, JsonLd } from '@/lib/jsonld'
 import { buildMetadata } from '@/lib/seo'
 import { BOOKING_PATH, mapSearchUrl } from '@/lib/site'
@@ -15,7 +16,9 @@ export const revalidate = 3600
 
 export const metadata = buildMetadata({
   title: 'Contact',
-  description: 'Get in touch with Brio Health in Richmond, BC, by phone, email or the contact form.',
+  description: features.contactForm
+    ? 'Get in touch with Brio Health in Richmond, BC, by phone, email or the contact form.'
+    : 'Get in touch with Brio Health in Richmond, BC, by phone or email.',
   path: '/contact',
 })
 
@@ -27,7 +30,8 @@ const panelLink = 'underline underline-offset-4 decoration-1 hover:decoration-2'
  * The live Contact page: "Contact Us", "Call or email us if you have any
  * questions", the booking line and button, then the form beside the
  * phone, email, address and hours on a grey panel. Linked from the footer
- * only; not in the main nav or the top bar.
+ * only; not in the main nav or the top bar. With the form off
+ * (`features.contactForm`) the panel stands alone on the left.
  */
 export default async function ContactPage() {
   const settings = await getSiteSettings()
@@ -44,11 +48,13 @@ export default async function ContactPage() {
       </PageHero>
 
       <div className="container-x pb-[var(--section-y)] grid-12 gap-y-10">
-        <Reveal className="col-span-12 lg:col-span-7">
-          <ContactForm phone={settings.phone} phoneHref={settings.phoneHref} />
-        </Reveal>
+        {features.contactForm && (
+          <Reveal className="col-span-12 lg:col-span-7">
+            <ContactForm phone={settings.phone} phoneHref={settings.phoneHref} />
+          </Reveal>
+        )}
 
-        <Reveal delay={80} className="col-span-12 lg:col-span-4 lg:col-start-9">
+        <Reveal delay={features.contactForm ? 80 : 0} className={features.contactForm ? 'col-span-12 lg:col-span-4 lg:col-start-9' : 'col-span-12 sm:col-span-8 lg:col-span-5'}>
           <div className="bg-grey px-6 py-8 sm:px-8">
             <ul className="grid gap-1">
               <li>
