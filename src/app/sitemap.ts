@@ -1,6 +1,7 @@
 import type { MetadataRoute } from 'next'
 
 import { services } from '@/lib/content/services'
+import { features } from '@/lib/features'
 import { absoluteUrl } from '@/lib/site'
 import { getAllPostSlugs, getCategories } from '@/lib/wp/queries'
 
@@ -16,7 +17,7 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
     { url: url('/new-patient'), priority: 0.8, changeFrequency: 'yearly' },
     { url: url('/contact'), priority: 0.8, changeFrequency: 'yearly' },
     { url: url('/blog'), priority: 0.7, changeFrequency: 'weekly' },
-    { url: url('/pickleball'), priority: 0.5, changeFrequency: 'yearly' },
+    ...(features.pickleball ? [{ url: url('/pickleball'), priority: 0.5, changeFrequency: 'yearly' as const }] : []),
     { url: url('/privacy-policy'), priority: 0.2, changeFrequency: 'yearly' },
     { url: url('/terms-of-use'), priority: 0.2, changeFrequency: 'yearly' },
   ]

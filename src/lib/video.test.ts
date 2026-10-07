@@ -1,5 +1,5 @@
 import { describe, expect, it } from 'vitest'
-import { shouldPlayLoop, type LoopDecision } from './video'
+import { byVisitor, narratedAutoplay, shouldPlayLoop, type LoopDecision, type NarratedDecision } from './video'
 
 const base: LoopDecision = {
   mode: 'row',
@@ -37,5 +37,53 @@ describe('shouldPlayLoop', () => {
     expect(shouldPlayLoop({ ...on, mode: 'hero', reducedMotion: true })).toBe(false)
     expect(shouldPlayLoop({ ...on, saveData: true })).toBe(false)
     expect(shouldPlayLoop({ ...on, mode: 'hero', saveData: true })).toBe(false)
+  })
+})
+
+const narrated: NarratedDecision = {
+  ready: true,
+  inView: true,
+  reducedMotion: false,
+  saveData: false,
+  taken: false,
+}
+
+describe('narratedAutoplay', () => {
+  it('plays once the page is ready and the video is in view, and pauses it out of view', () => {
+    expect(narratedAutoplay(narrated)).toBe('play')
+    expect(narratedAutoplay({ ...narrated, inView: false })).toBe('pause')
+  })
+
+  it('waits for the page to load and go idle', () => {
+    expect(narratedAutoplay({ ...narrated, ready: false })).toBe('pause')
+  })
+
+  it('never plays under reduced motion or save-data', () => {
+    expect(narratedAutoplay({ ...narrated, reducedMotion: true })).toBe('pause')
+    expect(narratedAutoplay({ ...narrated, saveData: true })).toBe('pause')
+  })
+
+  it('keeps its hands off once the visitor has taken it, in view or not', () => {
+    expect(narratedAutoplay({ ...narrated, taken: true })).toBeNull()
+    expect(narratedAutoplay({ ...narrated, taken: true, inView: false })).toBeNull()
+    // Pressed play under reduced motion: still theirs, never paused for them.
+    expect(narratedAutoplay({ ...narrated, taken: true, reducedMotion: true })).toBeNull()
+  })
+})
+
+describe('byVisitor', () => {
+  it('counts a play or pause the page did not ask for as the visitor', () => {
+    expect(byVisitor('play', 'play', true)).toBe(false)
+    expect(byVisitor('pause', 'pause', true)).toBe(false)
+    expect(byVisitor('play', null, true)).toBe(true)
+    expect(byVisitor('pause', null, true)).toBe(true)
+    // Paused while the page's play was pending, or played while its pause was.
+    expect(byVisitor('pause', 'play', true)).toBe(true)
+    expect(byVisitor('play', 'pause', true)).toBe(true)
+  })
+
+  it('counts turning the sound on, not the page muting it', () => {
+    expect(byVisitor('volumechange', null, false)).toBe(true)
+    expect(byVisitor('volumechange', 'play', true)).toBe(false)
   })
 })

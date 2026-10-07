@@ -2,6 +2,7 @@ import Image from 'next/image'
 import type { Icon } from '@phosphor-icons/react'
 import { Certificate, MapPin, UsersThree } from '@phosphor-icons/react/dist/ssr'
 
+import { QuoteList } from '@/components/ui/QuoteList'
 import { Reveal } from '@/components/ui/Reveal'
 import type { HomeContent, TrustIcon } from '@/lib/content/home'
 import type { Testimonial } from '@/lib/content/testimonials'
@@ -62,23 +63,7 @@ export function Trust({ content, items }: { content: HomeContent['trust']; items
         </div>
 
         {items.length > 0 && (
-          <ul className="mt-12 grid gap-y-10 border-t border-grey pt-10">
-            {items.map((item, i) => (
-              <Reveal as="li" key={item.name} delay={i * 80} className="grid-12 gap-y-3">
-                <figure className="contents">
-                  {/* The hanging mark: serif, teal, in the margin column; inline on phones. */}
-                  <span
-                    aria-hidden
-                    className="col-span-12 font-serif text-[clamp(3.5rem,5.2vw,4.75rem)] leading-[0.75] font-medium text-teal lg:col-span-1 lg:text-right"
-                  >
-                    {'“'}
-                  </span>
-                  <blockquote className="text-quote col-span-12 lg:col-span-10 lg:col-start-2">{item.quote}</blockquote>
-                  <figcaption className="col-span-12 text-small text-ink-soft lg:col-span-10 lg:col-start-2">{item.name}</figcaption>
-                </figure>
-              </Reveal>
-            ))}
-          </ul>
+          <QuoteList items={items} className="mt-12 border-t border-grey pt-10" />
         )}
       </div>
     </section>

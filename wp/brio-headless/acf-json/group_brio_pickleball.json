@@ -23,12 +23,56 @@
             "append": ""
         },
         {
+            "key": "field_pickleball_questions",
+            "label": "Opening questions",
+            "name": "questions",
+            "aria-label": "",
+            "type": "repeater",
+            "instructions": "Set large under the heading, one per row, in order.",
+            "required": 0,
+            "conditional_logic": 0,
+            "wrapper": {
+                "width": "",
+                "class": "",
+                "id": ""
+            },
+            "layout": "table",
+            "pagination": 0,
+            "min": 0,
+            "max": 4,
+            "collapsed": "",
+            "button_label": "Add question",
+            "rows_per_page": 20,
+            "sub_fields": [
+                {
+                    "key": "field_pickleball_questions_text",
+                    "label": "Line",
+                    "name": "text",
+                    "aria-label": "",
+                    "type": "text",
+                    "instructions": "One question. Under 90 characters.",
+                    "required": 1,
+                    "conditional_logic": 0,
+                    "wrapper": {
+                        "width": "",
+                        "class": "",
+                        "id": ""
+                    },
+                    "default_value": "",
+                    "maxlength": 120,
+                    "placeholder": "",
+                    "prepend": "",
+                    "append": ""
+                }
+            ]
+        },
+        {
             "key": "field_pickleball_intro",
-            "label": "Intro and coaching method",
+            "label": "Intro",
             "name": "intro",
             "aria-label": "",
-            "type": "wysiwyg",
-            "instructions": "Paste the clinic's text as written. Headings, lists and bold come through; nothing is rewritten on the website.",
+            "type": "textarea",
+            "instructions": "The paragraph beside the questions, as written. Under 400 characters.",
             "required": 0,
             "conditional_logic": 0,
             "wrapper": {
@@ -37,10 +81,94 @@
                 "id": ""
             },
             "default_value": "",
-            "tabs": "all",
-            "toolbar": "full",
-            "media_upload": 0,
-            "delay": 0
+            "maxlength": 400,
+            "rows": 3,
+            "placeholder": "",
+            "new_lines": ""
+        },
+        {
+            "key": "field_pickleball_steps_heading",
+            "label": "Coaching steps heading",
+            "name": "steps_heading",
+            "aria-label": "",
+            "type": "text",
+            "instructions": "e.g. \"Our Coaching methodology follows these 3 steps\". Under 80 characters.",
+            "required": 0,
+            "conditional_logic": 0,
+            "wrapper": {
+                "width": "",
+                "class": "",
+                "id": ""
+            },
+            "default_value": "",
+            "maxlength": 80,
+            "placeholder": "",
+            "prepend": "",
+            "append": ""
+        },
+        {
+            "key": "field_pickleball_steps",
+            "label": "Coaching steps",
+            "name": "steps",
+            "aria-label": "",
+            "type": "repeater",
+            "instructions": "In order; they are numbered on the page.",
+            "required": 0,
+            "conditional_logic": 0,
+            "wrapper": {
+                "width": "",
+                "class": "",
+                "id": ""
+            },
+            "layout": "row",
+            "pagination": 0,
+            "min": 0,
+            "max": 4,
+            "collapsed": "",
+            "button_label": "Add step",
+            "rows_per_page": 20,
+            "sub_fields": [
+                {
+                    "key": "field_pickleball_steps_title",
+                    "label": "Title",
+                    "name": "title",
+                    "aria-label": "",
+                    "type": "text",
+                    "instructions": "e.g. \"Better Movement\". Under 40 characters.",
+                    "required": 1,
+                    "conditional_logic": 0,
+                    "wrapper": {
+                        "width": "",
+                        "class": "",
+                        "id": ""
+                    },
+                    "default_value": "",
+                    "maxlength": 40,
+                    "placeholder": "",
+                    "prepend": "",
+                    "append": ""
+                },
+                {
+                    "key": "field_pickleball_steps_points",
+                    "label": "Points",
+                    "name": "points",
+                    "aria-label": "",
+                    "type": "textarea",
+                    "instructions": "One point per line, as written. Under 300 characters.",
+                    "required": 1,
+                    "conditional_logic": 0,
+                    "wrapper": {
+                        "width": "",
+                        "class": "",
+                        "id": ""
+                    },
+                    "default_value": "",
+                    "maxlength": 300,
+                    "rows": 3,
+                    "placeholder": "",
+                    "new_lines": ""
+                }
+            ]
         },
         {
             "key": "field_pickleball_video_url",
@@ -58,6 +186,32 @@
             },
             "default_value": "",
             "placeholder": ""
+        },
+        {
+            "key": "field_pickleball_video_poster",
+            "label": "Video still",
+            "name": "video_poster",
+            "aria-label": "",
+            "type": "image",
+            "instructions": "Shown on the video until it is played: a 16:9 frame from the film with no subtitles on it, 1280 pixels wide. Leave empty if the photo does not exist yet: the site shows a labelled placeholder instead of a broken image.",
+            "required": 0,
+            "conditional_logic": 0,
+            "wrapper": {
+                "width": "",
+                "class": "",
+                "id": ""
+            },
+            "return_format": "array",
+            "library": "all",
+            "preview_size": "medium",
+            "min_width": "",
+            "min_height": "",
+            "min_size": "",
+            "max_width": "",
+            "max_height": "",
+            "max_size": "",
+            "mime_types": "",
+            "uploader": ""
         },
         {
             "key": "field_pickleball_photos",
@@ -130,12 +284,12 @@
             ]
         },
         {
-            "key": "field_pickleball_services",
-            "label": "Coaching services",
-            "name": "services",
+            "key": "field_pickleball_services_heading",
+            "label": "Coaching services heading",
+            "name": "services_heading",
             "aria-label": "",
-            "type": "wysiwyg",
-            "instructions": "The services and prices block. Paste the clinic's text as written. Headings, lists and bold come through; nothing is rewritten on the website.",
+            "type": "text",
+            "instructions": "e.g. \"Pickleball Coaching Services\". Under 60 characters.",
             "required": 0,
             "conditional_logic": 0,
             "wrapper": {
@@ -144,10 +298,134 @@
                 "id": ""
             },
             "default_value": "",
-            "tabs": "all",
-            "toolbar": "full",
-            "media_upload": 0,
-            "delay": 0
+            "maxlength": 60,
+            "placeholder": "",
+            "prepend": "",
+            "append": ""
+        },
+        {
+            "key": "field_pickleball_services_intro",
+            "label": "Coaching services intro",
+            "name": "services_intro",
+            "aria-label": "",
+            "type": "textarea",
+            "instructions": "The paragraph under that heading, as written. Under 400 characters.",
+            "required": 0,
+            "conditional_logic": 0,
+            "wrapper": {
+                "width": "",
+                "class": "",
+                "id": ""
+            },
+            "default_value": "",
+            "maxlength": 400,
+            "rows": 3,
+            "placeholder": "",
+            "new_lines": ""
+        },
+        {
+            "key": "field_pickleball_offerings_heading",
+            "label": "Services list heading",
+            "name": "offerings_heading",
+            "aria-label": "",
+            "type": "text",
+            "instructions": "e.g. \"Coaching Services offered:\". Under 60 characters.",
+            "required": 0,
+            "conditional_logic": 0,
+            "wrapper": {
+                "width": "",
+                "class": "",
+                "id": ""
+            },
+            "default_value": "",
+            "maxlength": 60,
+            "placeholder": "",
+            "prepend": "",
+            "append": ""
+        },
+        {
+            "key": "field_pickleball_offerings",
+            "label": "Coaching services",
+            "name": "offerings",
+            "aria-label": "",
+            "type": "repeater",
+            "instructions": "One row per service, in order; the price shows beside the name.",
+            "required": 0,
+            "conditional_logic": 0,
+            "wrapper": {
+                "width": "",
+                "class": "",
+                "id": ""
+            },
+            "layout": "row",
+            "pagination": 0,
+            "min": 0,
+            "max": 4,
+            "collapsed": "",
+            "button_label": "Add service",
+            "rows_per_page": 20,
+            "sub_fields": [
+                {
+                    "key": "field_pickleball_offerings_name",
+                    "label": "Name",
+                    "name": "name",
+                    "aria-label": "",
+                    "type": "text",
+                    "instructions": "e.g. \"Private Coaching Sessions\". Under 40 characters.",
+                    "required": 1,
+                    "conditional_logic": 0,
+                    "wrapper": {
+                        "width": "60",
+                        "class": "",
+                        "id": ""
+                    },
+                    "default_value": "",
+                    "maxlength": 40,
+                    "placeholder": "",
+                    "prepend": "",
+                    "append": ""
+                },
+                {
+                    "key": "field_pickleball_offerings_price",
+                    "label": "Price",
+                    "name": "price",
+                    "aria-label": "",
+                    "type": "text",
+                    "instructions": "As written, e.g. \"$110+GST/hour\". Under 30 characters.",
+                    "required": 1,
+                    "conditional_logic": 0,
+                    "wrapper": {
+                        "width": "40",
+                        "class": "",
+                        "id": ""
+                    },
+                    "default_value": "",
+                    "maxlength": 30,
+                    "placeholder": "",
+                    "prepend": "",
+                    "append": ""
+                },
+                {
+                    "key": "field_pickleball_offerings_detail",
+                    "label": "Description",
+                    "name": "detail",
+                    "aria-label": "",
+                    "type": "textarea",
+                    "instructions": "Who it is for and what it includes, as written. Under 300 characters.",
+                    "required": 1,
+                    "conditional_logic": 0,
+                    "wrapper": {
+                        "width": "",
+                        "class": "",
+                        "id": ""
+                    },
+                    "default_value": "",
+                    "maxlength": 300,
+                    "rows": 3,
+                    "placeholder": "",
+                    "new_lines": ""
+                }
+            ]
         },
         {
             "key": "field_pickleball_photo_court",

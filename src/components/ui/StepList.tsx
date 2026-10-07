@@ -1,6 +1,7 @@
 /**
- * A numbered sequence; its one user is the homepage plan. It is a real
- * sequence, so the numerals show. Numerals in Funnel Display, titles in
+ * A numbered sequence: the homepage plan and the Pickleball coaching steps.
+ * Both are real sequences, so the numerals show. A step's text is one
+ * `body`, or `points` for a step that lists them. Numerals in Funnel Display, titles in
  * Newsreader, bodies in Funnel Sans. It renders
  * only the <ol>, so a caller that wants a decorative line beside the steps
  * places it as a sibling, never inside the list.
@@ -19,7 +20,7 @@ export function StepList({
   surface = 'light',
   className = '',
 }: {
-  steps: { title: string; body: string }[]
+  steps: readonly { title: string; body?: string; points?: readonly string[] }[]
   surface?: Surface
   className?: string
 }) {
@@ -32,7 +33,14 @@ export function StepList({
           </span>
           <div className="pt-1">
             <h3 className="font-serif text-[1.5rem] leading-tight font-medium tracking-[-0.01em]">{step.title}</h3>
-            <p className="mt-2 max-w-[48ch]">{step.body}</p>
+            {step.body && <p className="mt-2 max-w-[48ch]">{step.body}</p>}
+            {step.points && (
+              <ul className="mt-2 grid max-w-[48ch] gap-1.5">
+                {step.points.map((point) => (
+                  <li key={point}>{point}</li>
+                ))}
+              </ul>
+            )}
           </div>
         </li>
       ))}

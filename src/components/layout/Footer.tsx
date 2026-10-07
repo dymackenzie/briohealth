@@ -8,6 +8,7 @@ import { Address } from '@/components/ui/Address'
 import { Button } from '@/components/ui/Button'
 import { Hours } from '@/components/ui/Hours'
 import { services } from '@/lib/content/services'
+import { features } from '@/lib/features'
 import { BOOKING_PATH, footerLegal, mapEmbedUrl, type SiteSettings } from '@/lib/site'
 
 const socialIcons: Record<string, Icon> = {
@@ -21,7 +22,7 @@ const MERCY = "Don't be at the Mercy of your symptoms"
 
 const pageLinks = [
   { label: 'Contact', href: '/contact' },
-  { label: 'Pickleball', href: '/pickleball' },
+  ...(features.pickleball ? [{ label: 'Pickleball', href: '/pickleball' }] : []),
 ]
 
 /**
@@ -92,13 +93,15 @@ export function Footer({ settings }: { settings: SiteSettings }) {
         </div>
 
         <div className="mt-10 grid gap-8 border-t border-ink/15 pt-10 lg:grid-cols-12">
-          <div className="lg:col-span-7">
-            <h2 className="text-h3">Newsletter</h2>
-            <div className="mt-4 max-w-md">
-              <NewsletterForm />
+          {features.newsletter && (
+            <div className="lg:col-span-7">
+              <h2 className="text-h3">Newsletter</h2>
+              <div className="mt-4 max-w-md">
+                <NewsletterForm />
+              </div>
             </div>
-          </div>
-          <div className="lg:col-span-5">
+          )}
+          <div className={features.newsletter ? 'lg:col-span-5' : 'lg:col-span-12'}>
             <ul className="flex flex-wrap gap-x-5 gap-y-2">
               {[...footerLegal, ...pageLinks].map((item) => (
                 <li key={item.href}>

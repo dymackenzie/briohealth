@@ -24,9 +24,10 @@ import { WP_UPLOADS_URL } from '@/lib/wp/client'
  * 41-56% of the width, inside any left-anchored crop. naturopathic-wide and
  * acupuncture-wide were the service tiles' 4/5 patient-side crops; the
  * service rows are 16:9 video stills now, and cut wide those frames show
- * Dr. Lee. Also unused: the WP host's pickleball-1-rotated.jpg, a selfie the
- * live Pickleball page carries; the spec lists the Ben Johns, Jordan Briones
- * and court photos only.
+ * Dr. Lee. Also unused: the WP host's pickleball2.jpg, the team line-up on
+ * an indoor court, which ran beside the coaching services until 2026-10-07,
+ * when the client swapped in the rooftop selfie from under the live page's
+ * video.
  */
 
 // The live media library, wherever WP_API_URL points.
@@ -60,8 +61,8 @@ export const photos = {
   },
   /** On the WP host. Dr. Lee may appear on /pickleball, so the frame is centred. */
   pickleballCourt: {
-    src: `${WP}/2025/11/pickleball2.jpg`,
-    alt: 'Pickleball players lined up with their paddles on an indoor court, one kneeling in front',
+    src: `${WP}/2025/11/pickleball-1-rotated.jpg`,
+    alt: 'Dr. Jeff taking a selfie with four players on an outdoor rooftop pickleball court',
     position: '50% 50%',
   },
   /** On the WP host, for /pickleball, where Dr. Lee may appear. */
@@ -82,7 +83,7 @@ export const slots = {
     portrait: { subject: 'Dr. Jeffrey Lee, portrait', photo: photos.guideClinicPortrait },
   },
   pickleball: {
-    court: { subject: 'A community game on the court', photo: photos.pickleballCourt },
+    court: { subject: 'Dr. Jeff with players on the court', photo: photos.pickleballCourt },
     benJohns: { subject: 'Dr. Jeff with Ben Johns', photo: photos.pickleballBenJohns },
     jordanBriones: { subject: 'Dr. Jeff with Jordan Briones', photo: photos.pickleballJordanBriones },
   },

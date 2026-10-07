@@ -48,31 +48,38 @@ export const pages = {
     lead: 'Call or email us if you have any questions',
     bookLine: 'If you want to book an appointment use the link below.',
   },
-  // The live Pickleball page (23155), verbatim and in order.
+  // The live Pickleball page (23155), verbatim and in order. Its text is
+  // split into the parts the page lays out: the questions, the intro, the
+  // three coaching steps, and the two coaching services with their prices.
   pickleball: {
     title: 'Pickleball',
-    intro: `
-<p>Are you ready to unlock your hidden potential on the pickleball court?</p>
-<p>Are you ready to win more games and have more fun?</p>
-<p>Brio Pickleball Coaching offers private &amp; small group lessons. We work with beginners &amp; advanced players. We specialize in developing solid fundamentals so players improve faster and have more fun.</p>
-<p><strong>Our Coaching methodology follows these 3 steps</strong></p>
-<p><strong>Better Movement</strong></p>
-<ul>
-<li>Better paddle technique improves your consistency.</li>
-<li>Better footwork helps you be in the right position to win more points.</li>
-</ul>
-<p><strong>Better Decision making</strong></p>
-<ul>
-<li>Learn different strategies to quickly adapt against different opponents</li>
-<li>Develop a higher pickleball IQ to win more games</li>
-</ul>
-<p><strong>Better Recovery</strong></p>
-<ul>
-<li>Learn the right technique to keep your body more efficient &amp; injury free</li>
-<li>Learn how to prevent injuries so you can play for years to come.</li>
-</ul>
-`,
+    questions: [
+      'Are you ready to unlock your hidden potential on the pickleball court?',
+      'Are you ready to win more games and have more fun?',
+    ],
+    intro:
+      'Brio Pickleball Coaching offers private & small group lessons. We work with beginners & advanced players. We specialize in developing solid fundamentals so players improve faster and have more fun.',
+    stepsHeading: 'Our Coaching methodology follows these 3 steps',
+    steps: [
+      {
+        title: 'Better Movement',
+        points: ['Better paddle technique improves your consistency.', 'Better footwork helps you be in the right position to win more points.'],
+      },
+      {
+        title: 'Better Decision making',
+        points: ['Learn different strategies to quickly adapt against different opponents', 'Develop a higher pickleball IQ to win more games'],
+      },
+      {
+        title: 'Better Recovery',
+        points: [
+          'Learn the right technique to keep your body more efficient & injury free',
+          'Learn how to prevent injuries so you can play for years to come.',
+        ],
+      },
+    ],
     videoUrl: `${WP_UPLOADS_URL}/2025/11/BRIOP.mp4`,
+    /** The film at 0:00.5: its title card, the Brio Pickleball Coaching logo. */
+    videoPoster: '/photos/pickleball-film-still.jpg',
     photos: [
       {
         slot: slots.pickleball.benJohns,
@@ -83,13 +90,23 @@ export const pages = {
         caption: 'Dr. Jeff with Jordan Briones of Briones Pickleball Academy. Arizona’s Training Hub for Elite Pickleball Coaching & Competition',
       },
     ],
-    services: `
-<h2>Pickleball Coaching Services</h2>
-<p>Dr. Jeff’s team of coaches are Pickleball Canada certified instructors. They bring a wealth of experience from other health disciplines combined with their years of coaching pickleball.</p>
-<p><strong>Coaching Services offered:</strong><br>
-<strong>Private Coaching Sessions ($110+GST/hour):</strong> 1 to 2 players. One-on-one coaching includes a full assessment and tailored instructions to improve your paddle skills, movement patterns, and improved mindset.</p>
-<p><strong>Group Coaching Sessions:($ 160+GST/hour):</strong> 3-4 players. Team coaching includes skill development, key movement patterns with your partner and winning doubles strategy.</p>
-`,
+    servicesHeading: 'Pickleball Coaching Services',
+    servicesIntro:
+      'Dr. Jeff’s team of coaches are Pickleball Canada certified instructors. They bring a wealth of experience from other health disciplines combined with their years of coaching pickleball.',
+    offeringsHeading: 'Coaching Services offered:',
+    offerings: [
+      {
+        name: 'Private Coaching Sessions',
+        price: '$110+GST/hour',
+        detail:
+          '1 to 2 players. One-on-one coaching includes a full assessment and tailored instructions to improve your paddle skills, movement patterns, and improved mindset.',
+      },
+      {
+        name: 'Group Coaching Sessions',
+        price: '$ 160+GST/hour',
+        detail: '3-4 players. Team coaching includes skill development, key movement patterns with your partner and winning doubles strategy.',
+      },
+    ],
     court: slots.pickleball.court,
     quotesHeading: 'What they are saying:',
     quotes: [

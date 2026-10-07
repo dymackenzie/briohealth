@@ -45,3 +45,25 @@ export function useInView(ref: RefObject<Element | null>, threshold: number): bo
 
   return inView
 }
+
+/** True once the page has loaded and the browser has gone idle; false on the server. */
+export function usePageIdle(): boolean {
+  const [idle, setIdle] = useState(false)
+
+  useEffect(() => {
+    let handle = 0
+    const done = () => setIdle(true)
+    const wait = () => {
+      handle = typeof requestIdleCallback === 'function' ? requestIdleCallback(done, { timeout: 2000 }) : window.setTimeout(done, 200)
+    }
+    if (document.readyState === 'complete') wait()
+    else window.addEventListener('load', wait, { once: true })
+    return () => {
+      window.removeEventListener('load', wait)
+      if (typeof cancelIdleCallback === 'function') cancelIdleCallback(handle)
+      else clearTimeout(handle)
+    }
+  }, [])
+
+  return idle
+}
