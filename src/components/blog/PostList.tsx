@@ -2,16 +2,18 @@ import Image from 'next/image'
 import Link from 'next/link'
 
 import { groupByMonth, shortDate } from '@/lib/dates'
-import { authorName, featuredImage } from '@/lib/wp/queries'
+import { coverPath } from '@/lib/garden/cover'
+import { authorName } from '@/lib/wp/queries'
 import { decodeTitle, postSummary } from '@/lib/wp/renderContent'
 import type { WPPost } from '@/lib/wp/types'
 
 /**
  * The archive, Substack's way: posts under month headings, each row a bold
- * title, two lines of excerpt and a date-and-author line, with the
- * featured image as a 3:2 thumbnail on the right. 1px ink rules between
- * rows, as in the service rows (a sand hairline vanishes into the grain);
- * no cards. Posts without an image take the full width.
+ * title, two lines of excerpt and a date-and-author line, with a drawn
+ * herb cover as a 3:2 thumbnail on the right (src/lib/garden/cover.ts; the
+ * featured images were too mixed, and half the posts have none). 1px ink
+ * rules between rows, as in the service rows (a sand hairline vanishes into
+ * the grain); no cards.
  */
 export function PostList({ posts }: { posts: WPPost[] }) {
   return (
@@ -23,7 +25,6 @@ export function PostList({ posts }: { posts: WPPost[] }) {
           </h2>
           <ul>
             {group.items.map((post) => {
-              const image = featuredImage(post)
               const title = decodeTitle(post.title.rendered)
 
               return (
@@ -39,11 +40,9 @@ export function PostList({ posts }: { posts: WPPost[] }) {
                         {authorName(post)}
                       </p>
                     </div>
-                    {image && (
-                      <div className="relative mt-1 aspect-[3/2] w-24 overflow-hidden rounded-brand bg-grey sm:w-40">
-                        <Image src={image.url} alt={image.alt} fill sizes="(min-width: 640px) 160px, 96px" className="object-cover" />
-                      </div>
-                    )}
+                    <div className="relative mt-1 aspect-[3/2] w-24 overflow-hidden rounded-brand bg-grey sm:w-40">
+                      <Image src={coverPath(post.id)} alt="" width={320} height={213} unoptimized loading="lazy" className="size-full object-cover" />
+                    </div>
                   </Link>
                 </li>
               )
