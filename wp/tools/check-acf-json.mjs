@@ -32,6 +32,8 @@ function walk(fields, groupKey, path) {
     if (['text', 'textarea'].includes(field.type) && !(Number(field.maxlength) > 0)) problems.push(`${where}: text field has no maxlength`)
     if (field.type === 'image' && field.return_format !== 'array') problems.push(`${where}: image must return an array`)
     if (/eyebrow|accent/i.test(field.name ?? '')) problems.push(`${where}: eyebrow and accent fields were dropped from the design`)
+    // SCF's REST output adds `<name>_source` beside every field, which a field of that name would collide with.
+    if (/_source$/.test(field.name ?? '')) problems.push(`${where}: SCF's REST output already uses ${field.name}`)
     for (const s of editorText(field)) {
       if (typeof s === 'string' && DASH.test(s)) problems.push(`${where}: em or en dash in editor-facing text`)
     }
@@ -60,6 +62,33 @@ for (const file of files) {
     if (rule.param === 'post_type' && !['post', 'page', 'service', 'testimonial', 'faq'].includes(rule.value)) problems.push(`${file}: unexpected post type ${rule.value}`)
   }
   walk(group.fields, group.key, '')
+}
+
+/*
+ * A field's name is its meta key, so two groups that can land on the same
+ * post must not share a top-level name, or saving one overwrites the other.
+ * Two different page templates never meet; everything else on a post type
+ * (the front page, the SEO group) can.
+ */
+const branches = (group) =>
+  (group.location ?? []).map((branch) => {
+    const at = {}
+    for (const rule of branch) {
+      if (rule.param === 'post_type') at.type = rule.value
+      if (rule.param === 'options_page') at.type = `options:${rule.value}`
+      if (rule.param === 'page_type') at.type = 'page'
+      if (rule.param === 'page_template') Object.assign(at, { type: 'page', template: rule.value })
+    }
+    return at
+  })
+const meet = (a, b) => a.type === b.type && !(a.template && b.template && a.template !== b.template)
+const loaded = Object.values(groups)
+for (const [i, a] of loaded.entries()) {
+  for (const b of loaded.slice(i + 1)) {
+    if (!branches(a).some((x) => branches(b).some((y) => meet(x, y)))) continue
+    const names = new Set(a.fields.filter((x) => x.type !== 'tab').map((x) => x.name))
+    for (const x of b.fields) if (x.type !== 'tab' && names.has(x.name)) problems.push(`${a.key} and ${b.key} can share a post and both name a field ${x.name}`)
+  }
 }
 
 const expected = [

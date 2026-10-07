@@ -5,7 +5,7 @@
         {
             "key": "field_home_plan_heading",
             "label": "Heading",
-            "name": "heading",
+            "name": "home_plan_heading",
             "aria-label": "",
             "type": "text",
             "instructions": "e.g. \"Here's How It Works\". Under 50 characters.",
@@ -25,7 +25,7 @@
         {
             "key": "field_home_plan_steps",
             "label": "Steps",
-            "name": "steps",
+            "name": "home_plan_steps",
             "aria-label": "",
             "type": "repeater",
             "instructions": "Exactly three, in order. They are numbered on the page.",

@@ -5,7 +5,7 @@
         {
             "key": "field_home_trust_stats",
             "label": "Three statements",
-            "name": "stats",
+            "name": "home_trust_stats",
             "aria-label": "",
             "type": "repeater",
             "instructions": "Short lines with an icon, e.g. \"Serving Richmond Since 2006\".",
@@ -76,7 +76,7 @@
         {
             "key": "field_home_trust_badge",
             "label": "Award badge",
-            "name": "badge",
+            "name": "home_trust_badge",
             "aria-label": "",
             "type": "image",
             "instructions": "The Best of Richmond badge. Leave empty if the photo does not exist yet: the site shows a labelled placeholder instead of a broken image.",
@@ -102,7 +102,7 @@
         {
             "key": "field_home_trust_badge_heading",
             "label": "Award line",
-            "name": "badge_heading",
+            "name": "home_trust_badge_heading",
             "aria-label": "",
             "type": "text",
             "instructions": "e.g. the Best of Richmond sentence from the current homepage. Under 160 characters.",
@@ -122,7 +122,7 @@
         {
             "key": "field_home_trust_badge_thanks",
             "label": "Second line",
-            "name": "badge_thanks",
+            "name": "home_trust_badge_thanks",
             "aria-label": "",
             "type": "text",
             "instructions": "e.g. \"Thank you, Richmond!\" Under 60 characters.",
@@ -142,7 +142,7 @@
         {
             "key": "field_home_trust_testimonials",
             "label": "Testimonials to show",
-            "name": "testimonials",
+            "name": "home_trust_testimonials",
             "aria-label": "",
             "type": "relationship",
             "instructions": "Two, in order.",

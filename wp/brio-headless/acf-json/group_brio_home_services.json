@@ -5,7 +5,7 @@
         {
             "key": "field_home_services_services",
             "label": "Services, in order",
-            "name": "services",
+            "name": "home_services",
             "aria-label": "",
             "type": "relationship",
             "instructions": "Drag to reorder. The layout is three rows.",
