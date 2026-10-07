@@ -159,22 +159,27 @@ const settings = group('brio_settings', 'Site settings', [
 
 const front = location('page_type', 'front_page')
 const h = (section) => `home_${section}`
+/**
+ * The sections share one page, where a field's name is its meta key, so each
+ * name carries its section like its key does: home_hero_heading, home_services.
+ */
+const homeNames = (section) => (field) => ({ ...field, name: field.name === section ? h(section) : `${h(section)}_${field.name}` })
 
 const homeGroups = [
   group('brio_home_hero', 'Home: hero', [
     f.text(h('hero'), 'heading', 'Heading', 'Dr. Jeff\'s headline, e.g. "Transform Your Health, Regain Your Life:". Under 60 characters.', { maxlength: 60 }),
     f.textarea(h('hero'), 'sentence', 'One sentence', 'Under the heading, e.g. "A Natural Approach to Building Vitality and Increasing Energy". Under 120 characters.', { rows: 2, maxlength: 120 }),
-  ], front, { order: 0 }),
+  ].map(homeNames('hero')), front, { order: 0 }),
   group('brio_home_stakes', 'Home: stakes', [
     f.text(h('stakes'), 'heading', 'Heading', 'e.g. "Have you been frustrated with your level of health?" Under 80 characters.', { maxlength: 80 }),
     f.repeater(h('stakes'), 'questions', 'Questions', 'Four short questions, in order.', lineRow(h('stakes'), 'questions', 'One question. Under 70 characters.', 90), { layout: 'table', max: 6, button: 'Add question' }),
     f.repeater(h('stakes'), 'paragraphs', 'Paragraphs', 'The two paragraphs after the questions, as written.', [
       f.textarea(h('stakes'), 'paragraphs_text', 'Paragraph', 'One paragraph. Under 400 characters.', { required: true, rows: 3, maxlength: 400 }),
     ].map(unprefix('paragraphs_')), { max: 3, button: 'Add paragraph' }),
-  ], front, { order: 1 }),
+  ].map(homeNames('stakes')), front, { order: 1 }),
   group('brio_home_services', 'Home: services', [
     f.relationship(h('services'), 'services', 'Services, in order', 'Drag to reorder. The layout is three rows.', 'service', { max: 3 }),
-  ], front, { order: 2 }),
+  ].map(homeNames('services')), front, { order: 2 }),
   group('brio_home_trust', 'Home: trust', [
     f.repeater(h('trust'), 'stats', 'Three statements', 'Short lines with an icon, e.g. "Serving Richmond Since 2006".', [
       f.select(h('trust'), 'stats_icon', 'Icon', 'The icon beside the line.', { certificate: 'Certificate', 'map-pin': 'Map pin', users: 'People' }, { width: '30' }),
@@ -184,11 +189,11 @@ const homeGroups = [
     f.text(h('trust'), 'badge_heading', 'Award line', 'e.g. the Best of Richmond sentence from the current homepage. Under 160 characters.', { maxlength: 160 }),
     f.text(h('trust'), 'badge_thanks', 'Second line', 'e.g. "Thank you, Richmond!" Under 60 characters.', { maxlength: 60 }),
     f.relationship(h('trust'), 'testimonials', 'Testimonials to show', 'Two, in order.', 'testimonial', { max: 2 }),
-  ], front, { order: 3 }),
+  ].map(homeNames('trust')), front, { order: 3 }),
   group('brio_home_plan', 'Home: how it works', [
     f.text(h('plan'), 'heading', 'Heading', 'e.g. "Here\'s How It Works". Under 50 characters.', { maxlength: 50 }),
     f.repeater(h('plan'), 'steps', 'Steps', 'Exactly three, in order. They are numbered on the page.', stepRows(h('plan'), 'steps'), { min: 3, max: 3, button: 'Add step' }),
-  ], front, { order: 4 }),
+  ].map(homeNames('plan')), front, { order: 4 }),
   group('brio_home_explain', 'Home: the explanatory paragraph', [
     f.text(h('explain'), 'heading', 'Heading', 'e.g. "At Brio Health we know you want to be healthy, vibrant and full of energy." Under 120 characters.', { maxlength: 120 }),
     f.repeater(h('explain'), 'paragraphs', 'Paragraphs', 'In order, as written.', [
@@ -197,7 +202,7 @@ const homeGroups = [
     f.text(h('explain'), 'steps_intro', 'Line before the steps', 'e.g. "Here are the steps to transform your health:". Under 80 characters.', { maxlength: 80 }),
     f.repeater(h('explain'), 'steps', 'Steps', 'Three, in order; the page adds "Step 1:" and so on.', stepRows(h('explain'), 'steps'), { min: 3, max: 3, button: 'Add step' }),
     f.textarea(h('explain'), 'closing', 'Closing line', 'The sentence above the booking button. Under 300 characters.', { rows: 2, maxlength: 300 }),
-  ], front, { order: 5 }),
+  ].map(homeNames('explain')), front, { order: 5 }),
 ]
 
 /* Custom post types: names match WPService, WPTestimonial and WPFaq in src/lib/wp/types.ts. */

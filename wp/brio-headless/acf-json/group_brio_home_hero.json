@@ -5,7 +5,7 @@
         {
             "key": "field_home_hero_heading",
             "label": "Heading",
-            "name": "heading",
+            "name": "home_hero_heading",
             "aria-label": "",
             "type": "text",
             "instructions": "Dr. Jeff's headline, e.g. \"Transform Your Health, Regain Your Life:\". Under 60 characters.",
@@ -25,7 +25,7 @@
         {
             "key": "field_home_hero_sentence",
             "label": "One sentence",
-            "name": "sentence",
+            "name": "home_hero_sentence",
             "aria-label": "",
             "type": "textarea",
             "instructions": "Under the heading, e.g. \"A Natural Approach to Building Vitality and Increasing Energy\". Under 120 characters.",
