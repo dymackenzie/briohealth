@@ -1,105 +1,89 @@
+import { WP_UPLOADS_URL } from '@/lib/wp/client'
+
 /**
- * Photos for the image slots.
+ * Which photo fills which slot, the crop, and why.
  *
- * Most come from the clinic's own shoot and live in `public/photos` as
- * web-sized copies, capped at 2400px on the long edge. The full-size camera
- * files are 10–16 MB each and stay out of the repo, in the gitignored
- * `photo-originals/`.
+ * Web-sized copies live in public/photos (the originals are in the gitignored
+ * photo-originals/). Every shoot photo except the lobby has Dr. Lee in it, and
+ * the lobby shows a neighbouring business's Botox banner, so it is never used.
  *
- * The shoot didn't cover pickleball, so those two still come from the
- * client's WordPress library. next.config.ts allows the apex and cms. hosts
- * they'll move to at cutover.
+ * The rule: Dr. Lee appears on /about and /pickleball only. The homepage hero
+ * has no photo: it is the illustrated herb garden (src/components/garden),
+ * which replaced the stock shortlist on 2026-10-05. /about runs one photo,
+ * lee-portrait-clinic, whole at 2:3. Every other slot is a patient-side
+ * crop via `position` (CSS object-position, at 4/5 or 1/1), or a `null`
+ * photo whose `subject` is the brief for the next shoot. A null never
+ * breaks a layout: Figure renders a designed placeholder.
  *
- * Every slot still carries its brief as `subject`. Anything not wired up here
- * renders as a labelled placeholder, which doubles as the shot list.
+ * Retired (still in public/photos, unused): lee-portrait-window and
+ * lee-market-stall, which ran on /about until 2026-10-05, and
+ * lee-consultation-tall, which ran below the story there until the same
+ * day. lee-reviewing-plan, lee-treatment, lee-outdoors-family,
+ * acupuncture-tall, iv-tall, naturopathic-tall, iv-wide and lobby: he
+ * dominates each frame and no crop fixes it; iv-wide puts his face at
+ * 41-56% of the width, inside any left-anchored crop. naturopathic-wide and
+ * acupuncture-wide were the service tiles' 4/5 patient-side crops; the
+ * service rows are 16:9 video stills now, and cut wide those frames show
+ * Dr. Lee. Also unused: the WP host's pickleball-1-rotated.jpg, a selfie the
+ * live Pickleball page carries; the spec lists the Ben Johns, Jordan Briones
+ * and court photos only.
  */
 
-const WP = 'https://yourbriohealth.com/wp-content/uploads'
+// The live media library, wherever WP_API_URL points.
+const WP = WP_UPLOADS_URL
+
+export interface Photo {
+  src: string
+  alt: string
+  /** CSS object-position: where the crop centres. */
+  position: string
+}
+
+export interface PhotoSlot {
+  /** The brief. Shown in the placeholder when `photo` is null. */
+  subject: string
+  photo: Photo | null
+}
 
 export const photos = {
-  leeMarket: {
-    src: '/photos/lee-market-stall.jpg',
-    alt: 'Dr. Jeffrey Lee smiling at a farmers market stall',
+  /** Only the couple is in frame at 22% at 4/5. */
+  patientsFirstVisit: {
+    src: '/photos/lee-first-visit.jpg',
+    alt: 'A couple talking through their health history at a first visit',
+    position: '22% 50%',
   },
-  lobby: {
-    src: '/photos/lobby.jpg',
-    alt: 'The Brio Health waiting area',
-  },
-  leeConsultation: {
-    src: '/photos/lee-consultation-tall.jpg',
-    alt: 'Dr. Jeffrey Lee using an anatomy model to explain a treatment to a patient',
-  },
-  leeReviewingPlan: {
-    src: '/photos/lee-reviewing-plan.jpg',
-    alt: 'Dr. Jeffrey Lee going over a supplement with a patient',
-  },
-  leePortraitClinic: {
+  /** 2:3, shown whole on /about beside the story; the page's LCP image. */
+  guideClinicPortrait: {
     src: '/photos/lee-portrait-clinic.jpg',
-    alt: 'Dr. Jeffrey Lee in the clinic',
+    alt: 'Dr. Jeffrey Lee in his clinic',
+    position: '50% 50%',
   },
-  leePortraitWindow: {
-    src: '/photos/lee-portrait-window.jpg',
-    alt: 'Dr. Jeffrey Lee',
-  },
-  pickleballGroup: {
-    src: `${WP}/2025/11/pickleball-1-rotated.jpg`,
-    alt: 'Brio Health pickleball group',
-  },
+  /** On the WP host. Dr. Lee may appear on /pickleball, so the frame is centred. */
   pickleballCourt: {
     src: `${WP}/2025/11/pickleball2.jpg`,
-    alt: 'Players on the pickleball court',
+    alt: 'Pickleball players lined up with their paddles on an indoor court, one kneeling in front',
+    position: '50% 50%',
   },
-} as const
+  /** On the WP host, for /pickleball, where Dr. Lee may appear. */
+  pickleballBenJohns: {
+    src: `${WP}/2025/11/Ben-Johns.jpg`,
+    alt: 'Dr. Jeff with Ben Johns on a pickleball court',
+    position: '50% 30%',
+  },
+  pickleballJordanBriones: {
+    src: `${WP}/2025/11/Jordan-Briones-scaled.jpg`,
+    alt: 'Dr. Jeff with Jordan Briones',
+    position: '50% 30%',
+  },
+} as const satisfies Record<string, Photo>
 
-/** In step order, one per `home.plan.steps` entry. */
-export const planPhotos = [
-  {
-    src: '/photos/lee-first-visit.jpg',
-    alt: 'Dr. Jeffrey Lee listening to a couple at their first visit',
+export const slots = {
+  about: {
+    portrait: { subject: 'Dr. Jeffrey Lee, portrait', photo: photos.guideClinicPortrait },
   },
-  {
-    src: '/photos/lee-treatment.jpg',
-    alt: 'Dr. Jeffrey Lee treating a patient on the table',
+  pickleball: {
+    court: { subject: 'A community game on the court', photo: photos.pickleballCourt },
+    benJohns: { subject: 'Dr. Jeff with Ben Johns', photo: photos.pickleballBenJohns },
+    jordanBriones: { subject: 'Dr. Jeff with Jordan Briones', photo: photos.pickleballJordanBriones },
   },
-  {
-    src: '/photos/lee-outdoors-family.jpg',
-    alt: 'Dr. Jeffrey Lee outdoors on a picnic blanket with a family',
-  },
-] as const
-
-/**
- * Each service shows in a wide slot (home, /services) and a tall one (its
- * own page). A single crop loses too much of one or the other.
- */
-export const servicePhotos = {
-  naturopathic: {
-    wide: {
-      src: '/photos/naturopathic-wide.jpg',
-      alt: 'Dr. Jeffrey Lee in a naturopathic consultation with a patient',
-    },
-    tall: {
-      src: '/photos/naturopathic-tall.jpg',
-      alt: 'Dr. Jeffrey Lee checking a patient’s blood pressure',
-    },
-  },
-  acupuncture: {
-    wide: {
-      src: '/photos/acupuncture-wide.jpg',
-      alt: 'Dr. Jeffrey Lee giving an acupuncture treatment',
-    },
-    tall: {
-      src: '/photos/acupuncture-tall.jpg',
-      alt: 'Dr. Jeffrey Lee treating a patient’s neck',
-    },
-  },
-  'iv-therapy': {
-    wide: {
-      src: '/photos/iv-wide.jpg',
-      alt: 'Dr. Jeffrey Lee setting up an I.V. for a patient',
-    },
-    tall: {
-      src: '/photos/iv-tall.jpg',
-      alt: 'Dr. Jeffrey Lee adjusting an I.V. drip',
-    },
-  },
-} as const
+} as const satisfies Record<string, PhotoSlot | Record<string, PhotoSlot>>

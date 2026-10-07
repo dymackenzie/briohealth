@@ -3,12 +3,12 @@
     "title": "Search and sharing",
     "fields": [
         {
-            "key": "field_seo_title",
+            "key": "field_seo_seo_title",
             "label": "Search title",
             "name": "seo_title",
             "aria-label": "",
             "type": "text",
-            "instructions": "What Google shows as the blue link. Around 60 characters. Leave empty to use the page title.",
+            "instructions": "What Google shows as the link. Around 60 characters. Empty uses the page title.",
             "required": 0,
             "conditional_logic": 0,
             "wrapper": {
@@ -17,13 +17,13 @@
                 "id": ""
             },
             "default_value": "",
-            "maxlength": "",
+            "maxlength": 70,
             "placeholder": "",
             "prepend": "",
             "append": ""
         },
         {
-            "key": "field_seo_description",
+            "key": "field_seo_seo_description",
             "label": "Search description",
             "name": "seo_description",
             "aria-label": "",
@@ -37,18 +37,18 @@
                 "id": ""
             },
             "default_value": "",
-            "maxlength": "",
+            "maxlength": 170,
             "rows": 2,
             "placeholder": "",
             "new_lines": ""
         },
         {
-            "key": "field_seo_image",
+            "key": "field_seo_seo_image",
             "label": "Share image",
             "name": "seo_image",
             "aria-label": "",
             "type": "image",
-            "instructions": "Shown when the page is posted to Facebook or sent in a chat. Falls back to the featured image, then the site default.",
+            "instructions": "Shown when the page is posted or sent in a chat. 1200 by 630 pixels. Falls back to the featured image, then the site default.",
             "required": 0,
             "conditional_logic": 0,
             "wrapper": {
@@ -66,16 +66,15 @@
             "max_height": "",
             "max_size": "",
             "mime_types": "",
-            "uploader": "",
-            "acfe_thumbnail": 0
+            "uploader": ""
         },
         {
-            "key": "field_seo_noindex",
+            "key": "field_seo_seo_noindex",
             "label": "Hide from search engines",
             "name": "seo_noindex",
             "aria-label": "",
             "type": "true_false",
-            "instructions": "",
+            "instructions": "Only for pages that should not turn up in Google, such as a thank-you page.",
             "required": 0,
             "conditional_logic": 0,
             "wrapper": {
@@ -111,23 +110,9 @@
                 "operator": "==",
                 "value": "service"
             }
-        ],
-        [
-            {
-                "param": "post_type",
-                "operator": "==",
-                "value": "program"
-            }
-        ],
-        [
-            {
-                "param": "post_type",
-                "operator": "==",
-                "value": "team_member"
-            }
         ]
     ],
-    "menu_order": 0,
+    "menu_order": 100,
     "position": "normal",
     "style": "default",
     "label_placement": "top",
@@ -136,5 +121,5 @@
     "active": true,
     "description": "There is no Yoast on this install, so these are the SEO fields. All optional.",
     "show_in_rest": 1,
-    "modified": 1788393600
+    "modified": 1790000000
 }

@@ -3,8 +3,8 @@
  * Template Name: Contact
  *
  * Nothing renders this. It exists so the page can be tagged in Page
- * Attributes, which is what selects the contact field group — binding a
- * field group to a page ID instead would break on the staging clone.
+ * Attributes, which is what selects the Contact field group. Binding a field
+ * group to a page ID instead would break on the staging clone.
  */
 
 defined( 'ABSPATH' ) || exit;

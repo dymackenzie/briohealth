@@ -1,38 +1,37 @@
-import { absoluteUrl, site } from './site'
+import { absoluteUrl, site, type SiteSettings } from './site'
 
 /**
  * Local SEO does a lot of work for a single-location clinic, so the NAP here
- * has to match the footer and contact page exactly.
+ * must match the footer and contact page exactly: both read the same settings.
  */
-export function clinicJsonLd() {
+export function clinicJsonLd(settings: SiteSettings) {
   return {
     '@context': 'https://schema.org',
     '@type': 'MedicalClinic',
-    name: site.legalName,
-    url: site.url,
-    telephone: site.phone,
-    email: site.email,
+    name: settings.legalName,
+    url: settings.url,
+    telephone: settings.phone,
+    email: settings.email,
     address: {
       '@type': 'PostalAddress',
-      streetAddress: site.address.street,
-      addressLocality: site.address.locality,
-      addressRegion: site.address.region,
-      postalCode: site.address.postal,
-      addressCountry: site.address.country,
+      streetAddress: settings.address.street,
+      addressLocality: settings.address.locality,
+      addressRegion: settings.address.region,
+      postalCode: settings.address.postal,
+      addressCountry: settings.address.country,
     },
-    /**
-     * Physical hours only. The alternating remote Saturday is left out on
-     * purpose — see the note in site.ts.
-     */
-    openingHoursSpecification: site.hours.map((row) => ({
+    // Physical hours only. The alternating remote Saturday is a note on the
+    // page, never here: schema.org cannot say "alternating" and Google would
+    // read it as the clinic being physically open.
+    openingHoursSpecification: settings.hours.map((row) => ({
       '@type': 'OpeningHoursSpecification',
       dayOfWeek: row.days.map((d) => `https://schema.org/${d}`),
       opens: row.opens,
       closes: row.closes,
     })),
     medicalSpecialty: 'Naturopathic',
-    foundingDate: String(site.foundedYear),
-    sameAs: site.social.map((s) => s.href),
+    foundingDate: String(settings.foundedYear),
+    sameAs: settings.social.map((s) => s.href),
   }
 }
 
@@ -85,7 +84,5 @@ export function JsonLd({ data }: { data: object }) {
   // early and drop the rest of the payload into the document as markup.
   const json = JSON.stringify(data).replace(/</g, '\\u003c')
 
-  return (
-    <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: json }} />
-  )
+  return <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: json }} />
 }

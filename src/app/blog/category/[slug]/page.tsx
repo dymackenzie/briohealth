@@ -1,97 +1,78 @@
-import Link from 'next/link'
 import { notFound } from 'next/navigation'
-import { ArrowLeft } from 'lucide-react'
 
-import { PageHero } from '@/components/layout/PageHero'
-import { Footer } from '@/components/layout/Footer'
-import { Band, Container } from '@/components/ui/Container'
-import { Reveal } from '@/components/ui/Reveal'
-import { PostCard } from '@/components/blog/PostCard'
+import { CategoryFilter } from '@/components/blog/CategoryFilter'
 import { Pagination } from '@/components/blog/Pagination'
-import { getCategories, getCategory, getPosts } from '@/lib/wp/queries'
+import { PostList } from '@/components/blog/PostList'
+import { Button } from '@/components/ui/Button'
+import { buildMetadata, paged } from '@/lib/seo'
+import { getCategories, getCategory, getPosts, parsePage } from '@/lib/wp/queries'
 import { decodeTitle, plainExcerpt } from '@/lib/wp/renderContent'
-import { buildMetadata } from '@/lib/seo'
 
 export const revalidate = 3600
 
-export async function generateStaticParams() {
-  const categories = await getCategories()
-  return categories.map((c) => ({ slug: c.slug }))
-}
-
-export async function generateMetadata(props: { params: Promise<{ slug: string }> }) {
-  const { slug } = await props.params
+export async function generateMetadata(props: {
+  params: Promise<{ slug: string }>
+  searchParams: Promise<{ page?: string | string[] }>
+}) {
+  const [{ slug }, { page }] = await Promise.all([props.params, props.searchParams])
   const category = await getCategory(slug)
-  if (!category) return buildMetadata({ title: 'Not found', path: `/blog/category/${slug}` })
+  if (!category)
+    return buildMetadata({
+      title: 'Not found',
+      path: `/blog/category/${slug}`,
+      noindex: true,
+    })
 
   return buildMetadata({
-    title: decodeTitle(category.name),
-    description:
-      plainExcerpt(category.description ?? '', 160) ||
-      `Posts filed under ${decodeTitle(category.name)}.`,
-    path: `/blog/category/${category.slug}`,
+    ...paged(decodeTitle(category.name), `/blog/category/${category.slug}`, parsePage(page)),
+    description: plainExcerpt(category.description ?? '', 160) || `Posts filed under ${decodeTitle(category.name)}.`,
   })
 }
 
+/**
+ * The index's layout with the category's name as the heading and its
+ * description under it; the "All" tab leads back. Like the index, it reads
+ * `?page=` and so renders per request. No generateStaticParams: a page
+ * that reads searchParams can't be prerendered.
+ */
 export default async function CategoryPage(props: {
   params: Promise<{ slug: string }>
-  searchParams: Promise<{ page?: string }>
+  searchParams: Promise<{ page?: string | string[] }>
 }) {
-  const [{ slug }, { page: pageParam }] = await Promise.all([
-    props.params,
-    props.searchParams,
-  ])
-
-  const category = await getCategory(slug)
+  const [{ slug }, { page: raw }] = await Promise.all([props.params, props.searchParams])
+  const [category, categories] = await Promise.all([getCategory(slug), getCategories()])
   if (!category) notFound()
 
-  const page = Math.max(1, Number(pageParam) || 1)
-  const { posts, totalPages } = await getPosts({ page, categoryId: category.id })
+  const page = parsePage(raw)
+  const { posts, totalPages } = await getPosts({
+    page,
+    categoryId: category.id,
+  })
   if (page > 1 && posts.length === 0) notFound()
+  const lead = plainExcerpt(category.description ?? '', 200)
 
   return (
-    <>
-      <PageHero
-        title={decodeTitle(category.name)}
-        lead={
-          plainExcerpt(category.description ?? '', 200) ||
-          `${category.count ?? posts.length} posts in this category.`
-        }
-      />
-
-      <main id="main">
-        <Band tone="cream" className="pt-4">
-          <Container>
-            <Link
-              href="/blog"
-              className="inline-flex items-center gap-2 text-[0.9rem] text-ink-500 hover:text-ink-900"
-            >
-              <ArrowLeft className="h-4 w-4" aria-hidden />
-              All posts
-            </Link>
-
-            {posts.length === 0 ? (
-              <p className="mt-10 text-ink-500">Nothing filed here yet.</p>
-            ) : (
-              <ul className="mt-8 grid gap-x-7 gap-y-11 sm:grid-cols-2 lg:grid-cols-3">
-                {posts.map((post, i) => (
-                  <Reveal as="li" key={post.id} delay={(i % 3) * 80}>
-                    <PostCard post={post} eager={i < 3} />
-                  </Reveal>
-                ))}
-              </ul>
-            )}
-
-            <Pagination
-              page={page}
-              totalPages={totalPages}
-              basePath={`/blog/category/${category.slug}`}
-            />
-          </Container>
-        </Band>
-      </main>
-
-      <Footer />
-    </>
+    <main id="main">
+      <div className="container-x pb-[var(--section-y)]">
+        <div className="mx-auto max-w-[38rem] pt-10 lg:pt-14">
+          <h1 className="text-post-title">{decodeTitle(category.name)}</h1>
+          {lead && <p className="mt-3 text-ink-soft">{lead}</p>}
+          <div className="mt-6">
+            <CategoryFilter categories={categories} current={category.slug} />
+          </div>
+          {posts.length === 0 ? (
+            <div className="mt-10 border-t border-grey pt-10">
+              <p className="max-w-[40ch] text-lede">Nothing filed here yet.</p>
+              <Button href="/blog" variant="quiet" className="mt-6">
+                All posts
+              </Button>
+            </div>
+          ) : (
+            <PostList posts={posts} />
+          )}
+          <Pagination page={page} totalPages={totalPages} basePath={`/blog/category/${category.slug}`} />
+        </div>
+      </div>
+    </main>
   )
 }

@@ -3,32 +3,12 @@
     "title": "Service",
     "fields": [
         {
-            "key": "field_service_summary",
-            "label": "Summary",
-            "name": "summary",
+            "key": "field_service_body",
+            "label": "Page text",
+            "name": "body",
             "aria-label": "",
-            "type": "textarea",
-            "instructions": "One or two sentences. Used on the services list and on the home page.",
-            "required": 1,
-            "conditional_logic": 0,
-            "wrapper": {
-                "width": "",
-                "class": "",
-                "id": ""
-            },
-            "default_value": "",
-            "maxlength": "",
-            "rows": 3,
-            "placeholder": "",
-            "new_lines": ""
-        },
-        {
-            "key": "field_service_lead",
-            "label": "Lead line",
-            "name": "lead",
-            "aria-label": "",
-            "type": "text",
-            "instructions": "Short line under the heading on the service's own page.",
+            "type": "wysiwyg",
+            "instructions": "The service page, top to bottom, up to the booking button. Paste the clinic's text as written. Headings, lists and bold come through; nothing is rewritten on the website.",
             "required": 0,
             "conditional_logic": 0,
             "wrapper": {
@@ -37,18 +17,58 @@
                 "id": ""
             },
             "default_value": "",
-            "maxlength": "",
-            "placeholder": "",
-            "prepend": "",
-            "append": ""
+            "tabs": "all",
+            "toolbar": "full",
+            "media_upload": 0,
+            "delay": 0
         },
         {
-            "key": "field_service_image",
-            "label": "Photo",
-            "name": "image",
+            "key": "field_service_closing",
+            "label": "Closing block",
+            "name": "closing",
+            "aria-label": "",
+            "type": "wysiwyg",
+            "instructions": "The \"... at Brio Health\" block shown after the FAQs. Leave empty if the page has none. Paste the clinic's text as written. Headings, lists and bold come through; nothing is rewritten on the website.",
+            "required": 0,
+            "conditional_logic": 0,
+            "wrapper": {
+                "width": "",
+                "class": "",
+                "id": ""
+            },
+            "default_value": "",
+            "tabs": "all",
+            "toolbar": "full",
+            "media_upload": 0,
+            "delay": 0
+        },
+        {
+            "key": "field_service_video_loop",
+            "label": "Background loop",
+            "name": "video_loop",
+            "aria-label": "",
+            "type": "file",
+            "instructions": "An 8 to 15 second MP4, horizontal 16:9 at 1280x720, no sound, under 3 MB. It plays muted beside the service list on the home page and Services (under the name on phones) and behind the service page title. See wp/README.md, \"Service videos\".",
+            "required": 0,
+            "conditional_logic": 0,
+            "wrapper": {
+                "width": "",
+                "class": "",
+                "id": ""
+            },
+            "return_format": "url",
+            "library": "all",
+            "min_size": "",
+            "max_size": 3,
+            "mime_types": "mp4"
+        },
+        {
+            "key": "field_service_video_poster",
+            "label": "Loop still",
+            "name": "video_poster",
             "aria-label": "",
             "type": "image",
-            "instructions": "If the photo doesn't exist yet, leave this empty — the site shows a placeholder describing the shot instead of a broken image.",
+            "instructions": "A frame from the loop, horizontal 16:9, JPG, 1600 pixels wide. Shown until the loop plays, and instead of it for people who prefer less motion. Without it the loop is not shown in the service list.",
             "required": 0,
             "conditional_logic": 0,
             "wrapper": {
@@ -66,16 +86,15 @@
             "max_height": "",
             "max_size": "",
             "mime_types": "",
-            "uploader": "",
-            "acfe_thumbnail": 0
+            "uploader": ""
         },
         {
-            "key": "field_service_video",
-            "label": "Video",
-            "name": "video",
+            "key": "field_service_video_narrated",
+            "label": "Narrated video",
+            "name": "video_narrated",
             "aria-label": "",
-            "type": "url",
-            "instructions": "Paste the YouTube or Vimeo link for this service. Leave it empty and the page shows a placeholder describing the video that's planned.",
+            "type": "file",
+            "instructions": "Dr. Jeff's full video: an MP4, horizontal 16:9 at 1280x720, compressed for the web. Shown on the service page beside the text, as a player with sound that starts when the visitor presses play. See wp/README.md, \"Service videos\".",
             "required": 0,
             "conditional_logic": 0,
             "wrapper": {
@@ -83,16 +102,19 @@
                 "class": "",
                 "id": ""
             },
-            "default_value": "",
-            "placeholder": "https://www.youtube.com/watch?v=..."
+            "return_format": "url",
+            "library": "all",
+            "min_size": "",
+            "max_size": "",
+            "mime_types": "mp4"
         },
         {
-            "key": "field_service_treats",
-            "label": "What it helps with",
-            "name": "treats",
+            "key": "field_service_video_captions",
+            "label": "Captions",
+            "name": "video_captions",
             "aria-label": "",
-            "type": "repeater",
-            "instructions": "Six or so. The first four show on the services list.",
+            "type": "file",
+            "instructions": "What is said in the narrated video, as a WebVTT file (.vtt). Shown on the video, switched on. Leave empty and the video plays without captions.",
             "required": 0,
             "conditional_logic": 0,
             "wrapper": {
@@ -100,43 +122,39 @@
                 "class": "",
                 "id": ""
             },
-            "layout": "table",
-            "pagination": 0,
-            "min": 0,
-            "max": 0,
-            "collapsed": "",
-            "button_label": "Add item",
-            "rows_per_page": 20,
-            "sub_fields": [
-                {
-                    "key": "field_service_treat",
-                    "label": "Item",
-                    "name": "text",
-                    "aria-label": "",
-                    "type": "text",
-                    "instructions": "",
-                    "required": 1,
-                    "conditional_logic": 0,
-                    "wrapper": {
-                        "width": "",
-                        "class": "",
-                        "id": ""
-                    },
-                    "default_value": "",
-                    "maxlength": "",
-                    "placeholder": "",
-                    "prepend": "",
-                    "append": ""
-                }
-            ]
+            "return_format": "url",
+            "library": "all",
+            "min_size": "",
+            "max_size": "",
+            "mime_types": "vtt"
         },
         {
-            "key": "field_service_programs",
-            "label": "Related programs",
-            "name": "programs",
+            "key": "field_service_faq_heading",
+            "label": "FAQ heading",
+            "name": "faq_heading",
+            "aria-label": "",
+            "type": "text",
+            "instructions": "Above this service's questions, e.g. \"FAQ’s\". Under 40 characters.",
+            "required": 0,
+            "conditional_logic": 0,
+            "wrapper": {
+                "width": "",
+                "class": "",
+                "id": ""
+            },
+            "default_value": "FAQ’s",
+            "maxlength": 40,
+            "placeholder": "",
+            "prepend": "",
+            "append": ""
+        },
+        {
+            "key": "field_service_faqs",
+            "label": "Questions for this service",
+            "name": "faqs",
             "aria-label": "",
             "type": "relationship",
-            "instructions": "",
+            "instructions": "Shown on this service's page, in this order.",
             "required": 0,
             "conditional_logic": 0,
             "wrapper": {
@@ -145,7 +163,7 @@
                 "id": ""
             },
             "post_type": [
-                "program"
+                "faq"
             ],
             "taxonomy": [],
             "post_status": [
@@ -154,38 +172,7 @@
             "filters": [
                 "search"
             ],
-            "return_format": "object",
-            "min": "",
-            "max": "",
-            "elements": "",
-            "bidirectional": 0,
-            "bidirectional_target": []
-        },
-        {
-            "key": "field_service_team",
-            "label": "Who provides it",
-            "name": "team",
-            "aria-label": "",
-            "type": "relationship",
-            "instructions": "",
-            "required": 0,
-            "conditional_logic": 0,
-            "wrapper": {
-                "width": "",
-                "class": "",
-                "id": ""
-            },
-            "post_type": [
-                "team_member"
-            ],
-            "taxonomy": [],
-            "post_status": [
-                "publish"
-            ],
-            "filters": [
-                "search"
-            ],
-            "return_format": "object",
+            "return_format": "id",
             "min": "",
             "max": "",
             "elements": "",
@@ -208,12 +195,11 @@
     "label_placement": "top",
     "instruction_placement": "label",
     "hide_on_screen": [
-        "excerpt",
         "discussion",
         "comments"
     ],
     "active": true,
     "description": "",
     "show_in_rest": 1,
-    "modified": 1788393600
+    "modified": 1790000000
 }

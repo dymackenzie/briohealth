@@ -1,19 +1,18 @@
 import { notFound } from 'next/navigation'
 
 import { PageHero } from '@/components/layout/PageHero'
-import { Footer } from '@/components/layout/Footer'
-import { Band, Container } from '@/components/ui/Container'
+import { buildMetadata } from '@/lib/seo'
 import { getPage } from '@/lib/wp/queries'
 import { decodeTitle, plainExcerpt, renderContent } from '@/lib/wp/renderContent'
-import { buildMetadata } from '@/lib/seo'
 
 export const revalidate = 3600
 export const dynamicParams = false
 
 /**
- * Anything CMS-managed that doesn't need its own template — privacy policy,
- * terms, whatever the client adds later. A new one needs adding here and to
- * KNOWN_ROUTES in proxy.ts, which otherwise sends it to /blog/<slug>.
+ * CMS pages with no template of their own: the plain-text layout, 19px on a
+ * 68ch measure. Adding one means adding it here and to TOP_LEVEL_ROUTES in
+ * src/lib/redirects.ts, or the proxy sends it to /blog/<slug>. With
+ * WordPress unreachable they 404 rather than fail the build.
  */
 const CMS_PAGES = ['privacy-policy', 'terms-of-use']
 
@@ -24,7 +23,7 @@ export function generateStaticParams() {
 export async function generateMetadata(props: { params: Promise<{ slug: string }> }) {
   const { slug } = await props.params
   const page = await getPage(slug)
-  if (!page) return buildMetadata({ title: 'Not found', path: `/${slug}` })
+  if (!page) return buildMetadata({ title: 'Not found', path: `/${slug}`, noindex: true })
 
   return buildMetadata({
     title: decodeTitle(page.title.rendered),
@@ -38,19 +37,14 @@ export default async function CmsPage(props: { params: Promise<{ slug: string }>
   const page = await getPage(slug)
   if (!page) notFound()
 
+  const title = decodeTitle(page.title.rendered)
+
   return (
-    <>
-      <PageHero title={decodeTitle(page.title.rendered)} />
-
-      <main id="main">
-        <Band tone="cream" className="pt-4">
-          <Container prose>
-            <div className="post-body">{renderContent(page.content.rendered)}</div>
-          </Container>
-        </Band>
-      </main>
-
-      <Footer />
-    </>
+    <main id="main">
+      <PageHero title={title} />
+      <div className="container-x pb-24">
+        <div className="prose-post">{renderContent(page.content.rendered, { title })}</div>
+      </div>
+    </main>
   )
 }

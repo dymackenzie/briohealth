@@ -1,69 +1,59 @@
 import Image from 'next/image'
-import { Camera } from 'lucide-react'
+import { Camera, VideoCamera } from '@phosphor-icons/react/dist/ssr'
+import type { Photo } from '@/lib/content/photos'
 
 /**
- * An image slot.
- *
- * With a `src` it renders the picture, cropped to the slot's shape. Without
- * one it renders the brief instead, so an empty slot still tells you — and the
- * photographer — what belongs there. `src/lib/content/photos.ts` says which
- * slots have a real photo today and why the rest don't.
+ * A photo slot. Every photo on the site is a rectangle on --radius-brand at 4/5 or
+ * 1/1 (the pickleball court is 4/3); `position` is
+ * how a shoot photo of Dr. Lee becomes a slot about the patient. The
+ * portrait of him on /about is 2/3 and shown whole, uncropped. The one
+ * 16/9 is a service loop's still, a frame of the client's own horizontal
+ * video, never a shoot crop. Without a photo it renders the brief as a
+ * designed placeholder, so an empty slot still tells the visitor, and the
+ * photographer or videographer (`kind="video"`), what belongs there, and
+ * the layout never breaks.
  */
 
-const SHAPES = {
-  blob: 'rounded-[42%_58%_38%_62%_/_54%_36%_64%_46%]',
-  blobAlt: 'rounded-[63%_37%_55%_45%_/_38%_58%_42%_62%]',
-  arch: 'rounded-t-[999px] rounded-b-xl',
-  archSoft: 'rounded-t-[8rem] rounded-b-lg',
-  leaf: 'rounded-tl-[40%] rounded-br-[40%] rounded-tr-2xl rounded-bl-2xl',
-  leafAlt: 'rounded-tr-[40%] rounded-bl-[40%] rounded-tl-2xl rounded-br-2xl',
-  pill: 'rounded-pill',
-  soft: 'rounded-xl',
-} as const
-
-const TONES = {
-  teal: 'bg-teal-600/35 text-canvas/70',
-  sand: 'bg-sand-300 text-ink-700',
-  sandLight: 'bg-sand-200 text-ink-700',
-  deep: 'bg-teal-900/45 text-canvas/60',
+export const ASPECTS = {
+  '4/5': 'aspect-[4/5]',
+  '1/1': 'aspect-square',
+  '4/3': 'aspect-[4/3]',
+  // The /about portrait, whole (the file is a 2:3 portrait).
+  '2/3': 'aspect-[2/3]',
+  // A service loop's still (the client's horizontal video).
+  '16/9': 'aspect-video',
 } as const
 
 export function Figure({
   subject,
-  src,
-  alt,
-  shape = 'soft',
-  tone = 'sand',
-  aspect = '4 / 5',
-  className = '',
-  sizes = '(min-width: 1200px) 560px, (min-width: 1024px) 50vw, 100vw',
+  photo,
+  aspect = '4/5',
   preload = false,
-  compact = false,
+  sizes = '(min-width: 1280px) 520px, (min-width: 1024px) 42vw, 100vw',
+  kind = 'photo',
+  className = '',
 }: {
   subject: string
-  src?: string
-  alt?: string
-  shape?: keyof typeof SHAPES
-  tone?: keyof typeof TONES
-  aspect?: string
-  className?: string
-  sizes?: string
+  photo: Photo | null
+  aspect?: keyof typeof ASPECTS
   preload?: boolean
-  /** Drop the label on small slots where it won't fit. */
-  compact?: boolean
+  sizes?: string
+  /** What the empty slot is waiting for: it sets the placeholder's label and icon. */
+  kind?: 'photo' | 'video'
+  className?: string
 }) {
-  const frame = `overflow-hidden ${SHAPES[shape]} ${className}`
-
-  if (src) {
+  if (photo) {
     return (
-      <div style={{ aspectRatio: aspect }} className={`relative ${frame}`}>
+      <div className={`relative overflow-hidden rounded-brand bg-grey ${ASPECTS[aspect]} ${className}`}>
         <Image
-          src={src}
-          alt={alt ?? subject}
+          src={photo.src}
+          alt={photo.alt}
           fill
           sizes={sizes}
           preload={preload}
+          fetchPriority={preload ? 'high' : undefined}
           className="object-cover"
+          style={{ objectPosition: photo.position }}
         />
       </div>
     )
@@ -72,16 +62,15 @@ export function Figure({
   return (
     <div
       role="img"
-      aria-label={`Placeholder — ${subject}`}
-      style={{ aspectRatio: aspect }}
-      className={`flex flex-col items-center justify-center gap-3 p-4 text-center ${TONES[tone]} ${frame}`}
+      aria-label={`${kind === 'video' ? 'Video' : 'Photo'} to come: ${subject}`}
+      className={`flex flex-col justify-between rounded-brand border-t-2 border-teal bg-grey p-5 ${ASPECTS[aspect]} ${className}`}
     >
-      <Camera className={compact ? 'h-5 w-5 opacity-40' : 'h-6 w-6 opacity-50'} aria-hidden />
-      {!compact && (
-        <span className="max-w-[26ch] text-[0.78rem] leading-snug tracking-wide">
-          {subject}
-        </span>
+      {kind === 'video' ? (
+        <VideoCamera size={24} className="text-teal-deep" aria-hidden />
+      ) : (
+        <Camera size={24} className="text-teal-deep" aria-hidden />
       )}
+      <p className="max-w-[24ch] text-small leading-snug text-ink-soft">{subject}</p>
     </div>
   )
 }

@@ -1,68 +1,54 @@
-import type { ReactNode } from 'react'
-
 import Link from 'next/link'
-import { ArrowLeft } from 'lucide-react'
+import type { ReactNode } from 'react'
+import { ArrowLeft } from '@phosphor-icons/react/dist/ssr'
 
-import { Header } from './Header'
-import { Band, Container } from '@/components/ui/Container'
-import { BandDivider } from '@/components/ui/BandDivider'
-import { DotBurst } from '@/components/brand/DotBurst'
+import { Field } from '@/components/ui/Field'
+import { displayClass } from '@/lib/typography'
 
 /**
- * Top of every inner page. The header lives inside the teal band, same as the
- * homepage, so the nav never sits on a bar of its own.
+ * Inner-page opener: title, one lead, optionally a way up. No eyebrow. The
+ * teal variant is a full-width field and counts toward the page's three.
+ * `bud` is a `Bud` placed in the hero's open right side: the one bud a
+ * simple page gets (spec 3.7).
  */
 export function PageHero({
-  parent,
   title,
   lead,
+  parent,
+  surface = 'paper',
+  bud,
   children,
-  divider = 'canvas',
 }: {
-  /** Where this page sits, when that isn't obvious from the title. */
-  parent?: { label: string; href: string }
   title: string
   lead?: string
+  parent?: { label: string; href: string }
+  surface?: 'paper' | 'teal'
+  bud?: ReactNode
   children?: ReactNode
-  /** Colour of the band below, for the curve. */
-  divider?: 'canvas' | 'none'
 }) {
-  return (
-    <Band tone="teal" as="div" flush className="relative overflow-hidden">
-      <DotBurst
-        droplet={false}
-        className="drift pointer-events-none absolute -top-52 -right-36 h-[34rem] w-[34rem] text-teal-400/10"
-      />
-
-      <Header />
-
-      <Container className="relative pt-7 pb-14 lg:pt-11 lg:pb-16">
-        {parent && (
-          <Link
-            href={parent.href}
-            className="rise-in mb-4 inline-flex items-center gap-2 text-[0.9rem] opacity-75 transition-opacity hover:opacity-100"
-          >
-            <ArrowLeft className="h-4 w-4" aria-hidden />
-            {parent.label}
-          </Link>
-        )}
-        <h1 className="rise-in max-w-[20ch] text-[clamp(1.9rem,4vw,2.75rem)]">
-          {title}
-        </h1>
-        {lead && (
-          <p
-            className="rise-in mt-4 max-w-[52ch] text-base opacity-85"
-            style={{ animationDelay: '120ms' }}
-          >
-            {lead}
-          </p>
-        )}
-        {children}
-      </Container>
-
-      {divider === 'canvas' && (
-        <BandDivider curve="drift" fill="text-canvas" className="-mb-px" />
+  const inner = (
+    <div className="container-x pt-12 pb-14 lg:pt-16 lg:pb-20">
+      {parent && (
+        <Link
+          href={parent.href}
+          className={`inline-flex items-center gap-1.5 text-small font-medium ${surface === 'teal' ? 'text-on-teal' : 'text-teal-deep'} underline-offset-4 hover:underline`}
+        >
+          <ArrowLeft size={16} aria-hidden />
+          {parent.label}
+        </Link>
       )}
-    </Band>
+      <h1 className={`${displayClass(title)} ${parent ? 'mt-5' : ''} max-w-[16ch]`}>{title}</h1>
+      {lead && <p className="mt-6 max-w-[42ch] text-lede">{lead}</p>}
+      {children}
+      {bud}
+    </div>
+  )
+
+  return surface === 'teal' ? (
+    <Field as="section" className="relative overflow-x-clip">
+      {inner}
+    </Field>
+  ) : (
+    <section className="relative overflow-x-clip">{inner}</section>
   )
 }

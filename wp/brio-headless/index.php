@@ -2,10 +2,7 @@
 /**
  * WordPress requires this file for a theme to be valid. inc/headless.php
  * redirects front-end requests before they get here, so reaching it means
- * BRIO_SITE_URL isn't set.
- *
- * wp_redirect, not wp_safe_redirect: the Next site is another host, and the
- * safe version quietly swaps that for wp-admin.
+ * BRIO_SITE_URL is not set.
  */
 
 defined( 'ABSPATH' ) || exit;

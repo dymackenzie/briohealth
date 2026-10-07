@@ -1,27 +1,42 @@
 # WordPress side
 
 `brio-headless/` is the theme that turns the existing Avada install into a
-backend. Deploy it to a WP Toolkit staging clone first — deactivating Avada on
+backend. Deploy it to a WP Toolkit staging clone first; deactivating Avada on
 the live clinic site with no rollback is not a thing to do on a Thursday.
 
-Full context is in the design spec, §10.
+Content model: spec section 8 in
+`docs/superpowers/specs/2026-09-30-brio-signal-rebuild-design.md`, as revised
+by section 9 of `docs/superpowers/specs/2026-10-02-brio-signal-revision-design.md`.
 
-## What's in it
+## What is in it
 
 | | |
 |---|---|
 | `functions.php` | Wires up the rest and points SCF at `acf-json/` |
-| `inc/post-types.php` | `service`, `program`, `team_member`, `testimonial`, `faq` |
-| `inc/options.php` | Site settings page + `/wp-json/brio/v1/settings` |
-| `inc/revalidate.php` | Publish/update/trash → `POST /api/revalidate` on the Next site |
+| `inc/post-types.php` | `service`, `testimonial`, `faq` |
+| `inc/options.php` | Site settings page and `/wp-json/brio/v1/settings` |
+| `inc/revalidate.php` | Publish, update, trash: `POST /api/revalidate` on the Next site |
 | `inc/headless.php` | Front-end lockdown and hardening |
 | `inc/preview.php` | Renders post previews, which the lockdown would otherwise kill |
-| `acf-json/` | The field groups, in git |
+| `template-*.php` | Empty stubs that let a page pick its field group |
+| `acf-json/` | The field groups, generated from `../tools/field-groups.mjs` |
+
+## Editing the field groups
+
+The source of truth is `wp/tools/field-groups.mjs`. Change it, then:
+
+    node wp/tools/build-acf-json.mjs
+    node wp/tools/check-acf-json.mjs
+
+and commit both the source and the generated JSON. SCF reads `acf-json/` on
+load. If you edit a group in wp-admin instead, SCF writes the JSON back into
+`acf-json/`; copy the change into `field-groups.mjs` so the next build does
+not undo it.
 
 ## Install
 
-1. **Clone to staging.** Plesk → WordPress Toolkit → Clone. Everything below
-   happens on the clone until it's verified.
+1. **Clone to staging.** Plesk, WordPress Toolkit, Clone. Everything below
+   happens on the clone until it is verified.
 
 2. **Add the constants** to `wp-config.php`, above the
    `/* That's all, stop editing */` line:
@@ -32,100 +47,143 @@ Full context is in the design spec, §10.
    ```
 
    Generate the secret with `openssl rand -hex 32`. On staging, point
-   `BRIO_SITE_URL` at the Vercel preview URL instead.
+   `BRIO_SITE_URL` at the Vercel preview URL.
 
-3. **Install Secure Custom Fields** — Plugins → Add New → search "Secure Custom
-   Fields" (the WordPress.org one, not ACF). Activate.
+   On the Vercel side, set `WP_REVALIDATE_SECRET` to the same value, and
+   `WP_API_URL` to the clone's `/wp-json` while testing against staging.
+   Redeploy after changing either; Vercel only applies env changes to new
+   deployments.
 
-4. **Upload the theme.** Copy `brio-headless/` into `wp-content/themes/`, or zip
-   it and use Appearance → Themes → Add New → Upload. Don't activate yet.
+3. **Install Secure Custom Fields** (the WordPress.org plugin, not ACF).
+   Activate it.
 
-5. **Deactivate the Avada theme's extras — but leave Fusion Builder alone for
-   now.** The recent blog posts are built with Fusion, and without the plugin
-   they open in the editor as a wall of `[fusion_builder_container]`
-   shortcodes. The client asked specifically that whoever writes the blog can
-   keep working normally, so Fusion stays until you've checked, post by post,
-   that they don't need it.
+4. **Upload the theme.** Copy `brio-headless/` into `wp-content/themes/`, or
+   zip it and use Appearance, Themes, Add New, Upload. Do not activate yet.
 
-   Fusion Builder may refuse to load without the Avada theme active — several
-   versions check. **Test that on the staging clone before you touch the live
-   site**, because it decides which of two paths you're on:
+5. **Fusion Builder.** The recent blog posts are built with it. Test on the
+   clone whether it runs without the Avada theme active. If it runs, leave it
+   active and old posts stay editable as they are. If it will not, leave the
+   old posts alone (they render correctly on the public site; the normaliser
+   handles Fusion markup) and new posts are written in the block editor. Tell
+   the client before the switch, not after. Leave the cookie plugins alone.
 
-   - *It runs* → leave it active. Old posts stay editable as they are.
-   - *It won't run* → leave the old posts alone. They still render correctly on
-     the public site (`renderContent.ts` normalises Fusion markup), and new
-     posts get written in the block editor. Say so to the client before the
-     switch rather than after.
+6. **Activate Brio Headless.** The field groups appear on their own. If they
+   do not: Custom Fields, Field Groups, Sync.
 
-   Leave `complianz-gdpr` and `cookie-law-info` alone either way — the cookie
-   banner is a compliance decision, not a technical one.
-
-6. **Activate Brio Headless.** The field groups appear on their own; SCF reads
-   `acf-json/` on load. If they don't, Custom Fields → Field Groups → Sync.
-
-7. **Tag the pages.** Each page needs its template set under Page Attributes,
-   or its fields won't show:
+7. **Tag the pages.** Each needs its template set under Page Attributes, or
+   its fields will not show:
 
    | Page | Template |
    |---|---|
    | About | About |
-   | Services | Services overview |
    | Contact | Contact |
+   | New Patient (the old Book Now page) | New Patient |
    | Pickleball | Pickleball |
 
-   The home page picks its group up automatically from Settings → Reading.
+   The home page picks its groups up from Settings, Reading (front page).
 
-8. **Fill in Site settings** — phone, address, hours, Jane link. Hours are the
-   one thing we don't have yet and the contact page and Google both want them.
+8. **Fill in Site settings**: phone, address, hours, the Saturday note, the
+   Jane link, the CTA label ("Book Appointment"), socials.
 
-9. **Check the API.** These should all return JSON:
+9. **Add the three services** (slugs `naturopathic`, `acupuncture`,
+   `iv-therapy`; the slug is the URL), the testimonials and the FAQs. The
+   copy to paste is in `src/lib/content/` on the Next side. The service
+   bodies are the live pages' text (`src/lib/content/services.ts`, `body` and
+   `closing`); paste them into the wysiwyg fields and keep the headings and
+   lists.
 
-   ```
-   /wp-json/brio/v1/settings
-   /wp-json/wp/v2/services
-   /wp-json/wp/v2/testimonials
-   /wp-json/wp/v2/pages?slug=about-2
-   ```
+10. **Check the API.** These should all return JSON:
 
-   And `/wp-json/wp/v2/users` should now 404 while
-   `/wp-json/wp/v2/posts?_embed=1` still comes back with an author name.
+    ```
+    /wp-json/brio/v1/settings
+    /wp-json/wp/v2/services
+    /wp-json/wp/v2/testimonials
+    /wp-json/wp/v2/faqs
+    /wp-json/wp/v2/pages?slug=about-2
+    ```
 
-10. **Test the webhook.** Publish anything, then check the Vercel function log
-    for a hit on `/api/revalidate`. A missing `BRIO_REVALIDATE_SECRET` shows as
-    an admin notice rather than failing quietly.
+    `/wp-json/wp/v2/users` should 404 while `/wp-json/wp/v2/posts?_embed=1`
+    still comes back with an author name. Logged out, `/wp-json/wp/v2/users/1`
+    should show `id` and `name` but no `slug`, `link` or `avatar_urls`.
 
-Steps 2–10 are all reversible. The only one-way step is the DNS change in §10.1
-step 7, and that's a separate day.
+    Then check the service video field's limits hold: on a service, pick a
+    file over 3 MB, then a non-MP4 (a .mov or a .jpg), in `Background loop`.
+    SCF should refuse both (the field's `max_size` is 3 and its mime type
+    `mp4`). If either goes through, the install's SCF version doesn't
+    enforce them, and the 3 MB rule rests on the field's instructions alone.
 
-## What the blog editor sees afterwards
+11. **Test the webhook.** Publish anything, then check the Vercel function
+    log for a hit on `/api/revalidate`. A missing `BRIO_REVALIDATE_SECRET`
+    shows as an admin notice rather than failing quietly. The call goes out
+    after WordPress has answered the editor, so a failure only shows in the
+    PHP error log (`[brio] revalidate ...`), never as a failed save.
 
-The client's existing web person keeps working in wp-admin exactly as before.
-Worth being able to answer these when they ask:
+    That depends on PHP-FPM. Check it on the clone: Plesk, the domain, PHP
+    Settings, "PHP support" should read "FPM application served by Apache"
+    (or by nginx). Under mod_php or plain FastCGI there is no
+    `fastcgi_finish_request()`, so each save waits for the webhook, up to 3
+    seconds per call when the Vercel site is slow or down. Switch the
+    handler to FPM if the host allows it; otherwise saves are just slower.
+
+Steps 2 to 11 are reversible. The only one-way step is the DNS change in the
+2026-09-02 spec, section 10.1, and that is a separate day.
+
+## Service videos
+
+Each service has four fields: a background loop, its still, the narrated
+video and its captions. All of it is horizontal, 16:9. Dr. Jeff narrates the full
+video; the loop is what plays silently in the panel beside the service
+list on the home page and Services (on hover or keyboard focus; on phones
+and tablets, under the service's name once its preview button is pressed)
+and behind the service page title.
+
+**Loop** (`Background loop`): 8 to 15 seconds, horizontal 16:9 at
+1280x720, H.264 MP4, no audio track, under about 3 MB. From the full
+video, in HandBrake or ffmpeg:
+
+    ffmpeg -ss 00:00:12 -t 10 -i full.mp4 -an -vf scale=1280:-2 -c:v libx264 -crf 24 -preset slow -movflags +faststart loop-naturopathic.mp4
+
+Upload it to the media library (Media, Add New; the install's upload limit
+must be at least 3 MB, which Plesk sets under PHP Settings), then pick it
+in the field.
+
+**Still** (`Loop still`): one frame from the loop, 16:9, JPG, 1600 pixels
+wide. The service list only shows the loop when its still is set:
+
+    ffmpeg -ss 00:00:02 -i loop-naturopathic.mp4 -frames:v 1 -vf scale=1600:-2 -q:v 3 still-naturopathic.jpg
+
+It shows until the loop plays, on devices that cannot play it, and for
+anyone who prefers less motion.
+
+**Narrated video** (`Narrated video`): the full video, served from the
+media library and shown on the service page beside the text as a player
+with sound, under the loop's still until the visitor presses play. Every
+view comes off this host, so compress it first. In HandBrake: preset Fast
+1080p30, then Web Optimized on, 1280x720, H.264, constant framerate same
+as source, RF 22, encoder preset Slow, AAC stereo 128 kbps, extra audio
+tracks removed. Or:
+
+    ffmpeg -i full.mp4 -vf scale=1280:-2 -c:v libx264 -crf 22 -preset slow -c:a aac -b:a 128k -ac 2 -movflags +faststart narrated-naturopathic.mp4
+
+A few minutes of talking head comes out around 30 to 50 MB. Media, Add New
+shows the install's upload limit; if the file is bigger, raise
+`upload_max_filesize` and `post_max_size` under Plesk's PHP Settings.
+
+**Captions** (`Captions`): what is said in the narrated video, as a WebVTT
+file (`.vtt`). The site shows them by default. Write
+or correct them by hand, or export them from a transcription tool (YouTube
+Studio, Descript, Premiere) as WebVTT, and check names and medical terms.
+WordPress accepts `.vtt` uploads; confirm it on staging. The site loads the
+file through its own `/api/captions/` route, because this host sends no
+CORS headers and a browser won't load captions across domains without them.
+
+## What the editor sees afterwards
 
 | | |
 |---|---|
 | Writing and editing posts | Unchanged. Same editor, same media library. |
-| **Preview** | Works. WordPress renders it — a clean page with the post's own words, headings and images, not the live layout. `inc/preview.php` explains why. |
-| **View post** | Goes to the real page on the public site. |
-| Publishing | The webhook fires on save and the public page updates within seconds. No cache to clear by hand. |
-| Categories and tags | Unchanged, and editing one revalidates its archive. |
-| Featured images | Unchanged. |
-| The public front end of *this* install | Gone — every URL redirects to the Next site. That's the point of the switch. |
-
-The one honest gap is that Preview doesn't show the site's design. Closing it
-means Next draft mode: WordPress hands off to `/api/preview`, which reads the
-draft over the REST API and renders it in the real templates. That needs an
-application password stored on Vercel, so it waits for a staging endpoint.
-`inc/preview.php` has the note.
-
-## Editing the field groups
-
-Edit them in wp-admin. SCF writes the JSON back into `acf-json/`, so the change
-arrives as a diff — commit it like any other. Hand-editing the JSON works too,
-but then hit Sync in the admin afterwards.
-
-## Field group locations
-
-Groups bind to a **page template**, not a page ID, so they survive the staging
-clone and any future rebuild. That's what the `template-*.php` stubs are for;
-they never render anything.
+| Pages | Labelled forms instead of the Avada builder. Every field says what it is for and how long it should be. Empty fields fall back to the site's own copy. |
+| Preview | Works. WordPress renders a clean page with the post's words, not the live layout. |
+| View post | Goes to the real page on the public site. |
+| Publishing | The webhook fires on save; the public page updates within a minute. |
+| The public front end of this install | Gone. Every URL redirects to the Next site. |

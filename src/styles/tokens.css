@@ -1,61 +1,62 @@
 /*
- * The teal ramp is the logo colour at different lightnesses — same hue (184.6)
- * and same full saturation the whole way down, so a band and the mark read as
- * one colour. #00919D is the logo exactly; the #1A929C in the old planning
- * notes is a near-miss and looks muddier beside it.
- *
- * 700 is as bright as a text-bearing band can go: cream on it is 5.7:1, and
- * cream on 500 is only 3.8:1, which fails. So 500 does the accents and 700
- * does the ground.
+ * Signal tokens, "Clay and Tide". Warm cream paper and sand, the logo teal
+ * as large fields, a deep tide teal for the dark strips, one clay for the
+ * primary action, Newsreader for display type. Every colour on the site is
+ * one of these nine; the Tailwind palette is reset so nothing else can be
+ * reached by accident. `grey` keeps its name but is sand now.
  */
 
 @theme {
-  /* Teal is the ground here, not an accent. */
-  --color-teal-900: #003D42; /* footer, deepest band */
-  --color-teal-800: #005057; /* button hover, pressed states */
-  --color-teal-700: #006C75; /* dominant band colour */
-  --color-teal-600: #00848F; /* icons and rules on cream */
-  --color-teal-500: #00919D; /* the logo teal */
-  --color-teal-400: #3FAFB8;
-  --color-teal-300: #6FC2CA;
-  --color-teal-200: #A6D9DF;
-  --color-teal-100: #D2EDF0;
-  --color-teal-50: #EBF7F8;
+  --color-*: initial;
+  --color-paper: #f6f1e7;
+  --color-grey: #ece3d3;
+  --color-ink: #1c1c1e;
+  --color-ink-soft: #4d4740;
+  --color-teal: #00919d;
+  --color-teal-deep: #007a85;
+  --color-on-teal: #031011;
+  --color-tide: #0d4a50;
+  --color-clay: #e07a55;
 
-  /* Ink */
-  --color-ink-900: #231F20; /* warm near-black, off the logo */
-  --color-ink-700: #3A3536;
-  --color-ink-500: #5A6566;
-  --color-ink-300: #9AA3A3;
+  --font-display: var(--font-funnel-display), 'Funnel Display', ui-sans-serif, system-ui, sans-serif;
+  --font-sans: var(--font-funnel-sans), 'Funnel Sans', ui-sans-serif, system-ui, sans-serif;
+  --font-serif: var(--font-newsreader), 'Newsreader', Georgia, 'Times New Roman', serif;
 
-  /* Neutrals */
-  --color-canvas: #FAF6EF; /* the cream band */
-  --color-sand-200: #F1E9DB;
-  --color-sand-300: #E7DCC9;
-  --color-paper: #FFFFFF;
+  /* The one radius: photos and buttons. */
+  --radius-brand: 0.5rem;
 
-  /* State. Both are form-validation colours and nothing else uses them. */
-  --color-coral-300: #F3B39E;
-  --color-error: #C7493A;
+  /* No shadows except the header dropdown. */
+  --shadow-*: initial;
+  --shadow-dropdown: 0 12px 32px rgb(28 28 30 / 0.12);
 
-  /* Type */
-  --font-display: var(--font-fraunces), ui-serif, Georgia, serif;
-  --font-body: var(--font-hanken), ui-sans-serif, system-ui, sans-serif;
-
-  /* Radii */
-  --radius-md: 1rem;
-  --radius-lg: 1.5rem;
-  --radius-xl: 2rem;
-  --radius-pill: 999px;
-
-  /* Soft — this isn't a card-based design, so there's only the one. */
-  --shadow-lg: 0 18px 48px rgb(12 74 79 / 0.10);
+  /* ease and linear are banned for motion; only these two exist. */
+  --ease-*: initial;
+  --ease-out-expo: cubic-bezier(0.16, 1, 0.3, 1);
+  --ease-out-quart: cubic-bezier(0.25, 1, 0.5, 1);
+  --default-transition-timing-function: var(--ease-out-expo);
+  --default-transition-duration: 300ms;
 }
 
 :root {
-  /* Layout primitives, not utilities, so they stay out of @theme. */
-  --section-y: clamp(2.75rem, 5.5vw, 4.75rem);
-  --container: 1200px;
-  --container-prose: 680px;
-  --gutter: clamp(1.15rem, 3vw, 2.5rem);
+  --container: 1280px;
+  --gutter: clamp(1rem, 4vw, 2.5rem);
+  --section-y: clamp(2.5rem, 5vw, 4.5rem);
+  --header-h: 88px;
+
+  /* Type scale (spec 3.6, "D1, 35% smaller"). Body 18px, floor 15px.
+   * The serif carries display type; Funnel Display only sets numerals. */
+  --fs-display: clamp(2.5rem, 4.7vw, 4.25rem);
+  --fs-display-long: clamp(2.5rem, 4.7vw, 4.25rem);
+  --fs-tagline: clamp(1.1875rem, 1.6vw, 1.4375rem);
+  --fs-h2: clamp(1.75rem, 2.8vw, 2.5rem);
+  --fs-questions: clamp(1.625rem, 2.6vw, 2.375rem);
+  --fs-quote: clamp(1.375rem, 2.1vw, 1.875rem);
+  --fs-stat: clamp(1.375rem, 1.8vw, 1.625rem);
+  --fs-post-title: clamp(1.625rem, 2.4vw, 2rem);
+  --fs-h3: 1.375rem;
+  --fs-lede: clamp(1.25rem, 1.1rem + 0.6vw, 1.5rem);
+  --fs-body: 1.125rem;
+  --fs-small: 0.9375rem;
+  --fs-numeral: clamp(2.25rem, 3.5vw, 3rem);
+  --fs-post: 1.1875rem;
 }

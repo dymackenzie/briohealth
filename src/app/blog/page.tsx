@@ -1,94 +1,64 @@
-import Link from 'next/link'
 import { notFound } from 'next/navigation'
 
-import { PageHero } from '@/components/layout/PageHero'
-import { Footer } from '@/components/layout/Footer'
-import { Band, Container } from '@/components/ui/Container'
-import { Reveal } from '@/components/ui/Reveal'
-import { PostCard } from '@/components/blog/PostCard'
+import { CategoryFilter } from '@/components/blog/CategoryFilter'
 import { Pagination } from '@/components/blog/Pagination'
-import { getCategories, getPosts } from '@/lib/wp/queries'
-import { decodeTitle } from '@/lib/wp/renderContent'
-import { buildMetadata } from '@/lib/seo'
+import { PostList } from '@/components/blog/PostList'
+import { Button } from '@/components/ui/Button'
+import { pages } from '@/lib/content/pages'
+import { buildMetadata, paged } from '@/lib/seo'
+import { getCategories, getPosts, parsePage } from '@/lib/wp/queries'
 
-export const metadata = buildMetadata({
-  title: 'Blog',
-  description:
-    'Health tips, recipes and clinic news from Brio Health in Richmond, BC.',
-  path: '/blog',
-})
+export const revalidate = 3600
 
-export default async function BlogIndex(props: {
-  searchParams: Promise<{ page?: string }>
-}) {
-  const { page: pageParam } = await props.searchParams
-  const page = Math.max(1, Number(pageParam) || 1)
+type SearchParams = Promise<{ page?: string | string[] }>
 
-  const [{ posts, total, totalPages }, categories] = await Promise.all([
-    getPosts({ page }),
-    getCategories(),
-  ])
+export async function generateMetadata(props: { searchParams: SearchParams }) {
+  const { page } = await props.searchParams
+  return buildMetadata({
+    ...paged('Blog', '/blog', parsePage(page)),
+    description: 'Health tips, recipes and clinic news from Brio Health in Richmond, BC.',
+  })
+}
 
-  // Past the last page, not a quiet blog.
+/**
+ * The archive, Substack's way: one narrow centred column, a plain heading,
+ * the categories as tabs, then the posts by month. Reads `?page=`, so it
+ * renders per request; the WordPress reads behind it stay cached under
+ * their tags.
+ */
+export default async function BlogIndex(props: { searchParams: SearchParams }) {
+  const { page: raw } = await props.searchParams
+  const page = parsePage(raw)
+
+  const [{ posts, totalPages }, categories] = await Promise.all([getPosts({ page }), getCategories()])
+
+  // Past the last page, not a quiet blog. Page 1 with nothing is WordPress
+  // being down, and gets the empty state instead.
   if (page > 1 && posts.length === 0) notFound()
 
   return (
-    <>
-      <PageHero
-        title="Notes on getting your health back"
-        lead={`${total.toLocaleString('en-CA')} posts on nutrition, treatment and everything we've learned in the clinic.`}
-      />
-
-      <main id="main">
-        <Band tone="cream" className="pt-4">
-          <Container>
-            {categories.length > 0 && (
-              <Reveal>
-                <ul className="flex flex-wrap gap-2">
-                  <li>
-                    <span className="inline-flex rounded-pill bg-teal-700 px-4 py-2 text-[0.875rem] text-canvas">
-                      All
-                    </span>
-                  </li>
-                  {categories.slice(0, 10).map((category) => (
-                    <li key={category.id}>
-                      <Link
-                        href={`/blog/category/${category.slug}`}
-                        className="inline-flex rounded-pill border border-ink-900/15 px-4 py-2 text-[0.875rem] transition-colors hover:border-teal-500 hover:text-teal-700"
-                      >
-                        {decodeTitle(category.name)}
-                        <span className="ml-2 text-ink-300 tabular-nums">
-                          {category.count}
-                        </span>
-                      </Link>
-                    </li>
-                  ))}
-                </ul>
-              </Reveal>
-            )}
-
-            {posts.length === 0 ? (
-              <p className="mt-11 text-ink-500">
-                Nothing here yet. Check back soon.
-              </p>
-            ) : (
-              <ul className="mt-10 grid gap-x-7 gap-y-11 sm:grid-cols-2 lg:grid-cols-3">
-                {posts.map((post, i) => (
-                  <Reveal as="li" key={post.id} delay={(i % 3) * 80}>
-                    <PostCard post={post} eager={i < 3} />
-                  </Reveal>
-                ))}
-              </ul>
-            )}
-
-            <Pagination page={page} totalPages={totalPages} basePath="/blog" />
-          </Container>
-        </Band>
-      </main>
-
-      <Footer />
-    </>
+    <main id="main">
+      <div className="container-x pb-[var(--section-y)]">
+        <div className="mx-auto max-w-[38rem] pt-10 lg:pt-14">
+          <h1 className="text-post-title">{pages.blog.title}</h1>
+          {posts.length === 0 ? (
+            <div className="mt-8 border-t border-grey pt-10">
+              <p className="max-w-[40ch] text-lede">{pages.blog.empty}</p>
+              <Button href="/services" variant="quiet" className="mt-6">
+                See how we help
+              </Button>
+            </div>
+          ) : (
+            <>
+              <div className="mt-6">
+                <CategoryFilter categories={categories} />
+              </div>
+              <PostList posts={posts} />
+            </>
+          )}
+          <Pagination page={page} totalPages={totalPages} basePath="/blog" />
+        </div>
+      </div>
+    </main>
   )
 }
-
-export const revalidate = 3600

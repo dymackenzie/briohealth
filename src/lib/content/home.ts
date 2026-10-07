@@ -1,134 +1,127 @@
-import { site, yearsPractising } from '@/lib/site'
-import { services } from './services'
+import { site } from '@/lib/site'
+import { WP_UPLOADS_URL } from '@/lib/wp/client'
+import type { ServiceSlug } from './services'
 
 /**
- * Section order and headlines come from the wireframe; the body copy is the
- * clinic's own, lifted from their live homepage, which is more specific
- * everywhere the two differ.
- *
- * Becomes SCF fields once WordPress is set up, so keep the shape flat.
+ * The homepage in Dr. Jeff's wireframe order (spec Appendix A): hero,
+ * stakes, trust, plan, explanatory paragraph. Every string is the
+ * wireframe's, with the reading notes applied: live-site title casing on
+ * headings the live site also has, 2006 not 2008, no double spaces, no
+ * trailing period after "Increasing Energy", Best of Richmond as the only
+ * logo. One key per SCF field group, named after the section.
  */
 
-export const home = {
+export type TrustIcon = 'certificate' | 'map-pin' | 'users'
+
+export interface HomeContent {
   hero: {
-    // Wireframe's headline; their own opening question underneath. Split so
-    // the last word can take the underline.
-    heading: 'Reclaim Your Vitality',
-    headingAccent: 'Naturally',
-    body: 'Tired of feeling exhausted and confused about your health?',
-    cta: 'Book an appointment',
-    images: {
-      primary: 'Dr. Lee with a patient, warm natural light, treatment room',
-      secondary: 'Clinic interior — waiting area or reception detail',
-    },
+    heading: string
+    sentence: string
+  }
+  stakes: {
+    heading: string
+    questions: string[]
+    paragraphs: string[]
+  }
+  services: {
+    order: ServiceSlug[]
+  }
+  trust: {
+    stats: { icon: TrustIcon; text: string }[]
+    badge: { src: string; alt: string; width: number; height: number }
+    badgeHeading: string
+    badgeThanks: string
+  }
+  plan: {
+    heading: string
+    steps: { title: string; body: string }[]
+  }
+  explain: {
+    heading: string
+    paragraphs: string[]
+    stepsIntro: string
+    steps: { title: string; body: string }[]
+    closing: string
+  }
+}
+
+export const home: HomeContent = {
+  hero: {
+    heading: 'Transform Your Health, Regain Your Life:',
+    sentence: 'A Natural Approach to Building Vitality and Increasing Energy',
   },
 
   stakes: {
-    heading: "Don't Let Fatigue Control Your Life",
-    body: 'Are you **frustrated** with your current level of health?',
-    // Their five, not the wireframe's eight generic ones.
-    items: [
+    heading: 'Have you been frustrated with your level of health?',
+    questions: [
       'Do you feel tired all the time?',
       'Do you have digestive issues?',
       'Do you get sick easily?',
       'Do you experience brain fog or anxiety?',
-      'Have quick fixes left you more frustrated than when you started?',
     ],
-    image: 'Patient in consultation — listening, mid-conversation',
+    paragraphs: [
+      "At Brio Health, we don't focus on quick fixes that give you a temporary solution. That only leads to long term frustration.",
+      'We uncover the obstacles blocking your healing and guide you back to wellness. Our patients follow a customized road map empowering them to take control of their own health.',
+    ],
   },
 
-  value: {
-    heading: 'Feel Energized Again',
-    body: "At Brio Health, we don't focus on quick fixes that give you a temporary solution. That only leads to long term frustration.",
-    lead: 'We uncover the **obstacles blocking you from healing** and guide you back to wellness. Our patients follow a customized road map empowering them to take control of their own health.',
-    items: [
-      'Custom treatment plans that target root causes, not symptoms',
-      'Natural solutions backed by years of clinical experience',
-      'A holistic approach that harmonizes your body systems',
-      'Support to live life to the fullest, on your terms',
-    ],
-    image: 'Dr. Lee reviewing a treatment plan with a patient',
+  services: {
+    order: ['naturopathic', 'acupuncture', 'iv-therapy'],
   },
 
-  empathy: {
-    heading: 'We Understand Your Challenges',
-    body: `A licensed Naturopathic Physician and Registered Acupuncturist, **serving Richmond since ${site.foundedYear}**.`,
+  trust: {
     stats: [
-      { numeric: yearsPractising, suffix: '', label: 'Years serving Richmond' },
-      { numeric: 5000, suffix: '+', label: 'Patients helped' },
+      { icon: 'certificate', text: 'Licensed Health Professionals' },
+      { icon: 'map-pin', text: `Serving Richmond Since ${site.foundedYear}` },
+      { icon: 'users', text: 'Trusted by over 5,000 patients' },
     ],
-    award: {
-      title: 'Best of Richmond 2025',
-      detail: 'Voted Best Naturopath by Richmond News',
+    // The live homepage's badge and caption (page 22731).
+    badge: {
+      src: `${WP_UPLOADS_URL}/2025/06/2025-best-of-richmond-logo.jpg`,
+      alt: 'Best of Richmond 2025, Richmond News',
+      width: 960,
+      height: 540,
     },
-    images: {
-      portrait: 'Dr. Jeffrey Lee — portrait, clinic setting',
-    },
+    badgeHeading: 'Brio Health was voted in Richmond News’ “Best of Richmond 2025” in the category of Best Naturopath!',
+    badgeThanks: 'Thank you, Richmond!',
   },
-
-  // Real Google reviews, already public on their current site. These become
-  // testimonial CPT entries so the client picks which ones run.
-  testimonials: [
-    {
-      quote:
-        'Dr. Jeff Lee is the most professional, knowledgeable, gentle and trustworthy Naturopath in Richmond. I have been the recipient of many of his acupuncture, laser and naturopathic treatments and always feel stronger and healthier when I leave his office.',
-      name: 'Diane C.',
-      date: 'November 2024',
-    },
-    {
-      quote:
-        'He has treated me and my family — pinched nerve, sciatica, ankle sprains, fibromyalgia — for over a decade. We will follow him wherever he goes. As honest and as competent as they come.',
-      name: 'Dennis B.',
-      date: 'February 2024',
-    },
-    {
-      quote:
-        'He spends the time to get to the root cause of your health concerns. You can tell he really cares about his patients. The IV treatments from Brio are the best.',
-      name: 'Brandon W.',
-      date: 'February 2024',
-    },
-  ],
 
   plan: {
-    heading: '3 Simple Steps to Reclaim Vitality',
-    // Their wording. The wireframe was paraphrasing these anyway.
+    heading: "Here's How It Works",
     steps: [
       {
-        title: 'Assessment',
-        body: 'We take the time to listen and understand your current health status, and meet you where you are.',
-        image: 'Initial consultation — Dr. Lee listening, patient talking',
+        title: 'Book An Appointment',
+        body: "Everyone's healing journey is unique. During the initial assessment, we carefully listen to you, and meet you where you are.",
       },
       {
-        title: 'Re-establish a Healthy Baseline',
-        body: 'We help you remove the obstacles to healing and restore balance in your body.',
-        image: 'Treatment in progress — acupuncture or IV therapy',
+        title: 'Build A Personal Health Plan',
+        body: 'No one appreciates a cookie cutter approach. We build a plan specifically for you to address the root problems so you can heal from the inside out.',
       },
       {
-        title: 'Cultivate & Optimize Vitality',
-        body: 'We optimize the systems that matter — digestive, neurological, blood flow — so you can maximize energy and overall health.',
-        image: 'Patient leaving the clinic, or an active lifestyle frame',
+        title: 'Be Proud Of Your Health',
+        body: 'We guide and empower you to take the right steps towards vibrant health by following your custom treatment plan and making small adjustments along the way.',
       },
     ],
   },
 
-  // Three, not the five in the proposed IA — massage left with its
-  // practitioner and laser isn't sold on its own.
-  services: {
-    heading: 'How We Can Help',
-    // A view of the service list, not a second copy of it. The blurbs were
-    // duplicated word-for-word and would have drifted on the first edit.
-    items: services.map((service) => ({
-      slug: service.slug,
-      title: service.title,
-      href: `/services/${service.slug}`,
-      body: service.summary,
-      image: service.image,
-    })),
+  explain: {
+    heading: 'At Brio Health we know you want to be healthy, vibrant and full of energy.',
+    paragraphs: [
+      'In order to be that way, you need a custom step-by-step plan that rebuilds your health from the inside out.',
+      'The problem is that most people only want symptomatic relief and are misled by "quick fixes" that never address the root imbalance. This leads to confusion in the body resulting in more problems down the road like fatigue, inflammation and immune issues.',
+      "We believe the current healthcare model needs to change. It's not right that we are getting sicker and sicker as a society, despite all our medical knowledge and advancements.",
+      "We understand it's frustrating when your health feels stuck or worse, heading in the wrong direction. That's why our health approach is tailored to your specific needs, rather than treating a generic medical diagnosis. We have helped thousands of patients over the past 18 years transform their health with this personalized approach.",
+    ],
+    stepsIntro: 'Here are the steps to transform your health:',
+    steps: [
+      { title: 'Assessment', body: 'We take the time to listen and understand your current health status.' },
+      { title: 'Re-establish a Healthy Baseline', body: 'We help you remove obstacles to healing and restore balance in your body' },
+      {
+        title: 'Cultivate & Optimize Vitality',
+        body: 'We help you optimize the important systems in your body (ie. digestive, neurological, blood flow), so you can maximize energy production and overall health.',
+      },
+    ],
+    closing:
+      'Book an appointment today, so you can stop feeling frustrated about your health and start believing you can be healthy, vibrant and full of energy again.',
   },
-
-  close: {
-    heading: 'Take the First Step Towards Wellness',
-    body: 'Book an appointment today, so you can stop feeling frustrated about your health and start feeling **healthy, vibrant and full of energy** again.',
-    cta: 'Book an appointment',
-  },
-} as const
+}

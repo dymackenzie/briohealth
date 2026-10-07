@@ -6,7 +6,7 @@
  * the custom post types, the SCF field groups, the site-settings options
  * page, and the save hook that tells Vercel to drop its cache.
  *
- * Config lives in wp-config.php so it isn't in git:
+ * Config lives in wp-config.php so it is not in git:
  *
  *   define( 'BRIO_SITE_URL',          'https://yourbriohealth.com' );
  *   define( 'BRIO_REVALIDATE_SECRET', '...' );   // matches WP_REVALIDATE_SECRET
@@ -18,7 +18,7 @@ define( 'BRIO_THEME_DIR', get_template_directory() );
 
 /**
  * Where the public site lives, or null until the constant is set. No fallback
- * to home_url() — that's this install, so every redirect would loop.
+ * to home_url(): that is this install, and every redirect would loop.
  */
 function brio_site_url(): ?string {
 	return defined( 'BRIO_SITE_URL' ) ? untrailingslashit( BRIO_SITE_URL ) : null;
@@ -40,16 +40,23 @@ add_filter( 'acf/settings/load_json', function ( array $paths ): array {
 	return $paths;
 } );
 
+/**
+ * The `acf` object in REST responses, formatted the way get_field() formats
+ * it: image fields as { url, alt, width, height } rather than a bare ID. That
+ * is the shape src/lib/wp/types.ts expects. Fields only appear in REST when
+ * their group has show_in_rest on, which acf-json/ sets.
+ */
+add_filter( 'acf/settings/rest_api_format', fn() => 'standard' );
+
 add_action( 'after_setup_theme', function (): void {
-	// The editor still needs these even though we never render a page.
 	add_theme_support( 'post-thumbnails' );
 	add_theme_support( 'title-tag' );
 	add_theme_support( 'html5', array( 'caption' ) );
 } );
 
 /**
- * Warn in the admin if the pieces this theme depends on aren't there. Easy to
- * miss otherwise — the site just quietly stops updating.
+ * Warn in the admin if the pieces this theme depends on are missing. Easy to
+ * miss otherwise: the site just quietly stops updating.
  */
 add_action( 'admin_notices', function (): void {
 	if ( ! current_user_can( 'manage_options' ) ) {
@@ -59,10 +66,10 @@ add_action( 'admin_notices', function (): void {
 	$missing = array();
 
 	if ( ! function_exists( 'acf_add_options_page' ) ) {
-		$missing[] = 'Secure Custom Fields is not active — the page fields and site settings are unavailable.';
+		$missing[] = 'Secure Custom Fields is not active. The page fields and site settings are unavailable.';
 	}
 	if ( ! defined( 'BRIO_REVALIDATE_SECRET' ) ) {
-		$missing[] = 'BRIO_REVALIDATE_SECRET is not defined in wp-config.php — published changes will not appear on the live site until its cache expires.';
+		$missing[] = 'BRIO_REVALIDATE_SECRET is not defined in wp-config.php. Published changes will not appear on the live site until its cache expires.';
 	}
 	if ( ! defined( 'BRIO_SITE_URL' ) ) {
 		$missing[] = 'BRIO_SITE_URL is not defined in wp-config.php.';

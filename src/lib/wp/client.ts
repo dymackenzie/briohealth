@@ -1,19 +1,21 @@
 import type { WPCollection, WPPagination } from './types'
 
 /**
- * WordPress reads. The wp/v2 endpoints are public, so no auth and everything
- * is cacheable.
+ * WordPress reads. Every endpoint we use is public, so no auth and everything
+ * is cacheable under a tag.
  *
- * Nothing in here throws — callers get null or an empty collection. A blank
- * section beats a build that dies because the clinic's host had a bad minute.
+ * Nothing in here throws. Callers get null or an empty collection and render
+ * an empty state: a blank section beats a build that dies because the
+ * clinic's host had a bad minute.
  */
 
-const WP_BASE = (
-  process.env.WP_API_URL ?? 'https://yourbriohealth.com/wp-json/wp/v2'
-).replace(/\/$/, '')
+export const WP_ROOT = (process.env.WP_API_URL ?? 'https://yourbriohealth.com/wp-json').replace(/\/$/, '')
 
-/** Media lives wherever the API does, so content URLs get pointed here. */
-export const WP_HOST = new URL(WP_BASE).host
+/** Media lives wherever the API does; content URLs get pointed here. */
+export const WP_HOST = new URL(WP_ROOT).host
+
+/** The media library on that host: media named in code (photos, videos, the badge) follow the API at cutover. */
+export const WP_UPLOADS_URL = `https://${WP_HOST}/wp-content/uploads`
 
 // Backstop only; the save_post webhook is what normally busts the cache.
 const DEFAULT_REVALIDATE = 3600
@@ -25,7 +27,7 @@ export interface WPFetchOptions {
 }
 
 function buildUrl(path: string, query: WPFetchOptions['query']): string {
-  const url = new URL(`${WP_BASE}/${path.replace(/^\//, '')}`)
+  const url = new URL(`${WP_ROOT}/${path.replace(/^\//, '')}`)
   for (const [key, value] of Object.entries(query ?? {})) {
     if (value !== undefined) url.searchParams.set(key, String(value))
   }
@@ -39,10 +41,7 @@ function readPagination(response: Response): WPPagination {
   }
 }
 
-async function request(
-  path: string,
-  options: WPFetchOptions = {},
-): Promise<Response | null> {
+async function request(path: string, options: WPFetchOptions = {}): Promise<Response | null> {
   const url = buildUrl(path, options.query)
 
   try {
@@ -58,54 +57,47 @@ async function request(
     if (response.status === 404) return null
 
     if (!response.ok) {
-      console.error(`[wp] ${response.status} ${response.statusText} — ${url}`)
+      console.error(`[wp] ${response.status} ${response.statusText} for ${url}`)
       return null
     }
 
     return response
   } catch (error) {
-    console.error(`[wp] request failed — ${url}`, error)
+    console.error(`[wp] request failed for ${url}`, error)
     return null
   }
 }
 
-export async function wpFetchMany<T>(
-  path: string,
-  options: WPFetchOptions = {},
-): Promise<WPCollection<T>> {
+const EMPTY: WPCollection<never> = { items: [], total: 0, totalPages: 0 }
+
+export async function wpFetchMany<T>(path: string, options: WPFetchOptions = {}): Promise<WPCollection<T>> {
   const response = await request(path, options)
-  if (!response) return { items: [], total: 0, totalPages: 0 }
+  if (!response) return EMPTY
 
   try {
     const items = (await response.json()) as T[]
+    if (!Array.isArray(items)) return EMPTY
     return { items, ...readPagination(response) }
   } catch (error) {
-    console.error(`[wp] could not parse collection — ${path}`, error)
-    return { items: [], total: 0, totalPages: 0 }
+    console.error(`[wp] could not parse collection ${path}`, error)
+    return EMPTY
   }
 }
 
-export async function wpFetchOne<T>(
-  path: string,
-  options: WPFetchOptions = {},
-): Promise<T | null> {
+export async function wpFetchOne<T>(path: string, options: WPFetchOptions = {}): Promise<T | null> {
   const response = await request(path, options)
   if (!response) return null
 
   try {
     return (await response.json()) as T
   } catch (error) {
-    console.error(`[wp] could not parse resource — ${path}`, error)
+    console.error(`[wp] could not parse resource ${path}`, error)
     return null
   }
 }
 
 /** WordPress has no /posts/<slug> route, so slug lookups go through ?slug=. */
-export async function wpFetchBySlug<T>(
-  path: string,
-  slug: string,
-  options: WPFetchOptions = {},
-): Promise<T | null> {
+export async function wpFetchBySlug<T>(path: string, slug: string, options: WPFetchOptions = {}): Promise<T | null> {
   const { items } = await wpFetchMany<T>(path, {
     ...options,
     query: { ...options.query, slug, per_page: 1 },
@@ -114,14 +106,10 @@ export async function wpFetchBySlug<T>(
 }
 
 /**
- * Every page of a collection, for generateStaticParams and the sitemap.
- * Sequential on purpose — this runs at build time against a shared host and
- * saving two seconds isn't worth hammering it.
+ * Every page of a collection, for the sitemap. Sequential on purpose: this
+ * runs at build time against a shared host.
  */
-export async function wpFetchAll<T>(
-  path: string,
-  options: WPFetchOptions = {},
-): Promise<T[]> {
+export async function wpFetchAll<T>(path: string, options: WPFetchOptions = {}): Promise<T[]> {
   const first = await wpFetchMany<T>(path, {
     ...options,
     query: { ...options.query, per_page: 100, page: 1 },
@@ -140,7 +128,7 @@ export async function wpFetchAll<T>(
   return all
 }
 
-// Shared by the readers and the revalidate webhook so they can't drift.
+// Shared by the readers and the revalidate webhook so they cannot drift.
 export const tags = {
   posts: 'posts',
   post: (slug: string) => `post:${slug}`,

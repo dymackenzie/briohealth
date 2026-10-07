@@ -1,57 +1,117 @@
 import Link from 'next/link'
+import type { Icon } from '@phosphor-icons/react'
+import { FacebookLogo, InstagramLogo, XLogo } from '@phosphor-icons/react/dist/ssr'
 
-import { Logo } from './Logo'
-import { DotRule } from '@/components/brand/DotBurst'
-import { socialIcons } from '@/components/brand/SocialIcons'
+import { Logo } from '@/components/brand/Logo'
 import { NewsletterForm } from '@/components/forms/NewsletterForm'
-import { addressLine, footerLegal, formatDays, formatTime, site } from '@/lib/site'
+import { Address } from '@/components/ui/Address'
+import { Button } from '@/components/ui/Button'
+import { Hours } from '@/components/ui/Hours'
 import { services } from '@/lib/content/services'
+import { BOOKING_PATH, footerLegal, mapEmbedUrl, type SiteSettings } from '@/lib/site'
 
-const quickLinks = [
-  { label: 'About', href: '/about' },
-  { label: 'Blog', href: '/blog' },
-  { label: 'Pickleball', href: '/pickleball' },
+const socialIcons: Record<string, Icon> = {
+  Instagram: InstagramLogo,
+  Facebook: FacebookLogo,
+  X: XLogo,
+}
+
+/** Wireframe section 9, "the junk drawer". The line is Dr. Jeff's. */
+const MERCY = "Don't be at the Mercy of your symptoms"
+
+const pageLinks = [
   { label: 'Contact', href: '/contact' },
-  { label: 'Book Now', href: site.bookingUrl },
+  { label: 'Pickleball', href: '/pickleball' },
 ]
 
-export function Footer() {
+/**
+ * Teal-deep on sand is 4.0:1, short of AA for body text, so links on this
+ * panel stay ink and carry an underline instead of a colour.
+ */
+const link = 'underline decoration-1 underline-offset-4 hover:decoration-2'
+
+/**
+ * The wireframe's junk drawer, on grey (not a teal field), in its order:
+ * the three service buttons, "Don't be at the Mercy of your symptoms" with
+ * the booking button, the map (patients get lost; toned into the sand by
+ * `map-tone`, with Google's own "Open in Maps" inside it), the clinic's
+ * details and hours with the About link, the newsletter, then legal, Contact,
+ * Pickleball, socials and the copyright. NAP here must match the contact
+ * page and the JSON-LD: all three read the same settings object.
+ */
+export function Footer({ settings }: { settings: SiteSettings }) {
   return (
-    <footer className="band-teal-deep">
-      <div className="container-x py-14">
-        <div className="grid gap-8 md:grid-cols-2 lg:grid-cols-[1.4fr_1fr_1fr]">
-          <div>
-            <Logo />
+    <footer className="bg-grey">
+      <div className="container-x py-12 lg:py-14">
+        <nav aria-label="Services" className="flex flex-wrap gap-3">
+          {services.map((s) => (
+            <Button key={s.slug} href={`/services/${s.slug}`} variant="outline">
+              {s.title}
+            </Button>
+          ))}
+        </nav>
 
-            {/* Live links — on mobile this is the main conversion path. */}
-            <address className="mt-5 space-y-1.5 text-[0.95rem] not-italic opacity-80">
-              <p>{site.legalName}</p>
-              <p>{addressLine}</p>
-              <p>
-                <a href={site.phoneHref} className="hover:underline">
-                  {site.phone}
-                </a>
-              </p>
-              <p>
-                <a href={`mailto:${site.email}`} className="hover:underline">
-                  {site.email}
-                </a>
-              </p>
-            </address>
+        <div className="mt-10 flex flex-col gap-5 border-t border-ink/15 pt-10 sm:flex-row sm:items-center sm:justify-between">
+          <h2 className="max-w-[18ch] text-h2">{MERCY}</h2>
+          <div className="shrink-0">
+            <Button href={BOOKING_PATH}>{settings.ctaLabel}</Button>
+          </div>
+        </div>
 
-            <div className="mt-5 space-y-1.5 text-[0.95rem] opacity-80">
-              {site.hours.map((row) => (
-                <p key={row.days.join()}>
-                  {formatDays(row.days)}, {formatTime(row.opens)} –{' '}
-                  {formatTime(row.closes)}
-                </p>
-              ))}
-              <p className="opacity-75">{site.hoursNote}</p>
+        <div className="mt-10 grid gap-10 border-t border-ink/15 pt-10 lg:grid-cols-12">
+          <section id="map" aria-label="Map" className="scroll-mt-6 lg:col-span-7">
+            <iframe
+              src={mapEmbedUrl(settings)}
+              title={`Map showing ${settings.legalName} at ${settings.address.street}, ${settings.address.locality}`}
+              loading="lazy"
+              referrerPolicy="no-referrer-when-downgrade"
+              className="map-tone h-[280px] w-full rounded-brand border-0"
+            />
+          </section>
+
+          <div className="lg:col-span-5">
+            <Logo height={56} />
+            <p className="mt-5 font-medium">{settings.legalName}</p>
+            <Address address={settings.address} />
+            <p className="mt-3">
+              <a href={settings.phoneHref} className={link}>
+                {settings.phone}
+              </a>
+              <br />
+              <a href={`mailto:${settings.email}`} className={link}>
+                {settings.email}
+              </a>
+            </p>
+            <Hours hours={settings.hours} note={settings.saturdayNote} className="mt-5" />
+            <p className="mt-5">
+              <Link href="/about" className={link}>
+                About Dr. Lee
+              </Link>
+            </p>
+          </div>
+        </div>
+
+        <div className="mt-10 grid gap-8 border-t border-ink/15 pt-10 lg:grid-cols-12">
+          <div className="lg:col-span-7">
+            <h2 className="text-h3">Newsletter</h2>
+            <div className="mt-4 max-w-md">
+              <NewsletterForm />
             </div>
-
-            <ul className="mt-5 flex items-center gap-2">
-              {site.social.map((channel) => {
+          </div>
+          <div className="lg:col-span-5">
+            <ul className="flex flex-wrap gap-x-5 gap-y-2">
+              {[...footerLegal, ...pageLinks].map((item) => (
+                <li key={item.href}>
+                  <Link href={item.href} className={link}>
+                    {item.label}
+                  </Link>
+                </li>
+              ))}
+            </ul>
+            <ul className="mt-6 flex gap-2">
+              {settings.social.map((channel) => {
                 const Icon = socialIcons[channel.label]
+                if (!Icon) return null
                 return (
                   <li key={channel.href}>
                     <a
@@ -59,78 +119,18 @@ export function Footer() {
                       target="_blank"
                       rel="noopener noreferrer"
                       aria-label={`Brio Health on ${channel.label}`}
-                      className="flex h-10 w-10 items-center justify-center rounded-pill border border-current/25 transition-colors hover:border-current/60 hover:bg-current/10"
+                      className="flex h-11 w-11 items-center justify-center rounded-brand border border-ink-soft text-ink hover:bg-paper"
                     >
-                      <Icon className="h-[1.15rem] w-[1.15rem]" />
+                      <Icon size={22} aria-hidden />
                     </a>
                   </li>
                 )
               })}
             </ul>
+            <p className="mt-6 text-small text-ink-soft">
+              &copy; {new Date().getFullYear()} {settings.legalName}
+            </p>
           </div>
-
-          <nav aria-label="Services">
-            <h2 className="font-body text-[0.7rem] font-semibold tracking-[0.2em] uppercase opacity-55">
-              Services
-            </h2>
-            <ul className="mt-4 space-y-2.5 text-[0.95rem]">
-              {services.map((service) => (
-                <li key={service.slug}>
-                  <Link
-                    href={`/services/${service.slug}`}
-                    className="opacity-80 hover:opacity-100"
-                  >
-                    {service.title}
-                  </Link>
-                </li>
-              ))}
-            </ul>
-          </nav>
-
-          <nav aria-label="Quick links">
-            <h2 className="font-body text-[0.7rem] font-semibold tracking-[0.2em] uppercase opacity-55">
-              Quick Links
-            </h2>
-            <ul className="mt-4 space-y-2.5 text-[0.95rem]">
-              {quickLinks.map((link) => (
-                <li key={link.href}>
-                  <Link href={link.href} className="opacity-80 hover:opacity-100">
-                    {link.label}
-                  </Link>
-                </li>
-              ))}
-            </ul>
-          </nav>
-        </div>
-
-        <div className="mt-11 border-t border-current/15 pt-8">
-          <div className="grid gap-6 md:grid-cols-[1fr_1.2fr] md:items-center">
-            <div>
-              <h2 className="text-base">Stay in touch</h2>
-              <p className="mt-2 text-[0.95rem] opacity-70">
-                Occasional notes on health, recipes and what&rsquo;s happening at the
-                clinic. No spam.
-              </p>
-            </div>
-            <NewsletterForm />
-          </div>
-        </div>
-
-        <DotRule className="mt-11 h-2 w-28 opacity-30" />
-
-        <div className="mt-4 flex flex-col gap-4 text-[0.85rem] opacity-60 sm:flex-row sm:items-center sm:justify-between">
-          <p>
-            © {new Date().getFullYear()} {site.legalName}
-          </p>
-          <ul className="flex gap-4">
-            {footerLegal.map((link) => (
-              <li key={link.href}>
-                <Link href={link.href} className="hover:underline">
-                  {link.label}
-                </Link>
-              </li>
-            ))}
-          </ul>
         </div>
       </div>
     </footer>

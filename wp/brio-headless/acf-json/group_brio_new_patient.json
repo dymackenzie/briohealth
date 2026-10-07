@@ -1,0 +1,200 @@
+{
+    "key": "group_brio_new_patient",
+    "title": "New Patient page",
+    "fields": [
+        {
+            "key": "field_new_patient_heading",
+            "label": "Heading",
+            "name": "heading",
+            "aria-label": "",
+            "type": "text",
+            "instructions": "The title as it reads on the page. Under 40 characters. Empty uses the page title.",
+            "required": 0,
+            "conditional_logic": 0,
+            "wrapper": {
+                "width": "",
+                "class": "",
+                "id": ""
+            },
+            "default_value": "",
+            "maxlength": 60,
+            "placeholder": "",
+            "prepend": "",
+            "append": ""
+        },
+        {
+            "key": "field_new_patient_video_url",
+            "label": "Welcome video",
+            "name": "video_url",
+            "aria-label": "",
+            "type": "url",
+            "instructions": "The MP4 in the media library (copy its URL). Plays with controls, never by itself.",
+            "required": 0,
+            "conditional_logic": 0,
+            "wrapper": {
+                "width": "",
+                "class": "",
+                "id": ""
+            },
+            "default_value": "",
+            "placeholder": ""
+        },
+        {
+            "key": "field_new_patient_intro",
+            "label": "Intro",
+            "name": "intro",
+            "aria-label": "",
+            "type": "wysiwyg",
+            "instructions": "The paragraphs and the three booking steps above the questions. Paste the clinic's text as written. Headings, lists and bold come through; nothing is rewritten on the website.",
+            "required": 0,
+            "conditional_logic": 0,
+            "wrapper": {
+                "width": "",
+                "class": "",
+                "id": ""
+            },
+            "default_value": "",
+            "tabs": "all",
+            "toolbar": "full",
+            "media_upload": 0,
+            "delay": 0
+        },
+        {
+            "key": "field_new_patient_statements_heading",
+            "label": "Questions heading",
+            "name": "statements_heading",
+            "aria-label": "",
+            "type": "text",
+            "instructions": "e.g. \"Step 1: Answer the 3 questions below\". Under 80 characters.",
+            "required": 0,
+            "conditional_logic": 0,
+            "wrapper": {
+                "width": "",
+                "class": "",
+                "id": ""
+            },
+            "default_value": "",
+            "maxlength": 80,
+            "placeholder": "",
+            "prepend": "",
+            "append": ""
+        },
+        {
+            "key": "field_new_patient_statements",
+            "label": "The three statements",
+            "name": "statements",
+            "aria-label": "",
+            "type": "repeater",
+            "instructions": "Each must be ticked before \"Get Started\" works. Exactly three.",
+            "required": 0,
+            "conditional_logic": 0,
+            "wrapper": {
+                "width": "",
+                "class": "",
+                "id": ""
+            },
+            "layout": "row",
+            "pagination": 0,
+            "min": 3,
+            "max": 3,
+            "collapsed": "",
+            "button_label": "Add statement",
+            "rows_per_page": 20,
+            "sub_fields": [
+                {
+                    "key": "field_new_patient_statements_statement",
+                    "label": "Statement",
+                    "name": "statement",
+                    "aria-label": "",
+                    "type": "textarea",
+                    "instructions": "One \"I understand...\" statement. Under 400 characters.",
+                    "required": 1,
+                    "conditional_logic": 0,
+                    "wrapper": {
+                        "width": "",
+                        "class": "",
+                        "id": ""
+                    },
+                    "default_value": "",
+                    "maxlength": 400,
+                    "rows": 3,
+                    "placeholder": "",
+                    "new_lines": ""
+                }
+            ]
+        },
+        {
+            "key": "field_new_patient_faq_heading",
+            "label": "FAQ heading",
+            "name": "faq_heading",
+            "aria-label": "",
+            "type": "text",
+            "instructions": "Above the booking questions, e.g. \"FAQ’s\". Under 40 characters.",
+            "required": 0,
+            "conditional_logic": 0,
+            "wrapper": {
+                "width": "",
+                "class": "",
+                "id": ""
+            },
+            "default_value": "",
+            "maxlength": 40,
+            "placeholder": "",
+            "prepend": "",
+            "append": ""
+        },
+        {
+            "key": "field_new_patient_faqs",
+            "label": "Booking questions",
+            "name": "faqs",
+            "aria-label": "",
+            "type": "relationship",
+            "instructions": "Shown under the form, in this order.",
+            "required": 0,
+            "conditional_logic": 0,
+            "wrapper": {
+                "width": "",
+                "class": "",
+                "id": ""
+            },
+            "post_type": [
+                "faq"
+            ],
+            "taxonomy": [],
+            "post_status": [
+                "publish"
+            ],
+            "filters": [
+                "search"
+            ],
+            "return_format": "id",
+            "min": "",
+            "max": "",
+            "elements": "",
+            "bidirectional": 0,
+            "bidirectional_target": []
+        }
+    ],
+    "location": [
+        [
+            {
+                "param": "page_template",
+                "operator": "==",
+                "value": "template-new-patient.php"
+            }
+        ]
+    ],
+    "menu_order": 0,
+    "position": "normal",
+    "style": "default",
+    "label_placement": "top",
+    "instruction_placement": "label",
+    "hide_on_screen": [
+        "discussion",
+        "comments"
+    ],
+    "active": true,
+    "description": "",
+    "show_in_rest": 1,
+    "modified": 1790000000
+}

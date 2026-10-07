@@ -1,152 +1,115 @@
-import Link from 'next/link'
-import { notFound } from 'next/navigation'
-import { ArrowRight } from 'lucide-react'
-
-import { PageHero } from '@/components/layout/PageHero'
-import { Footer } from '@/components/layout/Footer'
-import { Band, Container } from '@/components/ui/Container'
+import { VideoHero } from '@/components/sections/VideoHero'
+import { Accordion } from '@/components/ui/Accordion'
 import { Button } from '@/components/ui/Button'
-import { Figure } from '@/components/ui/Figure'
-import { VideoPlaceholder } from '@/components/ui/VideoPlaceholder'
 import { Reveal } from '@/components/ui/Reveal'
-import { DotRule } from '@/components/brand/DotBurst'
+import { NarratedVideo } from '@/components/video/NarratedVideo'
+import { faqsFor } from '@/lib/content/faqs'
 import { getService, services } from '@/lib/content/services'
-import { servicePhotos } from '@/lib/content/photos'
-import { getPage } from '@/lib/wp/queries'
-import { renderContent } from '@/lib/wp/renderContent'
+import { breadcrumbJsonLd, JsonLd } from '@/lib/jsonld'
 import { buildMetadata } from '@/lib/seo'
-import { site } from '@/lib/site'
+import { BOOKING_PATH } from '@/lib/site'
+import { getSiteSettings } from '@/lib/wp/queries'
+import { paragraphsOf, renderContent } from '@/lib/wp/renderContent'
 
 export const revalidate = 3600
+// Any other slug 404s before the page runs, so every lookup below finds one.
+export const dynamicParams = false
 
 export function generateStaticParams() {
   return services.map((s) => ({ slug: s.slug }))
 }
 
+/** The meta description is the clinic's own opening paragraph, clipped. */
+function description(body: string): string {
+  const first = paragraphsOf(body)[0] ?? ''
+  if (first.length <= 160) return first
+  const cut = first.lastIndexOf(' ', 157)
+  return `${first.slice(0, cut > 0 ? cut : 157)}...`
+}
+
 export async function generateMetadata(props: { params: Promise<{ slug: string }> }) {
-  const { slug } = await props.params
-  const service = getService(slug)
-  if (!service) return buildMetadata({ title: 'Not found', path: `/services/${slug}` })
+  const service = getService((await props.params).slug)!
 
   return buildMetadata({
     title: service.title,
-    description: service.summary,
+    description: description(service.body),
     path: `/services/${service.slug}`,
   })
 }
 
-export default async function ServicePage(props: {
-  params: Promise<{ slug: string }>
-}) {
-  const { slug } = await props.params
-  const service = getService(slug)
-  if (!service) notFound()
-
-  // Copy still lives on the WordPress page. Absent or empty is fine — the
-  // summary and treats list carry the page on their own.
-  const page = await getPage(service.wpSlug)
-  const body = page ? renderContent(page.content.rendered) : null
-
-  const others = services.filter((s) => s.slug !== service.slug)
+/**
+ * Video hero, then the live page verbatim in one left-aligned column: the
+ * body, the booking button, the FAQs under the live page's heading
+ * ("FAQ's", `faqHeading`) as an accordion, the closing block where the
+ * live page has one, and the booking button again where the live page's
+ * closing ends in BOOK NOW. The narrated video sits in columns 8-12 beside
+ * the text from lg, sticky, so it stays in reach while the visitor reads;
+ * below lg it comes first, at the text's width. It took the open space the
+ * page's bud used, so service pages have no bud. The hero's still is the
+ * video poster only: the 4/5 shoot crops in `image` show Dr. Lee at full
+ * width (spec 7.5), so without a poster the hero is the teal field.
+ */
+export default async function ServicePage(props: { params: Promise<{ slug: string }> }) {
+  const service = getService((await props.params).slug)!
+  const settings = await getSiteSettings()
+  const faqs = faqsFor(service.slug)
 
   return (
-    <>
-      {/* The video sits in the hero rather than at the foot of the page.
-          Someone deciding whether to book wants to hear what the appointment
-          involves before they read the detail, not after. */}
-      <PageHero
-        parent={{ label: 'All services', href: '/services' }}
+    <main id="main">
+      <JsonLd
+        data={breadcrumbJsonLd([
+          { name: 'Services', path: '/services' },
+          { name: service.title, path: `/services/${service.slug}` },
+        ])}
+      />
+
+      <VideoHero
         title={service.title}
-        lead={service.lead}
-      >
-        <div className="rise-in mt-8 max-w-3xl" style={{ animationDelay: '240ms' }}>
-          <h2 className="font-body text-[0.95rem] font-semibold opacity-80">
-            What to expect
-          </h2>
-          <VideoPlaceholder subject={service.video} className="mt-4" />
+        still={service.video.poster}
+        loop={service.video.loop}
+        ctaLabel={settings.ctaLabel}
+      />
+
+      <div className="container-x section-y grid-12 gap-y-10">
+        {service.video.narrated && (
+          <div className="col-span-12 max-w-[68ch] lg:col-span-5 lg:col-start-8 lg:row-start-1 lg:max-w-none">
+            <NarratedVideo
+              src={service.video.narrated}
+              captions={service.video.captions}
+              poster={service.video.poster}
+              label={`${service.title} video`}
+              className="lg:sticky lg:top-10"
+            />
+          </div>
+        )}
+        <div className="col-span-12 max-w-[68ch] lg:col-span-7 lg:row-start-1">
+          {/* Not a Reveal: the body opens under the hero, and on a phone its top can sit below Reveal's line
+              (threshold 0, 10% above the viewport's bottom), so the page's main text would wait for a scroll. */}
+          <div className="prose-post prose-page">{renderContent(service.body)}</div>
+
+          <Reveal delay={80} className="mt-8">
+            <Button href={BOOKING_PATH}>{settings.ctaLabel}</Button>
+          </Reveal>
+
+          {faqs.length > 0 && (
+            <Reveal delay={80} className="mt-14">
+              <h2 className="text-h2">{service.faqHeading}</h2>
+              <div className="mt-6">
+                <Accordion items={faqs.map(({ question, answer }) => ({ question, answer }))} />
+              </div>
+            </Reveal>
+          )}
+
+          {service.closing && (
+            <Reveal delay={80} className="mt-14 border-t border-grey pt-10">
+              <div className="prose-post prose-page">{renderContent(service.closing)}</div>
+              <div className="mt-8">
+                <Button href={BOOKING_PATH}>{settings.ctaLabel}</Button>
+              </div>
+            </Reveal>
+          )}
         </div>
-      </PageHero>
-
-      <main id="main">
-        <Band tone="cream" className="pt-4">
-          <Container>
-            <div className="grid gap-10 lg:grid-cols-[1.1fr_0.9fr] lg:gap-14">
-              <Reveal>
-                <p className="max-w-[46ch] text-base text-ink-500">{service.summary}</p>
-
-                {body && <div className="post-body mt-7">{body}</div>}
-
-                <DotRule className="mt-8 h-2.5 w-28 text-teal-500/40" />
-
-                <div className="mt-7 flex flex-wrap gap-3">
-                  <Button href={site.bookingUrl}>Book an appointment</Button>
-                  <Button href="/contact" variant="outline">
-                    Ask a question
-                  </Button>
-                </div>
-              </Reveal>
-
-              <Reveal from="right" className="lg:pt-4">
-                <Figure
-                  subject={service.image}
-                  {...servicePhotos[service.slug].tall}
-                  shape="archSoft"
-                  tone="sand"
-                  aspect="4 / 5"
-                />
-
-                <div className="mt-7">
-                  <h2 className="font-body text-[0.95rem] font-semibold text-ink-500">
-                    Commonly helps with
-                  </h2>
-                  <ul className="mt-4">
-                    {service.treats.map((item) => (
-                      <li
-                        key={item}
-                        className="flex items-start gap-4 border-b border-ink-900/10 py-3.5"
-                      >
-                        <span
-                          className="mt-2.5 h-1.5 w-1.5 shrink-0 rounded-pill bg-teal-500"
-                          aria-hidden
-                        />
-                        <span className="text-ink-700">{item}</span>
-                      </li>
-                    ))}
-                  </ul>
-                </div>
-              </Reveal>
-            </div>
-          </Container>
-        </Band>
-
-        <Band tone="sand">
-          <Container>
-            <h2 className="text-[clamp(1.35rem,2.3vw,1.7rem)]">Other services</h2>
-            <ul className="mt-7 grid gap-6 sm:grid-cols-2">
-              {others.map((other) => (
-                <li key={other.slug}>
-                  <Link
-                    href={`/services/${other.slug}`}
-                    className="group flex h-full flex-col rounded-lg bg-canvas p-6 transition-colors hover:bg-paper"
-                  >
-                    <h3 className="text-base">{other.title}</h3>
-                    <p className="mt-3 grow text-ink-500">{other.summary}</p>
-                    <span className="mt-4 inline-flex items-center gap-2 font-medium text-teal-700">
-                      Learn more
-                      <ArrowRight
-                        className="h-4 w-4 transition-transform duration-200 group-hover:translate-x-1.5"
-                        aria-hidden
-                      />
-                    </span>
-                  </Link>
-                </li>
-              ))}
-            </ul>
-          </Container>
-        </Band>
-      </main>
-
-      <Footer />
-    </>
+      </div>
+    </main>
   )
 }

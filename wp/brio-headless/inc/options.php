@@ -1,11 +1,12 @@
 <?php
 /**
- * Site settings — the things the client should be able to change without
- * calling me. Phone, address, hours, socials, the announcement bar.
+ * Site settings: the things the client changes without calling anyone.
+ * Phone, address, hours, the Saturday note, the Jane link, the one CTA
+ * label, socials, the announcement bar, the default share image.
  *
- * These live on an SCF options page, which isn't a post, so it gets its own
- * REST route. Next reads it at /wp-json/brio/v1/settings and caches it under
- * the `site-settings` tag.
+ * Lives on an SCF options page, which is not a post, so it gets its own
+ * REST route. Next reads it at /wp-json/brio/v1/settings, caches it under
+ * the `site-settings` tag, and falls back to src/lib/site.ts field by field.
  */
 
 defined( 'ABSPATH' ) || exit;
@@ -16,15 +17,15 @@ add_action( 'acf/init', function (): void {
 	}
 
 	acf_add_options_page( array(
-		'page_title' => 'Site settings',
-		'menu_title' => 'Site settings',
-		'menu_slug'  => 'brio-settings',
-		'capability' => 'manage_options',
-		'position'   => 20,
-		'icon_url'   => 'dashicons-admin-settings',
-		'redirect'   => false,
-		'autoload'   => true,
-		'updated_message' => 'Settings saved. The website will pick them up within a minute.',
+		'page_title'      => 'Site settings',
+		'menu_title'      => 'Site settings',
+		'menu_slug'       => 'brio-settings',
+		'capability'      => 'manage_options',
+		'position'        => 20,
+		'icon_url'        => 'dashicons-admin-settings',
+		'redirect'        => false,
+		'autoload'        => true,
+		'updated_message' => 'Settings saved. The website picks them up within a minute.',
 	) );
 } );
 
@@ -37,75 +38,103 @@ add_action( 'rest_api_init', function (): void {
 } );
 
 /**
- * Flat and boring on purpose — it mirrors the `site` object in src/lib/site.ts
- * so swapping the hardcoded constants for this is a straight replacement.
+ * Flat on purpose: it mirrors WPSettings in src/lib/wp/types.ts. An empty
+ * field is null, never SCF's false or an empty string, so Next falls back
+ * to its own copy for exactly that field.
  */
 function brio_settings_response(): WP_REST_Response {
 	if ( ! function_exists( 'get_field' ) ) {
 		return new WP_REST_Response( array( 'error' => 'Secure Custom Fields is not active.' ), 503 );
 	}
 
-	$get = fn( string $name ) => get_field( $name, 'option' );
+	$get  = fn( string $name ) => get_field( $name, 'option' );
+	$text = fn( string $name ) => brio_text( $get( $name ) );
 
 	$hours = array();
 	foreach ( (array) $get( 'hours' ) as $row ) {
-		if ( empty( $row['days'] ) ) {
+		if ( ! is_array( $row ) || empty( $row['days'] ) ) {
 			continue;
 		}
-		$closed = ! empty( $row['closed'] );
-
+		$closed  = ! empty( $row['closed'] );
 		$hours[] = array(
-			// A checkbox field, so this is already an array of real day names —
-			// the Next side puts them straight into openingHoursSpecification.
-			'days'   => array_values( (array) $row['days'] ),
-			'opens'  => $closed ? null : ( ( $row['opens'] ?? '' ) ?: null ),
-			'closes' => $closed ? null : ( ( $row['closes'] ?? '' ) ?: null ),
+			'days'   => array_values( array_filter( (array) $row['days'], 'is_string' ) ),
+			'opens'  => $closed ? null : brio_time( $row['opens'] ?? null ),
+			'closes' => $closed ? null : brio_time( $row['closes'] ?? null ),
 			'closed' => $closed,
 		);
 	}
 
 	$social = array();
 	foreach ( (array) $get( 'social' ) as $row ) {
-		if ( empty( $row['url'] ) ) {
+		$href = is_array( $row ) ? brio_text( $row['url'] ?? null ) : null;
+		if ( ! $href ) {
 			continue;
 		}
 		$social[] = array(
-			'label' => $row['label'] ?? '',
-			'href'  => $row['url'],
+			'label' => brio_text( $row['label'] ?? null ) ?? '',
+			'href'  => $href,
 		);
 	}
 
+	// Off unless it is switched on and says something; an empty bar is worse
+	// than none.
 	$announcement = $get( 'announcement' );
+	$announcement = is_array( $announcement ) && ! empty( $announcement['enabled'] ) && brio_text( $announcement['text'] ?? null )
+		? array(
+			'text' => brio_text( $announcement['text'] ),
+			'href' => brio_text( $announcement['url'] ?? null ),
+		)
+		: null;
 
 	return new WP_REST_Response( array(
-		'phone'   => $get( 'phone' ),
-		'email'   => $get( 'email' ),
-		'address' => array(
-			'street'   => $get( 'address_street' ),
-			'locality' => $get( 'address_locality' ),
-			'region'   => $get( 'address_region' ),
-			'postal'   => $get( 'address_postal' ),
-			'country'  => $get( 'address_country' ) ?: 'CA',
+		'phone'        => $text( 'phone' ),
+		'email'        => $text( 'email' ),
+		'address'      => array(
+			'street'   => $text( 'address_street' ),
+			'locality' => $text( 'address_locality' ),
+			'region'   => $text( 'address_region' ),
+			'postal'   => $text( 'address_postal' ),
+			'country'  => $text( 'address_country' ) ?? 'CA',
 		),
-		'mapUrl'     => $get( 'map_url' ),
-		'bookingUrl' => $get( 'booking_url' ),
-		'hours'      => $hours,
-		'social'     => $social,
-		'ogImage'    => brio_image_field( $get( 'og_image' ) ),
-		'announcement' => ! empty( $announcement['enabled'] ) ? array(
-			'text' => $announcement['text'] ?? '',
-			'href' => ( $announcement['url'] ?? '' ) ?: null,
-		) : null,
+		'bookingUrl'   => $text( 'booking_url' ),
+		'ctaLabel'     => $text( 'cta_label' ),
+		'hours'        => $hours,
+		'saturdayNote' => $text( 'saturday_note' ),
+		'social'       => $social,
+		'announcement' => $announcement,
+		'ogImage'      => brio_image_field( $get( 'og_image' ) ),
 	) );
 }
 
+/** A trimmed string, or null for anything empty (SCF's false included). */
+function brio_text( $value ): ?string {
+	if ( ! is_string( $value ) ) {
+		return null;
+	}
+	$value = trim( $value );
+	return '' === $value ? null : $value;
+}
+
 /**
- * SCF image fields come back as a big array or as an ID depending on the
- * field's return format. Normalise to what next/image wants.
+ * 24-hour "10:00", which is what the JSON-LD and the hours table expect,
+ * whatever display format the time picker is set to return.
+ */
+function brio_time( $value ): ?string {
+	$value = brio_text( $value );
+	if ( null === $value ) {
+		return null;
+	}
+	$time = date_create_immutable( $value, new DateTimeZone( 'UTC' ) );
+	return false === $time ? null : $time->format( 'H:i' );
+}
+
+/**
+ * SCF image fields come back as an array or an ID depending on the field's
+ * return format. Normalise to what next/image wants.
  */
 function brio_image_field( $value ): ?array {
-	if ( is_numeric( $value ) ) {
-		$value = acf_get_attachment( $value );
+	if ( is_numeric( $value ) && function_exists( 'acf_get_attachment' ) ) {
+		$value = acf_get_attachment( (int) $value );
 	}
 	if ( ! is_array( $value ) || empty( $value['url'] ) ) {
 		return null;

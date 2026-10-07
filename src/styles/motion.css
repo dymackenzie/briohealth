@@ -1,0 +1,149 @@
+/*
+ * Motion. Every rule here is gated twice: `.js` on <html> (set by an inline
+ * script, so no JavaScript means no hidden state) and
+ * prefers-reduced-motion: no-preference. Only transform and opacity move,
+ * on the expo/quart tokens. The one exception to the easing rule is the
+ * scroll-linked block at the end, where scroll position is the timing.
+ */
+
+@media (prefers-reduced-motion: no-preference) {
+  .js [data-reveal] {
+    opacity: 0;
+    transition:
+      opacity 0.7s var(--ease-out-expo),
+      transform 0.7s var(--ease-out-expo);
+    transition-delay: var(--reveal-delay, 0ms);
+  }
+
+  .js [data-reveal='up'] {
+    transform: translateY(20px);
+  }
+
+  .js [data-reveal][data-shown] {
+    opacity: 1;
+    transform: none;
+  }
+}
+
+/* Hero entrance, once: the teal floor wipes in from the left, then the serif
+ * headline rises, and the tagline and button after it. */
+
+@media (prefers-reduced-motion: no-preference) {
+  .js .hero-field {
+    transform-origin: left;
+    animation: hero-wipe 0.8s var(--ease-out-expo) both;
+  }
+
+  .js .hero-copy > * {
+    opacity: 0;
+    animation: rise 0.7s var(--ease-out-expo) forwards;
+  }
+
+  .js .hero-copy > :nth-child(1) {
+    animation-delay: 0.45s;
+  }
+
+  .js .hero-copy > :nth-child(n + 2) {
+    animation-delay: 0.55s;
+  }
+
+
+  @keyframes hero-wipe {
+    from {
+      transform: scaleX(0);
+    }
+    to {
+      transform: none;
+    }
+  }
+
+  @keyframes rise {
+    from {
+      opacity: 0;
+      transform: translateY(24px);
+    }
+    to {
+      opacity: 1;
+      transform: none;
+    }
+  }
+}
+
+/* The dot burst draws itself: each dot scales in from the i-dot, inner ring
+ * first, 40ms apart. On load, or on reveal as in every Bud.
+ * The fan's geometric origin sits below the 100x72 box, so the scale origin
+ * is the droplet's body, in user units. */
+
+@media (prefers-reduced-motion: no-preference) {
+  .js .dotburst[data-animate] circle {
+    opacity: 0;
+    transform: scale(0);
+    transform-box: view-box;
+    transform-origin: 50px 60px;
+  }
+
+  .js .dotburst[data-animate='load'] circle,
+  .js [data-shown] .dotburst[data-animate='reveal'] circle {
+    animation: burst 0.5s var(--ease-out-quart) forwards;
+    animation-delay: calc(var(--i) * 40ms + var(--burst-delay, 0.7s));
+  }
+
+  .js [data-shown] .dotburst[data-animate='reveal'] circle {
+    --burst-delay: 0.1s;
+  }
+
+  @keyframes burst {
+    to {
+      opacity: 1;
+      transform: none;
+    }
+  }
+}
+
+/* CTA press: 1px, handled by active:translate-y-px on the buttons. */
+
+/* The one scroll-linked effect: the plan line. A native scroll-driven
+ * animation; browsers without it and reduced-motion users get the final
+ * layout, and nothing here needs JavaScript. `linear` is the
+ * timing because scroll position is the easing. `animation-timeline` must
+ * come after the `animation` shorthand, which would otherwise reset it. */
+
+@supports (animation-timeline: view()) {
+  @media (prefers-reduced-motion: no-preference) {
+    /* The plan's line draws from step 1 to step 3 as the field passes. */
+    .plan-line {
+      transform-origin: top;
+      animation: draw-line linear both;
+      animation-timeline: view();
+      animation-range: entry 30% cover 55%;
+    }
+
+    @keyframes draw-line {
+      from {
+        transform: scaleY(0);
+      }
+      to {
+        transform: scaleY(1);
+      }
+    }
+  }
+}
+
+/* Print shows everything in its final state, whether or not it ever
+ * scrolled into view, and the scroll-linked layers sit at their final state
+ * whatever the scroll position. No transition, so nothing prints mid-fade.
+ * Last in the file so it beats every hide rule above at equal specificity;
+ * keep it last. */
+
+@media print {
+  .js [data-reveal],
+  .js .dotburst[data-animate] circle {
+    opacity: 1;
+    transform: none;
+    transition: none;
+  }
+
+  .plan-line {
+    animation: none;
+  }
+}
