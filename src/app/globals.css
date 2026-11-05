@@ -82,7 +82,7 @@
     color: var(--color-on-teal);
   }
 
-  [data-surface='teal'] :is(h1, h2, .text-display, .text-display-long, .text-h2, .text-questions, .text-stat, .text-numeral, .text-quote, .text-tagline) {
+  [data-surface='teal'] :is(h1, h2, .text-display, .text-display-long, .text-h2, .text-stat, .text-numeral, .text-quote, .text-tagline) {
     color: var(--color-paper);
   }
 
@@ -182,15 +182,6 @@
   font-size: var(--fs-tagline);
   line-height: 1.3;
   text-wrap: balance;
-}
-
-/* The four questions on the homepage: the section's dominant element. */
-@utility text-questions {
-  font-family: var(--font-serif);
-  font-weight: 500;
-  font-size: var(--fs-questions);
-  line-height: 1.08;
-  letter-spacing: -0.02em;
 }
 
 @utility text-h3 {

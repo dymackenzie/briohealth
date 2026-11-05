@@ -4,8 +4,9 @@ import type { ServiceSlug } from './services'
  * The live pages' FAQ accordions, word for word (book-now 5913,
  * naturopathic 6066, acupuncture-3 6040, i-v-therapy 6033), in their
  * order. Fees live only here, inside the cost answers, as on the live
- * site. Multi-line answers keep their line breaks as "\n"; the Accordion
- * renders them whitespace-pre-line. These become `faq` CPT entries.
+ * site, with the fees from the second wireframe (2026-10-24). Multi-line
+ * answers keep their line breaks as "\n"; the Accordion renders them
+ * whitespace-pre-line. These become `faq` CPT entries.
  */
 
 export type FaqGroup = 'booking' | ServiceSlug
@@ -83,7 +84,7 @@ export const faqs: FaqItem[] = [
     group: 'naturopathic',
     question: 'What is the cost of a Naturopathic Visit at Brio Health?',
     answer:
-      '(Please note: Fees subject to change)\nThe Initial Assessment is 30 minutes and done virtually: $150\nFollow up 30 minute consultation: $110',
+      '(Please note: Fees subject to change)\nThe Initial Assessment is 30 minutes and done virtually: $195\nFollow up 30 minute consultation: $135',
   },
 
   // Acupuncture page
@@ -138,7 +139,7 @@ export const faqs: FaqItem[] = [
     group: 'acupuncture',
     question: 'What is the cost of an Acupuncture Treatment at Brio Health?',
     answer:
-      'The Initial Acupuncture Assessment is 30 minutes and done virtually: $150\nAcupuncture Treatment : $100',
+      'The Initial Acupuncture Assessment is 30 minutes and done virtually: $195\nAcupuncture Treatment : $120',
   },
 
   // I.V. Therapy page
@@ -174,7 +175,7 @@ export const faqs: FaqItem[] = [
     group: 'iv-therapy',
     question: 'What is the cost of an I.V. Therapy Treatment at Brio Health?',
     answer:
-      'The Initial I.V. Therapy Assessment is 30 minutes and done virtually: $150\nI.V. therapy Formulas range from $115 to $250 depending on the formula',
+      'The Initial I.V. Therapy Assessment is 30 minutes and done virtually: $195\nI.V. therapy Formulas range from $115 to $250 depending on the formula',
   },
 ]
 

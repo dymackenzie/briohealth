@@ -167,42 +167,50 @@ const homeNames = (section) => (field) => ({ ...field, name: field.name === sect
 
 const homeGroups = [
   group('brio_home_hero', 'Home: hero', [
-    f.text(h('hero'), 'heading', 'Heading', 'Dr. Jeff\'s headline, e.g. "Transform Your Health, Regain Your Life:". Under 60 characters.', { maxlength: 60 }),
-    f.textarea(h('hero'), 'sentence', 'One sentence', 'Under the heading, e.g. "A Natural Approach to Building Vitality and Increasing Energy". Under 120 characters.', { rows: 2, maxlength: 120 }),
+    f.text(h('hero'), 'heading', 'Heading', 'Dr. Jeff\'s headline, e.g. "Reclaim Your Vitality Naturally". Under 60 characters.', { maxlength: 60 }),
+    f.textarea(h('hero'), 'sentence', 'One sentence', 'Under the heading, e.g. "Are you tired of feeling exhausted every single day?" Under 120 characters.', { rows: 2, maxlength: 120 }),
   ].map(homeNames('hero')), front, { order: 0 }),
   group('brio_home_stakes', 'Home: stakes', [
-    f.text(h('stakes'), 'heading', 'Heading', 'e.g. "Have you been frustrated with your level of health?" Under 80 characters.', { maxlength: 80 }),
-    f.repeater(h('stakes'), 'questions', 'Questions', 'Four short questions, in order.', lineRow(h('stakes'), 'questions', 'One question. Under 70 characters.', 90), { layout: 'table', max: 6, button: 'Add question' }),
-    f.repeater(h('stakes'), 'paragraphs', 'Paragraphs', 'The two paragraphs after the questions, as written.', [
-      f.textarea(h('stakes'), 'paragraphs_text', 'Paragraph', 'One paragraph. Under 400 characters.', { required: true, rows: 3, maxlength: 400 }),
-    ].map(unprefix('paragraphs_')), { max: 3, button: 'Add paragraph' }),
+    f.text(h('stakes'), 'heading', 'Heading', 'e.g. "Don\'t Let Fatigue Control Your Life". Under 80 characters.', { maxlength: 80 }),
+    f.text(h('stakes'), 'sentence', 'One sentence', 'Under the heading, e.g. "What happens if you continue to ignore your health?" Under 120 characters.', { maxlength: 120 }),
+    f.repeater(h('stakes'), 'points', 'Statements', 'Short lines in two columns, read row by row. Eight fill four rows.', lineRow(h('stakes'), 'points', 'One statement. Under 60 characters.', 80), { layout: 'table', max: 10, button: 'Add statement' }),
   ].map(homeNames('stakes')), front, { order: 1 }),
+  group('brio_home_value', 'Home: value', [
+    f.text(h('value'), 'heading', 'Heading', 'e.g. "Live with Lasting Energy". Under 60 characters.', { maxlength: 60 }),
+    f.text(h('value'), 'sentence', 'One sentence', 'Under the heading, e.g. "Experience the joy of true vitality in everyday life." Under 120 characters.', { maxlength: 120 }),
+    f.repeater(h('value'), 'points', 'Points', 'Four short lines, each with an icon, in two columns.', [
+      f.select(h('value'), 'points_icon', 'Icon', 'The icon above the line.', { path: 'Path', plant: 'Plant', scales: 'Scales', 'hand-heart': 'Hand and heart' }, { width: '30' }),
+      f.text(h('value'), 'points_text', 'Line', 'Under 80 characters.', { required: true, width: '70', maxlength: 80 }),
+    ].map(unprefix('points_')), { layout: 'table', max: 4, button: 'Add point' }),
+  ].map(homeNames('value')), front, { order: 2 }),
   group('brio_home_services', 'Home: services', [
     f.relationship(h('services'), 'services', 'Services, in order', 'Drag to reorder. The layout is three rows.', 'service', { max: 3 }),
-  ].map(homeNames('services')), front, { order: 2 }),
+  ].map(homeNames('services')), front, { order: 3 }),
   group('brio_home_trust', 'Home: trust', [
-    f.repeater(h('trust'), 'stats', 'Three statements', 'Short lines with an icon, e.g. "Serving Richmond Since 2006".', [
-      f.select(h('trust'), 'stats_icon', 'Icon', 'The icon beside the line.', { certificate: 'Certificate', 'map-pin': 'Map pin', users: 'People' }, { width: '30' }),
-      f.text(h('trust'), 'stats_text', 'Line', 'Under 40 characters.', { required: true, width: '70', maxlength: 40 }),
-    ].map(unprefix('stats_')), { layout: 'table', min: 3, max: 3, button: 'Add line' }),
+    f.text(h('trust'), 'heading', 'Heading', 'e.g. "We Make Your Health Journey Simple". Under 60 characters.', { maxlength: 60 }),
+    f.text(h('trust'), 'sentence', 'One sentence', 'Under the heading, e.g. "With 20 years of experience, we know how to help you." Under 120 characters.', { maxlength: 120 }),
+    f.repeater(h('trust'), 'stats', 'Two statements', 'A short line with an icon and a sentence under it, side by side.', [
+      f.select(h('trust'), 'stats_icon', 'Icon', 'The icon above the line.', { certificate: 'Certificate', users: 'People' }, { width: '20' }),
+      f.text(h('trust'), 'stats_title', 'Line', 'e.g. "20 years of Clinical experience". Under 40 characters.', { required: true, width: '30', maxlength: 40 }),
+      f.text(h('trust'), 'stats_body', 'Sentence', 'Under 90 characters.', { required: true, width: '30', maxlength: 90 }),
+      f.url(h('trust'), 'stats_link', 'Link', 'Optional. Makes the sentence a link, e.g. to the Google reviews.', { width: '20' }),
+    ].map(unprefix('stats_')), { layout: 'table', min: 2, max: 2, button: 'Add statement' }),
     f.image(h('trust'), 'badge', 'Award badge', `The Best of Richmond badge. ${PHOTO_NOTE}`),
-    f.text(h('trust'), 'badge_heading', 'Award line', 'e.g. the Best of Richmond sentence from the current homepage. Under 160 characters.', { maxlength: 160 }),
+    f.text(h('trust'), 'badge_heading', 'Award line', 'e.g. "Brio Health was voted in Richmond News\' Best of Richmond 2026 in the category of Best Naturopath!" Under 160 characters.', { maxlength: 160 }),
     f.text(h('trust'), 'badge_thanks', 'Second line', 'e.g. "Thank you, Richmond!" Under 60 characters.', { maxlength: 60 }),
-    f.relationship(h('trust'), 'testimonials', 'Testimonials to show', 'Two, in order.', 'testimonial', { max: 2 }),
-  ].map(homeNames('trust')), front, { order: 3 }),
+  ].map(homeNames('trust')), front, { order: 4 }),
   group('brio_home_plan', 'Home: how it works', [
-    f.text(h('plan'), 'heading', 'Heading', 'e.g. "Here\'s How It Works". Under 50 characters.', { maxlength: 50 }),
+    f.text(h('plan'), 'heading', 'Heading', 'e.g. "3 Simple Steps to Transform Your Health". Under 50 characters.', { maxlength: 50 }),
+    f.text(h('plan'), 'sentence', 'One sentence', 'Under the heading, e.g. "Easy steps to restore your vitality and energy." Under 120 characters.', { maxlength: 120 }),
     f.repeater(h('plan'), 'steps', 'Steps', 'Exactly three, in order. They are numbered on the page.', stepRows(h('plan'), 'steps'), { min: 3, max: 3, button: 'Add step' }),
-  ].map(homeNames('plan')), front, { order: 4 }),
+  ].map(homeNames('plan')), front, { order: 5 }),
   group('brio_home_explain', 'Home: the explanatory paragraph', [
-    f.text(h('explain'), 'heading', 'Heading', 'e.g. "At Brio Health we know you want to be healthy, vibrant and full of energy." Under 120 characters.', { maxlength: 120 }),
+    f.text(h('explain'), 'heading', 'Heading', 'e.g. "Your Health Matters: Let Us Help". Under 120 characters.', { maxlength: 120 }),
+    f.text(h('explain'), 'sentence', 'One sentence', 'Under the heading, e.g. "You deserve to feel energized and healthy." Under 120 characters.', { maxlength: 120 }),
     f.repeater(h('explain'), 'paragraphs', 'Paragraphs', 'In order, as written.', [
       f.textarea(h('explain'), 'paragraphs_text', 'Paragraph', 'One paragraph. Under 500 characters.', { required: true, rows: 3, maxlength: 500 }),
     ].map(unprefix('paragraphs_')), { max: 6, button: 'Add paragraph' }),
-    f.text(h('explain'), 'steps_intro', 'Line before the steps', 'e.g. "Here are the steps to transform your health:". Under 80 characters.', { maxlength: 80 }),
-    f.repeater(h('explain'), 'steps', 'Steps', 'Three, in order; the page adds "Step 1:" and so on.', stepRows(h('explain'), 'steps'), { min: 3, max: 3, button: 'Add step' }),
-    f.textarea(h('explain'), 'closing', 'Closing line', 'The sentence above the booking button. Under 300 characters.', { rows: 2, maxlength: 300 }),
-  ].map(homeNames('explain')), front, { order: 5 }),
+  ].map(homeNames('explain')), front, { order: 6 }),
 ]
 
 /* Custom post types: names match WPService, WPTestimonial and WPFaq in src/lib/wp/types.ts. */

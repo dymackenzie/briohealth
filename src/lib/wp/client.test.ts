@@ -111,18 +111,16 @@ describe('media named in code', () => {
     vi.resetModules()
   })
 
-  it('follows WP_API_URL, so the cutover moves the badge, the page and service videos and the WP photos with it', async () => {
+  it('follows WP_API_URL, so the cutover moves the page and service videos and the WP photos with it', async () => {
     vi.stubEnv('WP_API_URL', 'https://cms.yourbriohealth.com/wp-json')
     vi.resetModules()
     const { WP_UPLOADS_URL } = await import('./client')
-    const { home } = await import('@/lib/content/home')
     const { pages } = await import('@/lib/content/pages')
     const { photos } = await import('@/lib/content/photos')
     const { services } = await import('@/lib/content/services')
 
     const uploads = 'https://cms.yourbriohealth.com/wp-content/uploads'
     expect(WP_UPLOADS_URL).toBe(uploads)
-    expect(home.trust.badge.src).toBe(`${uploads}/2025/06/2025-best-of-richmond-logo.jpg`)
     expect(pages.newPatient.videoUrl).toBe(`${uploads}/2026/10/new-patient-welcome.mp4`)
     expect(pages.pickleball.videoUrl).toBe(`${uploads}/2025/11/BRIOP.mp4`)
     for (const { video } of services) {

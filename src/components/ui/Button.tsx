@@ -4,7 +4,8 @@ import { ArrowRight } from '@phosphor-icons/react/dist/ssr'
 
 /**
  * The primary action is clay with an ink label (about 5.7:1) on every
- * surface, and only "Book Appointment" and "Get Started" are primary;
+ * surface, and only "Book Appointment", "Schedule a Consultation" (the
+ * homepage's own buttons) and "Get Started" are primary;
  * nothing else on the site is clay except the nav underline and the trust
  * marks. The outline button is the secondary (form submits included): a 2px
  * border in the surface's text colour. On light it hovers with an ink tint,

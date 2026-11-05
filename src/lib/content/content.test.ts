@@ -70,13 +70,13 @@ describe('faqs are the live answers, grouped by page', () => {
 
   it('keeps the fees inside the live cost answers, verbatim', () => {
     expect(faqsFor('naturopathic').at(-1)?.answer).toBe(
-      '(Please note: Fees subject to change)\nThe Initial Assessment is 30 minutes and done virtually: $150\nFollow up 30 minute consultation: $110',
+      '(Please note: Fees subject to change)\nThe Initial Assessment is 30 minutes and done virtually: $195\nFollow up 30 minute consultation: $135',
     )
     expect(faqsFor('acupuncture').at(-1)?.answer).toBe(
-      'The Initial Acupuncture Assessment is 30 minutes and done virtually: $150\nAcupuncture Treatment : $100',
+      'The Initial Acupuncture Assessment is 30 minutes and done virtually: $195\nAcupuncture Treatment : $120',
     )
     expect(faqsFor('iv-therapy').at(-1)?.answer).toBe(
-      'The Initial I.V. Therapy Assessment is 30 minutes and done virtually: $150\nI.V. therapy Formulas range from $115 to $250 depending on the formula',
+      'The Initial I.V. Therapy Assessment is 30 minutes and done virtually: $195\nI.V. therapy Formulas range from $115 to $250 depending on the formula',
     )
   })
 

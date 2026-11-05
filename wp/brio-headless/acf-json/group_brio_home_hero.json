@@ -8,7 +8,7 @@
             "name": "home_hero_heading",
             "aria-label": "",
             "type": "text",
-            "instructions": "Dr. Jeff's headline, e.g. \"Transform Your Health, Regain Your Life:\". Under 60 characters.",
+            "instructions": "Dr. Jeff's headline, e.g. \"Reclaim Your Vitality Naturally\". Under 60 characters.",
             "required": 0,
             "conditional_logic": 0,
             "wrapper": {
@@ -28,7 +28,7 @@
             "name": "home_hero_sentence",
             "aria-label": "",
             "type": "textarea",
-            "instructions": "Under the heading, e.g. \"A Natural Approach to Building Vitality and Increasing Energy\". Under 120 characters.",
+            "instructions": "Under the heading, e.g. \"Are you tired of feeling exhausted every single day?\" Under 120 characters.",
             "required": 0,
             "conditional_logic": 0,
             "wrapper": {

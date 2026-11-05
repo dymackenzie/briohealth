@@ -109,6 +109,7 @@ describe('Address', () => {
     expect(html).toContain('2168-3779 Sexsmith Road')
     expect(html).toContain('Richmond, BC V6X 3Z9')
     expect(html.indexOf('Sexsmith Road')).toBeLessThan(html.indexOf('Richmond, BC'))
+    expect(html.indexOf('Richmond, BC')).toBeLessThan(html.indexOf('Inside Richmond Laser &amp; Wellness'))
   })
 })
 

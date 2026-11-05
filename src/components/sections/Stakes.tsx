@@ -1,41 +1,37 @@
 import { Bud } from '@/components/brand/Bud'
+import { Button } from '@/components/ui/Button'
 import { Reveal } from '@/components/ui/Reveal'
 import type { HomeContent } from '@/lib/content/home'
-import type { ReactNode } from 'react'
+import { BOOKING_PATH } from '@/lib/site'
 
 /**
- * Wireframe section 2 in layout "D1" (spec 4.2, mockup
- * editorial-d1-final.html): the heading set small (Funnel Sans 600, about
- * 20px, teal-deep) as the section's real h2, no eyebrow; the four
- * questions as the dominant element in large serif, one per line; the
- * two paragraphs in columns 7-12 below them; the large teal bud in the
- * open space right of the questions. `children` is the service list,
- * which the spec places after the paragraphs inside this section.
+ * Wireframe section 2: the serif heading with the italic question under
+ * it, then the eight statements in two columns between 1px ink rules, row
+ * by row like the wireframe's table, and the booking button. The large
+ * teal bud sits in the open space right of the heading.
  */
-export function Stakes({ content, children }: { content: HomeContent['stakes']; children?: ReactNode }) {
+export function Stakes({ content, cta }: { content: HomeContent['stakes']; cta: string }) {
   return (
     <section aria-labelledby="stakes-heading" className="container-x section-y relative">
-      <Bud size="large" colour="teal" className="top-[calc(var(--section-y)+3rem)] right-[6%] lg:right-[10%]" />
+      <Bud size="large" colour="teal" className="top-[var(--section-y)] right-[6%] lg:right-[10%]" />
       <Reveal>
-        <h2 id="stakes-heading" className="font-sans text-[1.25rem] leading-snug font-semibold tracking-normal text-teal-deep">
+        <h2 id="stakes-heading" className="text-h2">
           {content.heading}
         </h2>
-        <ul className="text-questions mt-4">
-          {content.questions.map((q) => (
-            <li key={q}>{q}</li>
+        <p className="text-tagline mt-3">{content.sentence}</p>
+      </Reveal>
+      <Reveal delay={80}>
+        <ul className="mt-8 grid sm:grid-cols-2 sm:gap-x-7">
+          {content.points.map((point) => (
+            <li key={point} className="text-stat border-b border-ink py-4 first:border-t sm:nth-2:border-t">
+              {point}
+            </li>
           ))}
         </ul>
+        <div className="mt-8">
+          <Button href={BOOKING_PATH}>{cta}</Button>
+        </div>
       </Reveal>
-      <div className="mt-6 grid gap-8 lg:grid-cols-12 lg:gap-7">
-        <Reveal delay={80} className="lg:col-span-6 lg:col-start-7">
-          {content.paragraphs.map((p) => (
-            <p key={p} className="mt-4 text-body first:mt-0">
-              {p}
-            </p>
-          ))}
-        </Reveal>
-      </div>
-      {children && <div className="mt-10">{children}</div>}
     </section>
   )
 }

@@ -68,7 +68,7 @@ const naturopathicBody = `
 <li>Acupuncture</li>
 </ul>
 <h2>What Conditions are Treated with Naturopathic Medicine?</h2>
-<p>Over the past 18 years, Dr. Lee has worked with a variety of health concerns: from acute symptoms to chronic illness and from the physical to the psychological. By addressing the root cause of disease, and through the appropriate use of natural therapies, many of Dr. Lee’s patients have found tremendous benefits.</p>
+<p>Over the past 20 years, Dr. Lee has worked with a variety of health concerns: from acute symptoms to chronic illness and from the physical to the psychological. By addressing the root cause of disease, and through the appropriate use of natural therapies, many of Dr. Lee’s patients have found tremendous benefits.</p>
 <p>More recently, Dr. Lee has focused his practice on the following areas of health:</p>
 <ol>
 <li>Digestive &amp; Root Imbalances: Energy &amp; fatigue issues, digestive problems, allergies, skin issues, food sensitivities.</li>
@@ -88,7 +88,7 @@ Identifying and treating the root cause of your ailments, rather than just maski
 Using safe effective natural therapies to stimulate long lasting healing.<br>
 Treating the whole person by addressing imbalances in the physical, mental, emotional and spiritual areas of health.</p>
 <p><strong>Why Choose Brio Health For Naturopathic Care?</strong></p>
-<p>Dr. Lee is both experienced and knowledgeable with over 18 years of clinical experience. He cares about his patients and inspires them to make small changes that make a big impact on their health.</p>
+<p>Dr. Lee is both experienced and knowledgeable with over 20 years of clinical experience. He cares about his patients and inspires them to make small changes that make a big impact on their health.</p>
 <p><strong>What Conditions Are Treated With Naturopathic Medicine?</strong></p>
 <p>Dr. Lee has focused his practice on the following areas of health:</p>
 <ul>
@@ -135,7 +135,7 @@ const acupunctureBody = `
 <li>A series of treatments ranging from 3 to 6 treatments is scheduled for best results</li>
 </ul>
 <h2>Why Choose Brio Health for Acupuncture?</h2>
-<p>Dr. Lee has been practicing Acupuncture for over 18 years and has helped thousands of patients relieve pain, improve sleep and reduce stress. Being one of the few double-licensed Naturopathic Physician &amp; Acupuncturists in BC, Dr. Lee integrates a variety of different methods to bring about relief. He particularly enjoys combining his research of functional neurology with the ancient wisdom of Traditional Chinese Medicine to bring lasting change in the body.</p>
+<p>Dr. Lee has been practicing Acupuncture for over 20 years and has helped thousands of patients relieve pain, improve sleep and reduce stress. Being one of the few double-licensed Naturopathic Physician &amp; Acupuncturists in BC, Dr. Lee integrates a variety of different methods to bring about relief. He particularly enjoys combining his research of functional neurology with the ancient wisdom of Traditional Chinese Medicine to bring lasting change in the body.</p>
 <p>Acupuncture treatments are safe, effective and shift your nervous system back into a healing state.</p>
 `
 
@@ -151,7 +151,7 @@ const acupunctureClosing = `
 <li>Builds energy &amp; vitality by improving sleep and digestive function.</li>
 </ol>
 <p><strong>Why Choose Brio Health For Acupuncture?</strong></p>
-<p>Dr. Lee is both experienced and knowledgeable with over 18 years of clinical experience. He cares about his patients and inspires them to make simple changes that make a big impact on their health.</p>
+<p>Dr. Lee is both experienced and knowledgeable with over 20 years of clinical experience. He cares about his patients and inspires them to make simple changes that make a big impact on their health.</p>
 <p>Acupuncture treatments are safe, effective and shifts your body back into a healing state.</p>
 <p>Give Brio Health a call today to book in your Acupuncture visit.</p>
 `
