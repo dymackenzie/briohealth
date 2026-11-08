@@ -121,7 +121,7 @@ describe('media named in code', () => {
 
     const uploads = 'https://cms.yourbriohealth.com/wp-content/uploads'
     expect(WP_UPLOADS_URL).toBe(uploads)
-    expect(pages.newPatient.videoUrl).toBe(`${uploads}/2026/10/new-patient-welcome.mp4`)
+    expect(pages.newPatient.videoUrl).toBe(`${uploads}/2026/11/new-patient-welcome-gentle.mp4`)
     expect(pages.pickleball.videoUrl).toBe(`${uploads}/2025/11/BRIOP.mp4`)
     for (const { video } of services) {
       for (const src of [video.loop, video.poster?.src, video.narrated]) expect(src?.startsWith(`${uploads}/`)).toBe(true)

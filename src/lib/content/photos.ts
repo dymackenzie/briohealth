@@ -7,10 +7,11 @@ import { WP_UPLOADS_URL } from '@/lib/wp/client'
  * photo-originals/). Every shoot photo except the lobby has Dr. Lee in it, and
  * the lobby shows a neighbouring business's Botox banner, so it is never used.
  *
- * The rule: Dr. Lee appears on /about and /pickleball only. The homepage hero
- * has no photo: it is the illustrated herb garden (src/components/garden),
- * which replaced the stock shortlist on 2026-10-05. /about runs one photo,
- * lee-portrait-clinic, whole at 2:3. Every other slot is a patient-side
+ * The rule: Dr. Lee appears on /about and /pickleball only, plus side-on in
+ * the homepage hero, where the laughing patient is the subject (2026-11-07,
+ * awaiting his OK and the patient's). With features.heroPhoto off the hero
+ * is the illustrated herb garden (src/components/garden). /about runs one
+ * photo, lee-portrait-clinic, whole at 2:3. Every other slot is a patient-side
  * crop via `position` (CSS object-position, at 4/5 or 1/1), or a `null`
  * photo whose `subject` is the brief for the next shoot. A null never
  * breaks a layout: Figure renders a designed placeholder.
@@ -52,6 +53,12 @@ export const photos = {
     src: '/photos/lee-first-visit.jpg',
     alt: 'A couple talking through their health history at a first visit',
     position: '22% 50%',
+  },
+  /** The homepage hero, full width. The position is the desktop strip's; HomeHero re-centres it on phones. */
+  heroPatient: {
+    src: '/photos/hero-patient-laughing.jpg',
+    alt: 'A patient laughing during a visit with Dr. Lee',
+    position: '50% 12%',
   },
   /** 2:3, shown whole on /about beside the story; the page's LCP image. */
   guideClinicPortrait: {

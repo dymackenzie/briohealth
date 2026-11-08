@@ -20,22 +20,28 @@ export const metadata = buildMetadata({
   path: '/',
 })
 
-/** Wireframe order: hero, stakes, value, services, trust, plan, explanatory paragraph; the footer is the junk drawer. */
+/**
+ * Wireframe order: hero, stakes, value, services, trust, plan, explanatory
+ * paragraph; the footer is the junk drawer. Stakes and Value pair up from lg,
+ * problem then answer.
+ */
 export default async function HomePage() {
   const settings = await getSiteSettings()
 
   return (
     <main id="main">
       <JsonLd data={clinicJsonLd(settings)} />
-      <HomeHero content={home.hero} cta={home.cta} />
-      <Stakes content={home.stakes} cta={home.cta} />
-      <Value content={home.value} cta={home.cta} />
+      <HomeHero content={home.hero} cta={settings.ctaLabel} />
+      <div className="container-edge lg:grid lg:grid-cols-2">
+        <Stakes content={home.stakes} cta={settings.ctaLabel} />
+        <Value content={home.value} cta={settings.ctaLabel} />
+      </div>
       <div className="container-x section-y">
         <ServiceList order={home.services.order} />
       </div>
-      <Trust content={home.trust} cta={home.cta} />
-      <Plan content={home.plan} cta={home.cta} />
-      <Explain content={home.explain} cta={home.cta} />
+      <Trust content={home.trust} cta={settings.ctaLabel} />
+      <Plan content={home.plan} cta={settings.ctaLabel} />
+      <Explain content={home.explain} cta={settings.ctaLabel} />
     </main>
   )
 }

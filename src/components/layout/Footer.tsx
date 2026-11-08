@@ -27,7 +27,7 @@ const pageLinks = [
 const link = 'underline decoration-1 underline-offset-4 hover:decoration-2'
 
 /**
- * The wireframe's junk drawer, on grey (not a teal field), in its order
+ * The wireframe's junk drawer, on grey (not a tide field), in its order
  * (the second wireframe struck the service buttons and "Don't be at the
  * Mercy of your symptoms"): the map (patients get lost; toned into the sand
  * by `map-tone`, with Google's own "Open in Maps" inside it), the clinic's

@@ -7,25 +7,25 @@ const still: Photo = { src: '/photos/acupuncture-wide.jpg', alt: 'A patient on t
 const base = { title: 'Acupuncture', ctaLabel: 'Book Appointment' }
 
 describe('VideoHero', () => {
-  it('falls back to a teal field with the same text when there is no loop and no photo', () => {
+  it('falls back to a tide field with the same text when there is no loop and no photo', () => {
     const html = renderToStaticMarkup(<VideoHero {...base} still={null} loop={null} />)
-    expect(html).toContain('data-surface="teal"')
+    expect(html).toContain('data-surface="tide"')
     expect(html).toContain('<h1')
     expect(html).toContain('Acupuncture')
     expect(html).toContain('href="/new-patient"')
     expect(html).not.toContain('<video')
   })
 
-  it('falls back to the teal field with no image or video when there is a loop but no poster', () => {
+  it('falls back to the tide field with no image or video when there is a loop but no poster', () => {
     const html = renderToStaticMarkup(<VideoHero {...base} still={null} loop="https://example.com/loop.mp4" />)
-    expect(html).toContain('data-surface="teal"')
+    expect(html).toContain('data-surface="tide"')
     expect(html).toContain('Acupuncture')
     expect(html).not.toContain('<img')
     expect(html).not.toContain('<video')
     expect(html).not.toContain('bg-ink/45')
   })
 
-  it('sizes the teal field to its content on the section rhythm, not the media height or aspect', () => {
+  it('sizes the tide field to its content on the section rhythm, not the media height or aspect', () => {
     const html = renderToStaticMarkup(<VideoHero {...base} still={null} loop={null} />)
     const section = html.match(/<section [^>]*>/)?.[0] ?? ''
     expect(section).toMatch(/\bsection-y\b/)
@@ -44,7 +44,7 @@ describe('VideoHero', () => {
     expect(html).toContain('acupuncture-wide.jpg')
     expect(html).not.toContain('<video')
     expect(html).toContain('bg-ink/45')
-    expect(html).not.toContain('data-surface="teal"')
+    expect(html).not.toContain('data-surface="tide"')
   })
 
   it('gives the copy over the ink wash a paper focus ring, without painting a surface', () => {

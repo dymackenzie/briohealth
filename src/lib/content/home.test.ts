@@ -4,10 +4,6 @@ import { reviewsUrl } from '@/lib/site'
 
 /** Spot checks against the second wireframe (2026-10-24) and the first round's reading notes. */
 describe('homepage content is the wireframe, verbatim', () => {
-  it('labels the homepage buttons as the wireframe does', () => {
-    expect(home.cta).toBe('Schedule a Consultation')
-  })
-
   it('hero', () => {
     expect(home.hero).toEqual({
       heading: 'Reclaim Your Vitality Naturally',

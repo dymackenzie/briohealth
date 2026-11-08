@@ -7,14 +7,14 @@ import type { ServiceSlug } from './services'
  * services, trust, plan, explanatory paragraph. Every string is the
  * wireframe's, with the first round's reading notes kept: no double spaces,
  * no capitals-only labels. One key per SCF field group, named after the
- * section; `cta` is the label on the homepage's own buttons.
+ * section. The buttons say `site.ctaLabel` ("Book Appointment") like the rest
+ * of the site; the wireframe's "Schedule a Consultation" was dropped
+ * (2026-11-07).
  */
 
-export type TrustIcon = 'certificate' | 'users'
 export type ValueIcon = 'path' | 'plant' | 'scales' | 'hand-heart'
 
 export interface HomeContent {
-  cta: string
   hero: {
     heading: string
     sentence: string
@@ -35,7 +35,7 @@ export interface HomeContent {
   trust: {
     heading: string
     sentence: string
-    stats: { icon: TrustIcon; title: string; body: string; link?: string }[]
+    stats: { title: string; body: string; link?: string }[]
     badge: { src: string; alt: string; width: number; height: number }
     badgeHeading: string
     badgeThanks: string
@@ -53,8 +53,6 @@ export interface HomeContent {
 }
 
 export const home: HomeContent = {
-  cta: 'Schedule a Consultation',
-
   hero: {
     heading: 'Reclaim Your Vitality Naturally',
     sentence: 'Are you tired of feeling exhausted every single day?',
@@ -95,12 +93,10 @@ export const home: HomeContent = {
     sentence: 'With 20 years of experience, we know how to help you.',
     stats: [
       {
-        icon: 'certificate',
         title: '20 years of Clinical experience',
         body: 'Helping thousands reclaim their health for over two decades',
       },
       {
-        icon: 'users',
         title: 'Trusted by over 5,000+ patients.',
         body: 'Validated with numerous positive reviews and awards.',
         link: reviewsUrl,

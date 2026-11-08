@@ -48,7 +48,7 @@
             "name": "home_trust_stats",
             "aria-label": "",
             "type": "repeater",
-            "instructions": "A short line with an icon and a sentence under it, side by side.",
+            "instructions": "A short line and a sentence under it, side by side.",
             "required": 0,
             "conditional_logic": 0,
             "wrapper": {
@@ -65,32 +65,6 @@
             "rows_per_page": 20,
             "sub_fields": [
                 {
-                    "key": "field_home_trust_stats_icon",
-                    "label": "Icon",
-                    "name": "icon",
-                    "aria-label": "",
-                    "type": "select",
-                    "instructions": "The icon above the line.",
-                    "required": 0,
-                    "conditional_logic": 0,
-                    "wrapper": {
-                        "width": "20",
-                        "class": "",
-                        "id": ""
-                    },
-                    "choices": {
-                        "certificate": "Certificate",
-                        "users": "People"
-                    },
-                    "default_value": "certificate",
-                    "allow_null": 0,
-                    "multiple": 0,
-                    "ui": 0,
-                    "return_format": "value",
-                    "ajax": 0,
-                    "placeholder": ""
-                },
-                {
                     "key": "field_home_trust_stats_title",
                     "label": "Line",
                     "name": "title",
@@ -100,7 +74,7 @@
                     "required": 1,
                     "conditional_logic": 0,
                     "wrapper": {
-                        "width": "30",
+                        "width": "40",
                         "class": "",
                         "id": ""
                     },

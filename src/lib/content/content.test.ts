@@ -39,10 +39,11 @@ describe('services carry the live pages verbatim', () => {
     expect(getService('iv-therapy')?.body).toContain('Millions of people wake up every morning feeling tired')
   })
 
-  it('keeps the closing block only where the live page has one', () => {
-    expect(getService('naturopathic')?.closing).toContain('Naturopathic Medicine at Brio Health')
-    expect(getService('acupuncture')?.closing).toContain('Acupuncture at Brio Health')
-    expect(getService('iv-therapy')?.closing).toBe('')
+  it('leaves out the old pages\' hidden "... at Brio Health" blocks', () => {
+    for (const s of services) {
+      expect(s.body).not.toContain('at Brio Health</h2>')
+      expect(s.body).not.toContain('Give Brio Health a call today')
+    }
   })
 
   it('heads the FAQs with the live page heading, as content, not markup', () => {

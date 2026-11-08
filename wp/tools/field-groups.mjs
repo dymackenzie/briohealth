@@ -189,9 +189,8 @@ const homeGroups = [
   group('brio_home_trust', 'Home: trust', [
     f.text(h('trust'), 'heading', 'Heading', 'e.g. "We Make Your Health Journey Simple". Under 60 characters.', { maxlength: 60 }),
     f.text(h('trust'), 'sentence', 'One sentence', 'Under the heading, e.g. "With 20 years of experience, we know how to help you." Under 120 characters.', { maxlength: 120 }),
-    f.repeater(h('trust'), 'stats', 'Two statements', 'A short line with an icon and a sentence under it, side by side.', [
-      f.select(h('trust'), 'stats_icon', 'Icon', 'The icon above the line.', { certificate: 'Certificate', users: 'People' }, { width: '20' }),
-      f.text(h('trust'), 'stats_title', 'Line', 'e.g. "20 years of Clinical experience". Under 40 characters.', { required: true, width: '30', maxlength: 40 }),
+    f.repeater(h('trust'), 'stats', 'Two statements', 'A short line and a sentence under it, side by side.', [
+      f.text(h('trust'), 'stats_title', 'Line', 'e.g. "20 years of Clinical experience". Under 40 characters.', { required: true, width: '40', maxlength: 40 }),
       f.text(h('trust'), 'stats_body', 'Sentence', 'Under 90 characters.', { required: true, width: '30', maxlength: 90 }),
       f.url(h('trust'), 'stats_link', 'Link', 'Optional. Makes the sentence a link, e.g. to the Google reviews.', { width: '20' }),
     ].map(unprefix('stats_')), { layout: 'table', min: 2, max: 2, button: 'Add statement' }),
@@ -218,7 +217,6 @@ const homeGroups = [
 const sv = 'service'
 const service = group('brio_service', 'Service', [
   f.wysiwyg(sv, 'body', 'Page text', `The service page, top to bottom, up to the booking button. ${VERBATIM}`),
-  f.wysiwyg(sv, 'closing', 'Closing block', `The "... at Brio Health" block shown after the FAQs. Leave empty if the page has none. ${VERBATIM}`),
   f.file(sv, 'video_loop', 'Background loop', 'An 8 to 15 second MP4, horizontal 16:9 at 1280x720, no sound, under 3 MB. It plays muted beside the service list on the home page and Services (under the name on phones) and behind the service page title. See wp/README.md, "Service videos".', { maxSize: 3, mime: 'mp4' }),
   f.image(sv, 'video_poster', 'Loop still', 'A frame from the loop, horizontal 16:9, JPG, 1600 pixels wide. Shown until the loop plays, and instead of it for people who prefer less motion. Without it the loop is not shown in the service list.'),
   f.file(sv, 'video_narrated', 'Narrated video', 'Dr. Jeff\'s full video: an MP4, horizontal 16:9 at 1280x720, compressed for the web. Shown on the service page beside the text, as a player with sound that starts when the visitor presses play. See wp/README.md, "Service videos".', { mime: 'mp4' }),

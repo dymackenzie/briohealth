@@ -82,7 +82,6 @@ export interface WPService extends WPContentBase {
   acf?: {
     /** The page body as the editor wrote it (wysiwyg). */
     body?: string
-    closing?: string
     /** File field, return format url. */
     video_loop?: string | false | null
     video_poster?: WPImageField | false | null

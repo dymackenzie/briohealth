@@ -1,6 +1,6 @@
 import { renderToStaticMarkup } from 'react-dom/server'
 import { describe, expect, it, vi } from 'vitest'
-import { decodeTitle, paragraphsOf, plainExcerpt, postSummary, renderContent, showsImage } from './renderContent'
+import { decodeTitle, paragraphsOf, plainExcerpt, postSummary, renderContent, renderPost, showsImage } from './renderContent'
 
 function render(html: string) {
   return renderToStaticMarkup(<>{renderContent(html)}</>)
@@ -455,5 +455,40 @@ describe('[youtube] shortcodes', () => {
     const html = render('<pre><code>[youtube id="mYhjmq7-1q8"]</code></pre>')
     expect(html).not.toContain('<iframe')
     expect(html).toContain('[youtube id=&quot;mYhjmq7-1q8&quot;]')
+  })
+})
+
+describe('renderPost', () => {
+  const col = (width: string, inner: string) =>
+    `<div class="fusion-layout-column fusion_builder_column fusion_builder_column_${width}"><div class="fusion-column-wrapper">${inner}</div></div>`
+  const row = (...cols: string[]) => `<div class="fusion-fullwidth"><div class="fusion-builder-row fusion-row">${cols.join('')}</div></div>`
+  const post =
+    row(
+      col('1_3', '<img src="https://yourbriohealth.com/wp-content/uploads/a.jpg" width="1080" height="744" alt="">'),
+      col('2_5', '<div class="fusion-title"><h5>Better Sleep</h5></div><p>By: Dr. Jeffrey Lee</p>'),
+      col('1_5', '<h4>Signup for our newsletter</h4><div class="fusion-form fusion-form-717"><form><input name="email"></form></div>'),
+    ) + row(col('1_4', '<p>Side</p>'), col('3_4', '<p>Body</p>'))
+
+  it("keeps the writer's columns at their widths and drops the newsletter column", () => {
+    const { content, columns } = renderPost(post, 'Better Sleep')
+    const out = renderToStaticMarkup(<>{content}</>)
+    expect(columns).toBe(true)
+    expect(out.match(/class="wp-row"/g)).toHaveLength(2)
+    expect(out).toContain('style="--w:0.3333"')
+    expect(out).toContain('style="--w:0.7500"')
+    expect(out).not.toContain('newsletter')
+  })
+
+  it("makes the writer's title heading the page's h1", () => {
+    const { content, ownTitle } = renderPost(post, 'Better Sleep')
+    expect(ownTitle).toBe(true)
+    expect(renderToStaticMarkup(<>{content}</>)).toContain('<h1 class="post-title">Better Sleep</h1>')
+  })
+
+  it('renders a post without columns as renderContent does', () => {
+    const html = row(col('1_1', '<h2>Better Sleep</h2><p>Body</p>'))
+    const { content, columns, ownTitle } = renderPost(html, 'Better Sleep')
+    expect([columns, ownTitle]).toEqual([false, false])
+    expect(renderToStaticMarkup(<>{content}</>)).toBe('<p>Body</p>')
   })
 })
