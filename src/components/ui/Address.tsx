@@ -1,6 +1,6 @@
-import type { SiteSettings } from '@/lib/site'
+import { addressNote, type SiteSettings } from '@/lib/site'
 
-/** The postal address, one line for the street and one for the locality. */
+/** The postal address, one line for the street and one for the locality, then where to find the door. */
 export function Address({
   address,
   className = '',
@@ -14,6 +14,7 @@ export function Address({
       <span className="block">
         {`${address.locality}, ${address.region} ${address.postal}`}
       </span>
+      <span className="block">{addressNote}</span>
     </address>
   )
 }

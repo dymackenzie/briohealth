@@ -18,7 +18,6 @@ describe('GARDEN', () => {
       inkSoft: 'ink-soft',
       teal: 'teal',
       tealDeep: 'teal-deep',
-      onTeal: 'on-teal',
       tide: 'tide',
       clay: 'clay',
     }

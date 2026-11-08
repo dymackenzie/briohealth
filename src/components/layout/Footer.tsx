@@ -5,20 +5,15 @@ import { FacebookLogo, InstagramLogo, XLogo } from '@phosphor-icons/react/dist/s
 import { Logo } from '@/components/brand/Logo'
 import { NewsletterForm } from '@/components/forms/NewsletterForm'
 import { Address } from '@/components/ui/Address'
-import { Button } from '@/components/ui/Button'
 import { Hours } from '@/components/ui/Hours'
-import { services } from '@/lib/content/services'
 import { features } from '@/lib/features'
-import { BOOKING_PATH, footerLegal, mapEmbedUrl, type SiteSettings } from '@/lib/site'
+import { footerLegal, mapEmbedUrl, reviewsUrl, type SiteSettings } from '@/lib/site'
 
 const socialIcons: Record<string, Icon> = {
   Instagram: InstagramLogo,
   Facebook: FacebookLogo,
   X: XLogo,
 }
-
-/** Wireframe section 9, "the junk drawer". The line is Dr. Jeff's. */
-const MERCY = "Don't be at the Mercy of your symptoms"
 
 const pageLinks = [
   { label: 'Contact', href: '/contact' },
@@ -32,34 +27,20 @@ const pageLinks = [
 const link = 'underline decoration-1 underline-offset-4 hover:decoration-2'
 
 /**
- * The wireframe's junk drawer, on grey (not a teal field), in its order:
- * the three service buttons, "Don't be at the Mercy of your symptoms" with
- * the booking button, the map (patients get lost; toned into the sand by
- * `map-tone`, with Google's own "Open in Maps" inside it), the clinic's
- * details and hours with the About link, the newsletter, then legal, Contact,
- * Pickleball, socials and the copyright. NAP here must match the contact
+ * The wireframe's junk drawer, on grey (not a tide field), in its order
+ * (the second wireframe struck the service buttons and "Don't be at the
+ * Mercy of your symptoms"): the map (patients get lost; toned into the sand
+ * by `map-tone`, with Google's own "Open in Maps" inside it), the clinic's
+ * details and hours with the About link, the newsletter, then legal,
+ * Contact, Pickleball, Testimonials (the Google reviews), socials and the
+ * copyright. NAP here must match the contact
  * page and the JSON-LD: all three read the same settings object.
  */
 export function Footer({ settings }: { settings: SiteSettings }) {
   return (
     <footer className="bg-grey">
       <div className="container-x py-12 lg:py-14">
-        <nav aria-label="Services" className="flex flex-wrap gap-3">
-          {services.map((s) => (
-            <Button key={s.slug} href={`/services/${s.slug}`} variant="outline">
-              {s.title}
-            </Button>
-          ))}
-        </nav>
-
-        <div className="mt-10 flex flex-col gap-5 border-t border-ink/15 pt-10 sm:flex-row sm:items-center sm:justify-between">
-          <h2 className="max-w-[18ch] text-h2">{MERCY}</h2>
-          <div className="shrink-0">
-            <Button href={BOOKING_PATH}>{settings.ctaLabel}</Button>
-          </div>
-        </div>
-
-        <div className="mt-10 grid gap-10 border-t border-ink/15 pt-10 lg:grid-cols-12">
+        <div className="grid gap-10 lg:grid-cols-12">
           <section id="map" aria-label="Map" className="scroll-mt-6 lg:col-span-7">
             <iframe
               src={mapEmbedUrl(settings)}
@@ -110,6 +91,11 @@ export function Footer({ settings }: { settings: SiteSettings }) {
                   </Link>
                 </li>
               ))}
+              <li>
+                <a href={reviewsUrl} target="_blank" rel="noopener noreferrer" className={link}>
+                  Testimonials
+                </a>
+              </li>
             </ul>
             <ul className="mt-6 flex gap-2">
               {settings.social.map((channel) => {

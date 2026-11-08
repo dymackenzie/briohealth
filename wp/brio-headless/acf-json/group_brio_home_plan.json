@@ -8,7 +8,7 @@
             "name": "home_plan_heading",
             "aria-label": "",
             "type": "text",
-            "instructions": "e.g. \"Here's How It Works\". Under 50 characters.",
+            "instructions": "e.g. \"3 Simple Steps to Transform Your Health\". Under 50 characters.",
             "required": 0,
             "conditional_logic": 0,
             "wrapper": {
@@ -18,6 +18,26 @@
             },
             "default_value": "",
             "maxlength": 50,
+            "placeholder": "",
+            "prepend": "",
+            "append": ""
+        },
+        {
+            "key": "field_home_plan_sentence",
+            "label": "One sentence",
+            "name": "home_plan_sentence",
+            "aria-label": "",
+            "type": "text",
+            "instructions": "Under the heading, e.g. \"Easy steps to restore your vitality and energy.\" Under 120 characters.",
+            "required": 0,
+            "conditional_logic": 0,
+            "wrapper": {
+                "width": "",
+                "class": "",
+                "id": ""
+            },
+            "default_value": "",
+            "maxlength": 120,
             "placeholder": "",
             "prepend": "",
             "append": ""
@@ -96,7 +116,7 @@
             }
         ]
     ],
-    "menu_order": 4,
+    "menu_order": 5,
     "position": "normal",
     "style": "default",
     "label_placement": "top",

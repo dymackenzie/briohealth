@@ -8,7 +8,7 @@ import { articleJsonLd, breadcrumbJsonLd, JsonLd } from '@/lib/jsonld'
 import { buildMetadata } from '@/lib/seo'
 import { absoluteUrl, BOOKING_PATH } from '@/lib/site'
 import { authorName, featuredImage, getPost, getSiteSettings } from '@/lib/wp/queries'
-import { decodeTitle, postSummary, renderContent, showsImage } from '@/lib/wp/renderContent'
+import { decodeTitle, postSummary, renderPost, showsImage } from '@/lib/wp/renderContent'
 
 export const revalidate = 3600
 export const dynamicParams = true
@@ -69,6 +69,8 @@ export default async function PostPage(props: { params: Promise<{ slug: string }
   const title = decodeTitle(post.title.rendered)
   const url = absoluteUrl(`/blog/${post.slug}`)
   const author = authorName(post)
+  // A post in columns gets the width they need, and leads with its own title and byline.
+  const { content, columns, ownTitle } = renderPost(post.content.rendered, title)
 
   return (
     <main id="main">
@@ -92,15 +94,17 @@ export default async function PostPage(props: { params: Promise<{ slug: string }
 
       <article>
         <div className="container-x">
-          <div className="mx-auto max-w-[68ch]">
-            {/* Substack's header: the title, then the byline (author over date) closed by a 1px ink rule. */}
-            <header className="border-b border-ink pt-10 pb-5 lg:pt-14">
-              <h1 className="text-post-title">{title}</h1>
-              <p className="text-meta mt-5 text-ink">{author}</p>
-              <p className="text-meta mt-1">
-                <time dateTime={post.date}>{shortDate(post.date, true)}</time>
-              </p>
-            </header>
+          <div className={`mx-auto ${columns ? 'max-w-[64rem]' : 'max-w-[68ch]'}`}>
+            {!ownTitle && (
+              // Substack's header: the title, then the byline (author over date) closed by a 1px ink rule.
+              <header className="border-b border-ink pt-10 pb-5 lg:pt-14">
+                <h1 className="text-post-title">{title}</h1>
+                <p className="text-meta mt-5 text-ink">{author}</p>
+                <p className="text-meta mt-1">
+                  <time dateTime={post.date}>{shortDate(post.date, true)}</time>
+                </p>
+              </header>
+            )}
 
             {lead && (
               <div className="mt-8 text-[length:var(--fs-post)]">
@@ -130,10 +134,8 @@ export default async function PostPage(props: { params: Promise<{ slug: string }
               </div>
             )}
 
-            <div className="mt-8 pb-[var(--section-y)]">
-              <HideBrokenImages className="prose-post">
-                {renderContent(post.content.rendered, { title })}
-              </HideBrokenImages>
+            <div className={`${ownTitle ? 'pt-10 lg:pt-14' : 'mt-8'} pb-[var(--section-y)]`}>
+              <HideBrokenImages className={columns ? 'prose-post max-w-none!' : 'prose-post'}>{content}</HideBrokenImages>
 
               <aside className="mt-14 border-t border-ink pt-8">
                 <Button href={BOOKING_PATH}>{settings.ctaLabel}</Button>

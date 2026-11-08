@@ -39,10 +39,11 @@ describe('services carry the live pages verbatim', () => {
     expect(getService('iv-therapy')?.body).toContain('Millions of people wake up every morning feeling tired')
   })
 
-  it('keeps the closing block only where the live page has one', () => {
-    expect(getService('naturopathic')?.closing).toContain('Naturopathic Medicine at Brio Health')
-    expect(getService('acupuncture')?.closing).toContain('Acupuncture at Brio Health')
-    expect(getService('iv-therapy')?.closing).toBe('')
+  it('leaves out the old pages\' hidden "... at Brio Health" blocks', () => {
+    for (const s of services) {
+      expect(s.body).not.toContain('at Brio Health</h2>')
+      expect(s.body).not.toContain('Give Brio Health a call today')
+    }
   })
 
   it('heads the FAQs with the live page heading, as content, not markup', () => {
@@ -70,13 +71,13 @@ describe('faqs are the live answers, grouped by page', () => {
 
   it('keeps the fees inside the live cost answers, verbatim', () => {
     expect(faqsFor('naturopathic').at(-1)?.answer).toBe(
-      '(Please note: Fees subject to change)\nThe Initial Assessment is 30 minutes and done virtually: $150\nFollow up 30 minute consultation: $110',
+      '(Please note: Fees subject to change)\nThe Initial Assessment is 30 minutes and done virtually: $195\nFollow up 30 minute consultation: $135',
     )
     expect(faqsFor('acupuncture').at(-1)?.answer).toBe(
-      'The Initial Acupuncture Assessment is 30 minutes and done virtually: $150\nAcupuncture Treatment : $100',
+      'The Initial Acupuncture Assessment is 30 minutes and done virtually: $195\nAcupuncture Treatment : $120',
     )
     expect(faqsFor('iv-therapy').at(-1)?.answer).toBe(
-      'The Initial I.V. Therapy Assessment is 30 minutes and done virtually: $150\nI.V. therapy Formulas range from $115 to $250 depending on the formula',
+      'The Initial I.V. Therapy Assessment is 30 minutes and done virtually: $195\nI.V. therapy Formulas range from $115 to $250 depending on the formula',
     )
   })
 

@@ -40,14 +40,14 @@ export async function generateMetadata(props: { params: Promise<{ slug: string }
 /**
  * Video hero, then the live page verbatim in one left-aligned column: the
  * body, the booking button, the FAQs under the live page's heading
- * ("FAQ's", `faqHeading`) as an accordion, the closing block where the
- * live page has one, and the booking button again where the live page's
- * closing ends in BOOK NOW. The narrated video sits in columns 8-12 beside
+ * ("FAQ's", `faqHeading`) as an accordion. The old pages' "... at Brio
+ * Health" blocks after the FAQs were hidden there, so they're left out.
+ * The narrated video sits in columns 8-12 beside
  * the text from lg, sticky, so it stays in reach while the visitor reads;
  * below lg it comes first, at the text's width. It took the open space the
  * page's bud used, so service pages have no bud. The hero's still is the
  * video poster only: the 4/5 shoot crops in `image` show Dr. Lee at full
- * width (spec 7.5), so without a poster the hero is the teal field.
+ * width (spec 7.5), so without a poster the hero is the tide field.
  */
 export default async function ServicePage(props: { params: Promise<{ slug: string }> }) {
   const service = getService((await props.params).slug)!
@@ -100,14 +100,6 @@ export default async function ServicePage(props: { params: Promise<{ slug: strin
             </Reveal>
           )}
 
-          {service.closing && (
-            <Reveal delay={80} className="mt-14 border-t border-grey pt-10">
-              <div className="prose-post prose-page">{renderContent(service.closing)}</div>
-              <div className="mt-8">
-                <Button href={BOOKING_PATH}>{settings.ctaLabel}</Button>
-              </div>
-            </Reveal>
-          )}
         </div>
       </div>
     </main>

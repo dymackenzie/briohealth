@@ -13,7 +13,7 @@ import { displayClass } from '@/lib/typography'
  * 45% (no gradient); over it the title in paper (display size, so the
  * 24px+ white rule holds) and the clay booking button. The narrated video
  * is on the page beside the text, not here. No loop: the still under the
- * same wash. No still: a teal field with the same text (counts as a teal
+ * same wash. No still: a tide field with the same text (counts as a tide
  * field), even with a loop, because the loop needs its poster. With
  * nothing to show, the field is sized to its text on the section rhythm,
  * not the media's box. The still is the video poster, never the service's
@@ -34,7 +34,7 @@ export function VideoHero({
   loop: string | null
   ctaLabel: string
 }) {
-  const copy = (surface: 'teal' | 'dark') => (
+  const copy = (surface: 'tide' | 'dark') => (
     <div className={`container-x relative flex h-full flex-col justify-end ${surface === 'dark' ? 'pb-10 lg:pb-14' : ''}`}>
       <h1 className={`${displayClass(title)} max-w-[14ch] ${surface === 'dark' ? 'text-paper' : ''}`}>{title}</h1>
       <div className="mt-6">
@@ -46,7 +46,7 @@ export function VideoHero({
   if (!still) {
     return (
       <Field as="section" aria-label={title} className="section-y">
-        {copy('teal')}
+        {copy('tide')}
       </Field>
     )
   }

@@ -31,54 +31,63 @@ const panelLink = 'underline underline-offset-4 decoration-1 hover:decoration-2'
  * questions", the booking line and button, then the form beside the
  * phone, email, address and hours on a grey panel. Linked from the footer
  * only; not in the main nav or the top bar. With the form off
- * (`features.contactForm`) the panel stands alone on the left.
+ * (`features.contactForm`) the panel sits in the hero's right side, in the
+ * bud's place.
  */
 export default async function ContactPage() {
   const settings = await getSiteSettings()
   const contact = pages.contact
 
+  const panel = (
+    <div className="bg-grey px-6 py-8 sm:px-8">
+      <ul className="grid gap-1">
+        <li>
+          <a href={settings.phoneHref} className={`text-h3 ${panelLink}`}>
+            {settings.phone}
+          </a>
+        </li>
+        <li>
+          <a href={`mailto:${settings.email}`} className={`break-all ${panelLink}`}>
+            {settings.email}
+          </a>
+        </li>
+      </ul>
+      <div className="mt-5 border-t border-paper pt-4">
+        <p className="font-medium">{settings.legalName}</p>
+        <Address address={settings.address} />
+        <a href={mapSearchUrl(settings)} target="_blank" rel="noopener noreferrer" className={`mt-2 inline-block ${panelLink}`}>
+          Open in Google Maps
+        </a>
+      </div>
+      <Hours hours={settings.hours} note={settings.saturdayNote} className="mt-5 border-t border-paper pt-4" />
+    </div>
+  )
+
   return (
     <main id="main">
       <JsonLd data={clinicJsonLd(settings)} />
-      <PageHero title={contact.title} lead={contact.lead} bud={<Bud size="large" colour="teal" className="top-10 right-[10%]" />}>
+      <PageHero
+        title={contact.title}
+        lead={contact.lead}
+        bud={features.contactForm ? <Bud size="large" colour="teal" className="top-10 right-[10%]" /> : undefined}
+        aside={features.contactForm ? undefined : <Reveal delay={80}>{panel}</Reveal>}
+      >
         <p className="mt-6 max-w-[42ch]">{contact.bookLine}</p>
         <div className="mt-4">
           <Button href={BOOKING_PATH}>{settings.ctaLabel}</Button>
         </div>
       </PageHero>
 
-      <div className="container-x pb-[var(--section-y)] grid-12 gap-y-10">
-        {features.contactForm && (
+      {features.contactForm && (
+        <div className="container-x pb-[var(--section-y)] grid-12 gap-y-10">
           <Reveal className="col-span-12 lg:col-span-7">
             <ContactForm phone={settings.phone} phoneHref={settings.phoneHref} />
           </Reveal>
-        )}
-
-        <Reveal delay={features.contactForm ? 80 : 0} className={features.contactForm ? 'col-span-12 lg:col-span-4 lg:col-start-9' : 'col-span-12 sm:col-span-8 lg:col-span-5'}>
-          <div className="bg-grey px-6 py-8 sm:px-8">
-            <ul className="grid gap-1">
-              <li>
-                <a href={settings.phoneHref} className={`text-h3 ${panelLink}`}>
-                  {settings.phone}
-                </a>
-              </li>
-              <li>
-                <a href={`mailto:${settings.email}`} className={`break-all ${panelLink}`}>
-                  {settings.email}
-                </a>
-              </li>
-            </ul>
-            <div className="mt-5 border-t border-paper pt-4">
-              <p className="font-medium">{settings.legalName}</p>
-              <Address address={settings.address} />
-              <a href={mapSearchUrl(settings)} target="_blank" rel="noopener noreferrer" className={`mt-2 inline-block ${panelLink}`}>
-                Open in Google Maps
-              </a>
-            </div>
-            <Hours hours={settings.hours} note={settings.saturdayNote} className="mt-5 border-t border-paper pt-4" />
-          </div>
-        </Reveal>
-      </div>
+          <Reveal delay={80} className="col-span-12 lg:col-span-4 lg:col-start-9">
+            {panel}
+          </Reveal>
+        </div>
+      )}
     </main>
   )
 }

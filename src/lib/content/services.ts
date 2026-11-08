@@ -19,7 +19,7 @@ export interface ServiceVideo {
   loop: string | null
   /**
    * A 16:9 frame of the loop: its still in the service rows and on the
-   * service page hero. Null makes the hero the teal field and the rows show
+   * service page hero. Null makes the hero the tide field and the rows show
    * the labelled placeholder (`loopBrief`); a loop without a still is not
    * shown.
    */
@@ -68,7 +68,7 @@ const naturopathicBody = `
 <li>Acupuncture</li>
 </ul>
 <h2>What Conditions are Treated with Naturopathic Medicine?</h2>
-<p>Over the past 18 years, Dr. Lee has worked with a variety of health concerns: from acute symptoms to chronic illness and from the physical to the psychological. By addressing the root cause of disease, and through the appropriate use of natural therapies, many of Dr. Lee’s patients have found tremendous benefits.</p>
+<p>Over the past 20 years, Dr. Lee has worked with a variety of health concerns: from acute symptoms to chronic illness and from the physical to the psychological. By addressing the root cause of disease, and through the appropriate use of natural therapies, many of Dr. Lee’s patients have found tremendous benefits.</p>
 <p>More recently, Dr. Lee has focused his practice on the following areas of health:</p>
 <ol>
 <li>Digestive &amp; Root Imbalances: Energy &amp; fatigue issues, digestive problems, allergies, skin issues, food sensitivities.</li>
@@ -76,28 +76,6 @@ const naturopathicBody = `
 <li>Pain &amp; Injuries: Chronic pain, headaches, arthritis, sports injuries, frozen shoulder.</li>
 </ol>
 <p>By following the principles of Naturopathic Medicine, your body will heal at the cellular level; activating system-wide processes to regulate, detoxify, nourish, repair and energize. Dr. Lee has worked with thousands of patients guiding them to heal from the inside out.</p>
-`
-
-const naturopathicClosing = `
-<h2>Naturopathic Medicine at Brio Health</h2>
-<p>Have you accepted that feeling constantly tired &amp; stressed-out is NORMAL? It is not normal.</p>
-<p>Comparing our current level of health to other cultures and even past cultures; something is not right. We are not meant to be stuck in chronic pain, exhaustion and poor health.</p>
-<p><strong>How Can Naturopathic Medicine Help Me?</strong></p>
-<p>Naturopathic Medicine blends modern scientific knowledge with traditional and natural forms of medicine. The benefits of Naturopathic Medicine include:<br>
-Identifying and treating the root cause of your ailments, rather than just masking the symptoms.<br>
-Using safe effective natural therapies to stimulate long lasting healing.<br>
-Treating the whole person by addressing imbalances in the physical, mental, emotional and spiritual areas of health.</p>
-<p><strong>Why Choose Brio Health For Naturopathic Care?</strong></p>
-<p>Dr. Lee is both experienced and knowledgeable with over 18 years of clinical experience. He cares about his patients and inspires them to make small changes that make a big impact on their health.</p>
-<p><strong>What Conditions Are Treated With Naturopathic Medicine?</strong></p>
-<p>Dr. Lee has focused his practice on the following areas of health:</p>
-<ul>
-<li><strong>Digestive &amp; Root Imbalances:</strong> Energy &amp; fatigue issues, digestive problems, allergies, skin issues, food sensitivities</li>
-<li><strong>Nervous System &amp; Mental Health:</strong> Stress, anxiety, depression, brain fog, focus &amp; memory, sleep problems</li>
-<li><strong>Pain &amp; Injuries:</strong> Chronic pain, headaches, arthritis, sports injuries, frozen shoulder</li>
-</ul>
-<p>Naturopathic Medicine is safe, effective and personalized medicine.</p>
-<p>Give Brio Health a call today to book in your Naturopathic consultation.</p>
 `
 
 const acupunctureBody = `
@@ -135,25 +113,8 @@ const acupunctureBody = `
 <li>A series of treatments ranging from 3 to 6 treatments is scheduled for best results</li>
 </ul>
 <h2>Why Choose Brio Health for Acupuncture?</h2>
-<p>Dr. Lee has been practicing Acupuncture for over 18 years and has helped thousands of patients relieve pain, improve sleep and reduce stress. Being one of the few double-licensed Naturopathic Physician &amp; Acupuncturists in BC, Dr. Lee integrates a variety of different methods to bring about relief. He particularly enjoys combining his research of functional neurology with the ancient wisdom of Traditional Chinese Medicine to bring lasting change in the body.</p>
+<p>Dr. Lee has been practicing Acupuncture for over 20 years and has helped thousands of patients relieve pain, improve sleep and reduce stress. Being one of the few double-licensed Naturopathic Physician &amp; Acupuncturists in BC, Dr. Lee integrates a variety of different methods to bring about relief. He particularly enjoys combining his research of functional neurology with the ancient wisdom of Traditional Chinese Medicine to bring lasting change in the body.</p>
 <p>Acupuncture treatments are safe, effective and shift your nervous system back into a healing state.</p>
-`
-
-const acupunctureClosing = `
-<h2>Acupuncture at Brio Health</h2>
-<p>Deep rest and healing can only happen when your nervous system is in balance. Our modern lifestyle of high stress, demanding schedules and inadequate rest puts us at risk for constant exhaustion, chronic pain and mood problems.</p>
-<p>Don’t let your symptoms compound into bigger problems.</p>
-<p><strong>How Can Acupuncture Help Me?</strong></p>
-<p>Acupuncture has been practiced for thousands of years. The benefits of acupuncture include:</p>
-<ol>
-<li>Reduction of stress &amp; mood issues by shifting your body from “Fight or Flight” to “Rest &amp; Digest.”</li>
-<li>Heals pain &amp; injuries by releasing tension and improving blood flow.</li>
-<li>Builds energy &amp; vitality by improving sleep and digestive function.</li>
-</ol>
-<p><strong>Why Choose Brio Health For Acupuncture?</strong></p>
-<p>Dr. Lee is both experienced and knowledgeable with over 18 years of clinical experience. He cares about his patients and inspires them to make simple changes that make a big impact on their health.</p>
-<p>Acupuncture treatments are safe, effective and shifts your body back into a healing state.</p>
-<p>Give Brio Health a call today to book in your Acupuncture visit.</p>
 `
 
 const ivBody = `
@@ -185,7 +146,7 @@ const ivBody = `
 
 /**
  * Three services, the ones the clinic advertises. Each is its live
- * WordPress page verbatim (`body`, `closing`) plus the video fields and the
+ * WordPress page verbatim (`body`) plus the video fields and the
  * loop's brief. Shaped like the `service` SCF field group so it becomes the
  * fallback. Fees are not a field: they appear only inside the live cost FAQ
  * answers (faqs.ts).
@@ -206,8 +167,6 @@ export interface ServiceContent {
   loopBrief: string
   /** The live page, verbatim, as HTML for renderContent. */
   body: string
-  /** The live page's closing "X at Brio Health" block; empty when it has none. */
-  closing: string
   /** Above the FAQ accordion, as the live page heads it. */
   faqHeading: string
   video: ServiceVideo
@@ -220,7 +179,6 @@ export const services: ServiceContent[] = [
     short: 'naturopathic medicine',
     loopBrief: 'A short horizontal loop of a naturopathic visit: the patient listening, at ease',
     body: naturopathicBody,
-    closing: naturopathicClosing,
     faqHeading: 'FAQ’s',
     video: footage('naturopathic', 'A patient listening during a naturopathic consultation', '30% 50%'),
   },
@@ -230,7 +188,6 @@ export const services: ServiceContent[] = [
     short: 'acupuncture',
     loopBrief: 'A short horizontal loop of acupuncture: needles in place on a forearm, calm room, no faces',
     body: acupunctureBody,
-    closing: acupunctureClosing,
     faqHeading: 'FAQ’s',
     video: footage('acupuncture', 'Hands at work on the back of a patient’s neck during acupuncture', '45% 50%'),
   },
@@ -240,7 +197,6 @@ export const services: ServiceContent[] = [
     short: 'I.V. therapy',
     loopBrief: 'A short horizontal loop of I.V. therapy: the patient settled in the chair, line in, resting. No clinician in frame',
     body: ivBody,
-    closing: '',
     faqHeading: 'FAQ’s',
     video: footage('iv-therapy', 'Gloved hands setting an I.V. line in a patient’s forearm', '60% 50%'),
   },

@@ -3,12 +3,52 @@
     "title": "Home: trust",
     "fields": [
         {
+            "key": "field_home_trust_heading",
+            "label": "Heading",
+            "name": "home_trust_heading",
+            "aria-label": "",
+            "type": "text",
+            "instructions": "e.g. \"We Make Your Health Journey Simple\". Under 60 characters.",
+            "required": 0,
+            "conditional_logic": 0,
+            "wrapper": {
+                "width": "",
+                "class": "",
+                "id": ""
+            },
+            "default_value": "",
+            "maxlength": 60,
+            "placeholder": "",
+            "prepend": "",
+            "append": ""
+        },
+        {
+            "key": "field_home_trust_sentence",
+            "label": "One sentence",
+            "name": "home_trust_sentence",
+            "aria-label": "",
+            "type": "text",
+            "instructions": "Under the heading, e.g. \"With 20 years of experience, we know how to help you.\" Under 120 characters.",
+            "required": 0,
+            "conditional_logic": 0,
+            "wrapper": {
+                "width": "",
+                "class": "",
+                "id": ""
+            },
+            "default_value": "",
+            "maxlength": 120,
+            "placeholder": "",
+            "prepend": "",
+            "append": ""
+        },
+        {
             "key": "field_home_trust_stats",
-            "label": "Three statements",
+            "label": "Two statements",
             "name": "home_trust_stats",
             "aria-label": "",
             "type": "repeater",
-            "instructions": "Short lines with an icon, e.g. \"Serving Richmond Since 2006\".",
+            "instructions": "A short line and a sentence under it, side by side.",
             "required": 0,
             "conditional_logic": 0,
             "wrapper": {
@@ -18,50 +58,23 @@
             },
             "layout": "table",
             "pagination": 0,
-            "min": 3,
-            "max": 3,
+            "min": 2,
+            "max": 2,
             "collapsed": "",
-            "button_label": "Add line",
+            "button_label": "Add statement",
             "rows_per_page": 20,
             "sub_fields": [
                 {
-                    "key": "field_home_trust_stats_icon",
-                    "label": "Icon",
-                    "name": "icon",
-                    "aria-label": "",
-                    "type": "select",
-                    "instructions": "The icon beside the line.",
-                    "required": 0,
-                    "conditional_logic": 0,
-                    "wrapper": {
-                        "width": "30",
-                        "class": "",
-                        "id": ""
-                    },
-                    "choices": {
-                        "certificate": "Certificate",
-                        "map-pin": "Map pin",
-                        "users": "People"
-                    },
-                    "default_value": "certificate",
-                    "allow_null": 0,
-                    "multiple": 0,
-                    "ui": 0,
-                    "return_format": "value",
-                    "ajax": 0,
-                    "placeholder": ""
-                },
-                {
-                    "key": "field_home_trust_stats_text",
+                    "key": "field_home_trust_stats_title",
                     "label": "Line",
-                    "name": "text",
+                    "name": "title",
                     "aria-label": "",
                     "type": "text",
-                    "instructions": "Under 40 characters.",
+                    "instructions": "e.g. \"20 years of Clinical experience\". Under 40 characters.",
                     "required": 1,
                     "conditional_logic": 0,
                     "wrapper": {
-                        "width": "70",
+                        "width": "40",
                         "class": "",
                         "id": ""
                     },
@@ -70,6 +83,43 @@
                     "placeholder": "",
                     "prepend": "",
                     "append": ""
+                },
+                {
+                    "key": "field_home_trust_stats_body",
+                    "label": "Sentence",
+                    "name": "body",
+                    "aria-label": "",
+                    "type": "text",
+                    "instructions": "Under 90 characters.",
+                    "required": 1,
+                    "conditional_logic": 0,
+                    "wrapper": {
+                        "width": "30",
+                        "class": "",
+                        "id": ""
+                    },
+                    "default_value": "",
+                    "maxlength": 90,
+                    "placeholder": "",
+                    "prepend": "",
+                    "append": ""
+                },
+                {
+                    "key": "field_home_trust_stats_link",
+                    "label": "Link",
+                    "name": "link",
+                    "aria-label": "",
+                    "type": "url",
+                    "instructions": "Optional. Makes the sentence a link, e.g. to the Google reviews.",
+                    "required": 0,
+                    "conditional_logic": 0,
+                    "wrapper": {
+                        "width": "20",
+                        "class": "",
+                        "id": ""
+                    },
+                    "default_value": "",
+                    "placeholder": ""
                 }
             ]
         },
@@ -105,7 +155,7 @@
             "name": "home_trust_badge_heading",
             "aria-label": "",
             "type": "text",
-            "instructions": "e.g. the Best of Richmond sentence from the current homepage. Under 160 characters.",
+            "instructions": "e.g. \"Brio Health was voted in Richmond News' Best of Richmond 2026 in the category of Best Naturopath!\" Under 160 characters.",
             "required": 0,
             "conditional_logic": 0,
             "wrapper": {
@@ -138,37 +188,6 @@
             "placeholder": "",
             "prepend": "",
             "append": ""
-        },
-        {
-            "key": "field_home_trust_testimonials",
-            "label": "Testimonials to show",
-            "name": "home_trust_testimonials",
-            "aria-label": "",
-            "type": "relationship",
-            "instructions": "Two, in order.",
-            "required": 0,
-            "conditional_logic": 0,
-            "wrapper": {
-                "width": "",
-                "class": "",
-                "id": ""
-            },
-            "post_type": [
-                "testimonial"
-            ],
-            "taxonomy": [],
-            "post_status": [
-                "publish"
-            ],
-            "filters": [
-                "search"
-            ],
-            "return_format": "id",
-            "min": "",
-            "max": 2,
-            "elements": "",
-            "bidirectional": 0,
-            "bidirectional_target": []
         }
     ],
     "location": [
@@ -180,7 +199,7 @@
             }
         ]
     ],
-    "menu_order": 3,
+    "menu_order": 4,
     "position": "normal",
     "style": "default",
     "label_placement": "top",

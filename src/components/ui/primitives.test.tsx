@@ -44,13 +44,13 @@ describe('StepList', () => {
     expect(children).toBe('')
   })
 
-  it('switches the numeral colour for a teal field', () => {
+  it('switches the numeral colour for a tide field', () => {
     const light = renderToStaticMarkup(<StepList steps={steps} />)
-    const teal = renderToStaticMarkup(<StepList steps={steps} surface="teal" />)
+    const tide = renderToStaticMarkup(<StepList steps={steps} surface="tide" />)
 
     expect(light).toContain('text-teal')
-    expect(teal).not.toContain('text-teal ')
-    expect(teal).toContain('text-paper')
+    expect(tide).not.toContain('text-teal ')
+    expect(tide).toContain('text-paper')
   })
 })
 
@@ -109,6 +109,7 @@ describe('Address', () => {
     expect(html).toContain('2168-3779 Sexsmith Road')
     expect(html).toContain('Richmond, BC V6X 3Z9')
     expect(html.indexOf('Sexsmith Road')).toBeLessThan(html.indexOf('Richmond, BC'))
+    expect(html.indexOf('Richmond, BC')).toBeLessThan(html.indexOf('Inside Richmond Laser &amp; Wellness'))
   })
 })
 
@@ -138,7 +139,7 @@ describe('Accordion', () => {
 
 describe('Button', () => {
   it('fills the primary button clay with an ink label on every surface', () => {
-    for (const on of ['light', 'teal', 'dark'] as const) {
+    for (const on of ['light', 'dark'] as const) {
       const html = renderToStaticMarkup(<Button on={on}>Book Appointment</Button>)
       expect(html).toContain('bg-clay')
       expect(html).toContain('text-ink')
@@ -148,7 +149,6 @@ describe('Button', () => {
 
   it('draws the outline variant in the surface text colour', () => {
     expect(renderToStaticMarkup(<Button variant="outline">x</Button>)).toContain('border-ink')
-    expect(renderToStaticMarkup(<Button variant="outline" on="teal">x</Button>)).toContain('border-on-teal')
     expect(renderToStaticMarkup(<Button variant="outline" on="dark">x</Button>)).toContain('border-paper')
   })
 

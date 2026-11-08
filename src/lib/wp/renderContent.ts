@@ -3,7 +3,7 @@ import { toJsxRuntime } from 'hast-util-to-jsx-runtime'
 import rehypeParse from 'rehype-parse'
 import rehypeSanitize, { defaultSchema } from 'rehype-sanitize'
 import { unified } from 'unified'
-import { SKIP, visit } from 'unist-util-visit'
+import { EXIT, SKIP, visit } from 'unist-util-visit'
 import type { Element, ElementContent, Root } from 'hast'
 
 import { WP_HOST } from './client'
@@ -43,6 +43,9 @@ const NOISE = new Set(['style', 'script', 'noscript', 'link', 'meta', 'form'])
 /** Avada's schema.org spans, hidden by CSS we no longer ship. */
 const HIDDEN = ['rich-snippet-hidden', 'screen-reader-text', 'fusion-meta-hidden']
 
+/** Avada's "recent posts" block: WordPress fills it in, not the writer, and the blog lists them anyway. */
+const WIDGETS = ['fusion-recent-posts']
+
 /**
  * Uploads from the pre-WordPress Drupal site. The files are gone (404 on the
  * live site too), so an image pointing there would only be a broken icon.
@@ -67,7 +70,7 @@ function isFusionWrapper(node: Element): boolean {
 
 function isNoise(el: Element): boolean {
   if (NOISE.has(el.tagName)) return true
-  if (classes(el).some((c) => HIDDEN.includes(c))) return true
+  if (classes(el).some((c) => HIDDEN.includes(c) || WIDGETS.includes(c))) return true
 
   if (el.tagName !== 'img') return false
   const src = el.properties.dataOrigSrc || el.properties.src
@@ -86,6 +89,66 @@ function dropNoise() {
         // Siblings slide into the gap; revisit the same index.
         return index
       }
+    })
+  }
+}
+
+/** `fusion_builder_column_1_4`, or `_inner_1_4` in a nested row: the column's share of its row. */
+const COLUMN_WIDTH = /^fusion_builder_column(?:_inner)?_(\d)_(\d)$/
+
+/** A post laid out in columns: any column narrower than its row. */
+const HAS_COLUMNS = /fusion_builder_column(?:_inner)?_(?!1_1\b)\d_\d/
+
+function isColumn(node: Element): boolean {
+  return classes(node).includes('fusion-layout-column')
+}
+
+function isRow(node: Element): boolean {
+  return classes(node).some((c) => c === 'fusion-builder-row' || c === 'fusion-builder-row-inner')
+}
+
+function holds(node: Element, test: (el: Element) => boolean): boolean {
+  let found = false
+  visit(node, 'element', (el) => {
+    if (el === node || !test(el)) return
+    found = true
+    return EXIT
+  })
+  return found
+}
+
+/**
+ * For a post, the writer's own layout: Avada's rows and columns stay as
+ * wp-row and wp-col, sized by the fraction in the column's class. A column
+ * with a form in it (the newsletter signup) goes, since nothing here can
+ * submit it; runs after dropNoise, so only the form's wrapper is left.
+ */
+function keepColumns() {
+  return (tree: Root) => {
+    visit(tree, 'element', (node, index, parent) => {
+      if (!parent || index === undefined) return
+      if (isRow(node)) node.properties.className = ['wp-row']
+      if (!isColumn(node)) return
+      if (!holds(node, isColumn) && holds(node, (el) => classes(el).some((c) => c.startsWith('fusion-form')))) {
+        parent.children.splice(index, 1)
+        return index
+      }
+      const width = classes(node)
+        .map((c) => c.match(COLUMN_WIDTH))
+        .find(Boolean)
+      node.properties.className = width ? ['wp-col', `wp-w-${width[1]}-${width[2]}`] : ['wp-col']
+    })
+  }
+}
+
+/** After sanitising, which drops every style a post brings: wp-w-1-4 becomes --w:0.25. */
+function columnWidths() {
+  return (tree: Root) => {
+    visit(tree, 'element', (node: Element) => {
+      const width = classes(node).find((c) => c.startsWith('wp-w-'))
+      if (!width) return
+      const [part, whole] = width.slice(5).split('-').map(Number)
+      node.properties.style = `--w:${(part / whole).toFixed(4)}`
     })
   }
 }
@@ -389,6 +452,20 @@ const processor = unified()
   .use(rehypeSanitize, schema)
   .use(imageRatios)
 
+/** The same, keeping a post's columns. */
+const columnProcessor = unified()
+  .use(rehypeParse, { fragment: true })
+  .use(dropNoise)
+  .use(convertShortcodes)
+  .use(vetEmbeds)
+  .use(keepColumns)
+  .use(unwrapFusion)
+  .use(cleanAttributes)
+  .use(dropEmpty)
+  .use(rehypeSanitize, schema)
+  .use(imageRatios)
+  .use(columnWidths)
+
 function textContent(node: Root | Element): string {
   const parts: string[] = []
   visit(node, 'text', (text) => {
@@ -418,6 +495,34 @@ export function renderContent(
   const tree = processor.runSync(processor.parse(html)) as Root
   if (title) dropLeadingTitle(tree, title)
   return toJsxRuntime(tree, { Fragment, jsx, jsxs })
+}
+
+/** The writer's own title heading becomes the page's h1. True when there was one. */
+function promoteTitle(tree: Root, title: string): boolean {
+  const wanted = title.replace(/\s+/g, ' ').trim().toLowerCase()
+  let found = false
+  visit(tree, 'element', (node: Element) => {
+    if (!/^h[1-6]$/.test(node.tagName) || textContent(node).toLowerCase() !== wanted) return
+    node.tagName = 'h1'
+    node.properties.className = ['post-title']
+    found = true
+    return EXIT
+  })
+  return found
+}
+
+/**
+ * A blog post, kept to the structure its writer built in WordPress. A post
+ * laid out in Avada columns (the recent ones: photo, title and byline across
+ * the top, a photo beside the text) keeps them, and its own title heading is
+ * the page's h1 (`ownTitle`), so the page adds no header of its own. Any
+ * other post renders as renderContent does.
+ */
+export function renderPost(html: string, title: string) {
+  if (!HAS_COLUMNS.test(html)) return { content: renderContent(html, { title }), columns: false, ownTitle: false }
+  const tree = columnProcessor.runSync(columnProcessor.parse(html)) as Root
+  const ownTitle = promoteTitle(tree, title)
+  return { content: toJsxRuntime(tree, { Fragment, jsx, jsxs }), columns: true, ownTitle }
 }
 
 /**

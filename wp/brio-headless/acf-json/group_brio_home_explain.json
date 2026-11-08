@@ -8,7 +8,27 @@
             "name": "home_explain_heading",
             "aria-label": "",
             "type": "text",
-            "instructions": "e.g. \"At Brio Health we know you want to be healthy, vibrant and full of energy.\" Under 120 characters.",
+            "instructions": "e.g. \"Your Health Matters: Let Us Help\". Under 120 characters.",
+            "required": 0,
+            "conditional_logic": 0,
+            "wrapper": {
+                "width": "",
+                "class": "",
+                "id": ""
+            },
+            "default_value": "",
+            "maxlength": 120,
+            "placeholder": "",
+            "prepend": "",
+            "append": ""
+        },
+        {
+            "key": "field_home_explain_sentence",
+            "label": "One sentence",
+            "name": "home_explain_sentence",
+            "aria-label": "",
+            "type": "text",
+            "instructions": "Under the heading, e.g. \"You deserve to feel energized and healthy.\" Under 120 characters.",
             "required": 0,
             "conditional_logic": 0,
             "wrapper": {
@@ -65,110 +85,6 @@
                     "new_lines": ""
                 }
             ]
-        },
-        {
-            "key": "field_home_explain_steps_intro",
-            "label": "Line before the steps",
-            "name": "home_explain_steps_intro",
-            "aria-label": "",
-            "type": "text",
-            "instructions": "e.g. \"Here are the steps to transform your health:\". Under 80 characters.",
-            "required": 0,
-            "conditional_logic": 0,
-            "wrapper": {
-                "width": "",
-                "class": "",
-                "id": ""
-            },
-            "default_value": "",
-            "maxlength": 80,
-            "placeholder": "",
-            "prepend": "",
-            "append": ""
-        },
-        {
-            "key": "field_home_explain_steps",
-            "label": "Steps",
-            "name": "home_explain_steps",
-            "aria-label": "",
-            "type": "repeater",
-            "instructions": "Three, in order; the page adds \"Step 1:\" and so on.",
-            "required": 0,
-            "conditional_logic": 0,
-            "wrapper": {
-                "width": "",
-                "class": "",
-                "id": ""
-            },
-            "layout": "row",
-            "pagination": 0,
-            "min": 3,
-            "max": 3,
-            "collapsed": "",
-            "button_label": "Add step",
-            "rows_per_page": 20,
-            "sub_fields": [
-                {
-                    "key": "field_home_explain_steps_title",
-                    "label": "Title",
-                    "name": "title",
-                    "aria-label": "",
-                    "type": "text",
-                    "instructions": "A few words. Aim for under 40 characters.",
-                    "required": 1,
-                    "conditional_logic": 0,
-                    "wrapper": {
-                        "width": "",
-                        "class": "",
-                        "id": ""
-                    },
-                    "default_value": "",
-                    "maxlength": 60,
-                    "placeholder": "",
-                    "prepend": "",
-                    "append": ""
-                },
-                {
-                    "key": "field_home_explain_steps_body",
-                    "label": "Text",
-                    "name": "body",
-                    "aria-label": "",
-                    "type": "textarea",
-                    "instructions": "One or two sentences. Aim for under 200 characters.",
-                    "required": 1,
-                    "conditional_logic": 0,
-                    "wrapper": {
-                        "width": "",
-                        "class": "",
-                        "id": ""
-                    },
-                    "default_value": "",
-                    "maxlength": 300,
-                    "rows": 3,
-                    "placeholder": "",
-                    "new_lines": ""
-                }
-            ]
-        },
-        {
-            "key": "field_home_explain_closing",
-            "label": "Closing line",
-            "name": "home_explain_closing",
-            "aria-label": "",
-            "type": "textarea",
-            "instructions": "The sentence above the booking button. Under 300 characters.",
-            "required": 0,
-            "conditional_logic": 0,
-            "wrapper": {
-                "width": "",
-                "class": "",
-                "id": ""
-            },
-            "default_value": "",
-            "maxlength": 300,
-            "rows": 2,
-            "placeholder": "",
-            "new_lines": ""
         }
     ],
     "location": [
@@ -180,7 +96,7 @@
             }
         ]
     ],
-    "menu_order": 5,
+    "menu_order": 6,
     "position": "normal",
     "style": "default",
     "label_placement": "top",

@@ -3,7 +3,7 @@ import { DotBurst } from './DotBurst'
 
 /**
  * A scattered dot burst (spec 3.7): one of three sizes, teal on paper or
- * grey, paper on teal, placed by hand in a page's open space with
+ * grey, paper on tide, placed by hand in a page's open space with
  * `className` (the parent is `relative`). It blooms once as it scrolls
  * into view through Reveal; reduced motion or no JavaScript draws it
  * static. At most three per page, never over text or photos, no two at

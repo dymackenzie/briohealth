@@ -92,7 +92,7 @@ for (const [i, a] of loaded.entries()) {
 }
 
 const expected = [
-  'group_brio_settings', 'group_brio_home_hero', 'group_brio_home_stakes', 'group_brio_home_services', 'group_brio_home_trust',
+  'group_brio_settings', 'group_brio_home_hero', 'group_brio_home_stakes', 'group_brio_home_value', 'group_brio_home_services', 'group_brio_home_trust',
   'group_brio_home_plan', 'group_brio_home_explain', 'group_brio_service', 'group_brio_testimonial', 'group_brio_faq',
   'group_brio_seo', 'group_brio_about', 'group_brio_contact', 'group_brio_new_patient', 'group_brio_pickleball',
 ]
@@ -110,7 +110,7 @@ if (phpNames.length < 10) problems.push(`inc/options.php: only found ${phpNames.
 
 const readers = {
   group_brio_settings: [...new Set(phpNames), 'hours.days', 'hours.opens', 'hours.closes', 'hours.closed', 'social.label', 'social.url', 'announcement.enabled', 'announcement.text', 'announcement.url'],
-  group_brio_service: ['body', 'closing', 'video_loop', 'video_poster', 'video_narrated', 'video_captions', 'faq_heading', 'faqs'],
+  group_brio_service: ['body', 'video_loop', 'video_poster', 'video_narrated', 'video_captions', 'faq_heading', 'faqs'],
   group_brio_testimonial: ['quote', 'name', 'service'],
   group_brio_faq: ['question', 'answer', 'faq_group'],
 }

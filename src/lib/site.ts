@@ -194,3 +194,10 @@ export function mapEmbedUrl(settings: SiteSettings): string {
 export function mapSearchUrl(settings: SiteSettings): string {
   return `https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(addressLine(settings))}`
 }
+
+/** The second wireframe's note beside the map: patients look for the other sign. */
+export const addressNote = 'Inside Richmond Laser & Wellness'
+
+// shortcut: a Maps search for the clinic, not its own review link; swap in the place's g.page review URL when the clinic sends it
+/** The homepage's "reviews and awards" line and the footer's Testimonials link. */
+export const reviewsUrl = `https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(`${site.name}, ${site.address.street}, ${site.address.locality}`)}`

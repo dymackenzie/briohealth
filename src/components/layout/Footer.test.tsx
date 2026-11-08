@@ -1,6 +1,6 @@
 import { renderToStaticMarkup } from 'react-dom/server'
 import { describe, expect, it } from 'vitest'
-import { site } from '@/lib/site'
+import { reviewsUrl, site } from '@/lib/site'
 import { Footer } from './Footer'
 
 describe('Footer', () => {
@@ -11,13 +11,14 @@ describe('Footer', () => {
     expect(html).toContain('output=embed')
   })
 
-  it("uses the wireframe's line as written", () => {
-    expect(html).toContain('Don&#x27;t be at the Mercy of your symptoms')
+  it('drops what the second wireframe struck: the service buttons and the Mercy line', () => {
+    expect(html).not.toContain('Mercy of your symptoms')
+    expect(html).not.toContain('href="/services/')
+    expect(html).not.toContain('bg-clay')
   })
 
-  it('keeps clay for Book Appointment only', () => {
-    const clay = html.match(/<(?:a|button) [^>]*bg-clay[^>]*>[^<]*/g) ?? []
-    expect(clay).toHaveLength(1)
-    expect(clay[0]).toContain(site.ctaLabel)
+  it('links Testimonials to the Google reviews', () => {
+    expect(html).toContain(`href="${reviewsUrl.replaceAll('&', '&amp;')}"`)
+    expect(html).toMatch(/>Testimonials<\/a>/)
   })
 })

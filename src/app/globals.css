@@ -23,11 +23,11 @@
 
   /* The paper is grained: a 180px fractal-noise tile in warm brown at a few
    * percent alpha, inline so it costs no request. Only the body carries it;
-   * teal and sand fields paint over it flat, and the header has no fill so
+   * tide and sand fields paint over it flat, and the header has no fill so
    * the grain runs under it. */
   body {
     background-color: var(--color-paper);
-    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='180' height='180'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.8' numOctaves='3' stitchTiles='stitch'/%3E%3CfeColorMatrix values='0 0 0 0 .2 0 0 0 0 .16 0 0 0 0 .1 .55 0 0 0 -.22'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
+    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='180' height='180'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.8' numOctaves='3' stitchTiles='stitch'/%3E%3CfeColorMatrix values='0 0 0 0 .2 0 0 0 0 .16 0 0 0 0 .1 .34 0 0 0 -.16'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
     color: var(--color-ink);
     font-family: var(--font-sans);
     font-size: var(--fs-body);
@@ -76,21 +76,7 @@
     color: var(--color-paper);
   }
 
-  /* A teal field. Body text is on-teal; only display type is paper. */
-  [data-surface='teal'] {
-    background: var(--color-teal);
-    color: var(--color-on-teal);
-  }
-
-  [data-surface='teal'] :is(h1, h2, .text-display, .text-display-long, .text-h2, .text-questions, .text-stat, .text-numeral, .text-quote, .text-tagline) {
-    color: var(--color-paper);
-  }
-
-  [data-surface='teal'] :focus-visible {
-    outline-color: var(--color-paper);
-  }
-
-  /* A tide strip (top bar, announcement). Paper text (8.8:1), paper focus ring. */
+  /* A tide field or strip (`Field`, top bar, announcement). Paper text (8.8:1), paper focus ring. */
   [data-surface='tide'] {
     background: var(--color-tide);
     color: var(--color-paper);
@@ -182,15 +168,6 @@
   font-size: var(--fs-tagline);
   line-height: 1.3;
   text-wrap: balance;
-}
-
-/* The four questions on the homepage: the section's dominant element. */
-@utility text-questions {
-  font-family: var(--font-serif);
-  font-weight: 500;
-  font-size: var(--fs-questions);
-  line-height: 1.08;
-  letter-spacing: -0.02em;
 }
 
 @utility text-h3 {
@@ -420,6 +397,39 @@
   }
   & p:empty {
     display: none;
+  }
+  /* A post's own Avada columns (renderPost), at the widths the writer set:
+   * stacked on phones, side by side from md, wrapping like Avada's rows when
+   * a line is full. --w is the column's share; the basis takes its share of
+   * the gaps out, so columns that add up to one fill the line exactly. The
+   * flow gap is the row's. */
+  & .wp-row {
+    display: grid;
+    gap: 1.5em;
+  }
+  & .wp-row > * {
+    margin-top: 0;
+  }
+  @media (width >= 48rem) {
+    & .wp-row {
+      --gap: 2.5rem;
+      display: flex;
+      flex-wrap: wrap;
+      align-items: flex-start;
+      gap: 1.5em var(--gap);
+    }
+    & .wp-col {
+      flex: 0 0 calc(var(--w, 1) * 100% - var(--gap) * (1 - var(--w, 1)));
+      min-width: 0;
+    }
+  }
+  /* The writer's title heading, standing in for the page's. */
+  & .post-title {
+    font-weight: 700;
+    font-size: var(--fs-post-title);
+    line-height: 1.15;
+    letter-spacing: -0.01em;
+    text-wrap: balance;
   }
 }
 

@@ -7,12 +7,12 @@
  * places it as a sibling, never inside the list.
  */
 
-type Surface = 'light' | 'teal'
+type Surface = 'light' | 'tide'
 
 // Display numerals are teal on light grounds and paper on a field.
 const numeralColour: Record<Surface, string> = {
   light: 'text-teal',
-  teal: 'text-paper',
+  tide: 'text-paper',
 }
 
 export function StepList({

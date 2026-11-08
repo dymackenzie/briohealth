@@ -17,7 +17,7 @@ export type InkRole = 'line' | 'hatch' | 'petal' | 'root' | 'seed'
 /** What a wash colours. */
 export type WashKey = 'stem' | 'leaf' | 'petal' | 'disc' | 'calyx'
 
-export type Token = 'paper' | 'grey' | 'ink' | 'inkSoft' | 'teal' | 'tealDeep' | 'onTeal' | 'tide' | 'clay'
+export type Token = 'paper' | 'grey' | 'ink' | 'inkSoft' | 'teal' | 'tealDeep' | 'tide' | 'clay'
 export type BotanicalColour =
   | 'sage'
   | 'sageGrey'
@@ -126,7 +126,6 @@ export const GARDEN: GardenConfig = {
     inkSoft: '#4d4740',
     teal: '#00919d',
     tealDeep: '#007a85',
-    onTeal: '#031011',
     tide: '#0d4a50',
     clay: '#e07a55',
   },

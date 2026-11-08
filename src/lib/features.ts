@@ -14,4 +14,8 @@ export const features = {
   newsletter: false,
   /** The Pickleball page: a 404, out of the footer and the sitemap (2026-10-07). */
   pickleball: false,
+  /** The homepage hero: the wireframe's full-width photo, or false for the herb garden (2026-11-07). */
+  heroPhoto: true,
+  /** Flowers on selected text: on under `yarn dev`, off in production builds until it's signed off (2026-11-07). */
+  selectionFlowers: process.env.NODE_ENV === 'development',
 }

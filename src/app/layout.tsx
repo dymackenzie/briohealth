@@ -3,10 +3,12 @@ import { Funnel_Display, Funnel_Sans } from 'next/font/google'
 import localFont from 'next/font/local'
 import { Analytics } from '@vercel/analytics/next'
 
+import { SelectionFlowers } from '@/components/brand/SelectionFlowers'
 import { AnnouncementBar } from '@/components/layout/AnnouncementBar'
 import { Footer } from '@/components/layout/Footer'
 import { Header } from '@/components/layout/Header'
 import { TopBar } from '@/components/layout/TopBar'
+import { features } from '@/lib/features'
 import { siteOpenGraph } from '@/lib/seo'
 import { defaultDescription, site } from '@/lib/site'
 import { getSiteSettings } from '@/lib/wp/queries'
@@ -95,6 +97,7 @@ export default async function RootLayout({ children }: { children: React.ReactNo
         <Header settings={settings} />
         {children}
         <Footer settings={settings} />
+        {features.selectionFlowers && <SelectionFlowers />}
         <Analytics />
       </body>
     </html>

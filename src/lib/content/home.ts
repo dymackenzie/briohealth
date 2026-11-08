@@ -1,17 +1,18 @@
-import { site } from '@/lib/site'
-import { WP_UPLOADS_URL } from '@/lib/wp/client'
+import { reviewsUrl } from '@/lib/site'
 import type { ServiceSlug } from './services'
 
 /**
- * The homepage in Dr. Jeff's wireframe order (spec Appendix A): hero,
- * stakes, trust, plan, explanatory paragraph. Every string is the
- * wireframe's, with the reading notes applied: live-site title casing on
- * headings the live site also has, 2006 not 2008, no double spaces, no
- * trailing period after "Increasing Energy", Best of Richmond as the only
- * logo. One key per SCF field group, named after the section.
+ * The homepage in the order of Dr. Jeff's second wireframe (2026-10-24,
+ * `docs/Brio Health 2026 WIRE FRAME WEBSITE.pdf`): hero, stakes, value,
+ * services, trust, plan, explanatory paragraph. Every string is the
+ * wireframe's, with the first round's reading notes kept: no double spaces,
+ * no capitals-only labels. One key per SCF field group, named after the
+ * section. The buttons say `site.ctaLabel` ("Book Appointment") like the rest
+ * of the site; the wireframe's "Schedule a Consultation" was dropped
+ * (2026-11-07).
  */
 
-export type TrustIcon = 'certificate' | 'map-pin' | 'users'
+export type ValueIcon = 'path' | 'plant' | 'scales' | 'hand-heart'
 
 export interface HomeContent {
   hero: {
@@ -20,48 +21,66 @@ export interface HomeContent {
   }
   stakes: {
     heading: string
-    questions: string[]
-    paragraphs: string[]
+    sentence: string
+    points: string[]
+  }
+  value: {
+    heading: string
+    sentence: string
+    points: { icon: ValueIcon; text: string }[]
   }
   services: {
     order: ServiceSlug[]
   }
   trust: {
-    stats: { icon: TrustIcon; text: string }[]
+    heading: string
+    sentence: string
+    stats: { title: string; body: string; link?: string }[]
     badge: { src: string; alt: string; width: number; height: number }
     badgeHeading: string
     badgeThanks: string
   }
   plan: {
     heading: string
+    sentence: string
     steps: { title: string; body: string }[]
   }
   explain: {
     heading: string
+    sentence: string
     paragraphs: string[]
-    stepsIntro: string
-    steps: { title: string; body: string }[]
-    closing: string
   }
 }
 
 export const home: HomeContent = {
   hero: {
-    heading: 'Transform Your Health, Regain Your Life:',
-    sentence: 'A Natural Approach to Building Vitality and Increasing Energy',
+    heading: 'Reclaim Your Vitality Naturally',
+    sentence: 'Are you tired of feeling exhausted every single day?',
   },
 
   stakes: {
-    heading: 'Have you been frustrated with your level of health?',
-    questions: [
-      'Do you feel tired all the time?',
-      'Do you have digestive issues?',
-      'Do you get sick easily?',
-      'Do you experience brain fog or anxiety?',
+    heading: 'Don’t Let Fatigue Control Your Life',
+    sentence: 'What happens if you continue to ignore your health?',
+    points: [
+      'You’re exhausted and drained every day.',
+      'Staying focused is a constant challenge',
+      'You feel overwhelmed by your symptoms',
+      'Your body feels out of balance and chaotic',
+      'Chronic inflammation and burnout can ruin health.',
+      'Digestive issues lead to discomfort',
+      'Frequent illness disrupts your life',
+      'Anxiety leaves you feeling unproductive',
     ],
-    paragraphs: [
-      "At Brio Health, we don't focus on quick fixes that give you a temporary solution. That only leads to long term frustration.",
-      'We uncover the obstacles blocking your healing and guide you back to wellness. Our patients follow a customized road map empowering them to take control of their own health.',
+  },
+
+  value: {
+    heading: 'Live with Lasting Energy',
+    sentence: 'Experience the joy of true vitality in everyday life.',
+    points: [
+      { icon: 'path', text: 'Customized treatment plans addressing your unique needs' },
+      { icon: 'plant', text: 'Rooted in Tradition. Guided by Science. Focused Personalized Care' },
+      { icon: 'scales', text: 'Proven methods to restore balance and energy' },
+      { icon: 'hand-heart', text: 'Support from a dedicated health professional with proven success' },
     ],
   },
 
@@ -70,58 +89,57 @@ export const home: HomeContent = {
   },
 
   trust: {
+    heading: 'We Make Your Health Journey Simple',
+    sentence: 'With 20 years of experience, we know how to help you.',
     stats: [
-      { icon: 'certificate', text: 'Licensed Health Professionals' },
-      { icon: 'map-pin', text: `Serving Richmond Since ${site.foundedYear}` },
-      { icon: 'users', text: 'Trusted by over 5,000 patients' },
+      {
+        title: '20 years of Clinical experience',
+        body: 'Helping thousands reclaim their health for over two decades',
+      },
+      {
+        title: 'Trusted by over 5,000+ patients.',
+        body: 'Validated with numerous positive reviews and awards.',
+        link: reviewsUrl,
+      },
     ],
-    // The live homepage's badge and caption (page 22731).
+    // Our own seal citing the award, not Richmond News' logo; their official winner badge replaces it if the clinic gets one
     badge: {
-      src: `${WP_UPLOADS_URL}/2025/06/2025-best-of-richmond-logo.jpg`,
-      alt: 'Best of Richmond 2025, Richmond News',
-      width: 960,
-      height: 540,
+      src: '/badges/best-of-richmond-2026.svg',
+      alt: 'Best of Richmond 2026, Best Naturopath, Richmond News',
+      width: 240,
+      height: 240,
     },
-    badgeHeading: 'Brio Health was voted in Richmond News’ “Best of Richmond 2025” in the category of Best Naturopath!',
+    badgeHeading: 'Brio Health was voted in Richmond News’ “Best of Richmond 2026” in the category of Best Naturopath!',
     badgeThanks: 'Thank you, Richmond!',
   },
 
   plan: {
-    heading: "Here's How It Works",
+    heading: '3 Simple Steps to Transform Your Health',
+    sentence: 'Easy steps to restore your vitality and energy.',
     steps: [
       {
-        title: 'Book An Appointment',
-        body: "Everyone's healing journey is unique. During the initial assessment, we carefully listen to you, and meet you where you are.",
+        title: 'Assessment',
+        body: 'Everyone’s healing journey is unique. During the initial assessment, we carefully listen and uncover your root causes.',
       },
       {
-        title: 'Build A Personal Health Plan',
-        body: 'No one appreciates a cookie cutter approach. We build a plan specifically for you to address the root problems so you can heal from the inside out.',
+        title: 'Healthy Baseline',
+        body: 'No one appreciates a cookie cutter approach. We build a plan that removes obstacles and restore balance throughout your body.',
       },
       {
-        title: 'Be Proud Of Your Health',
-        body: 'We guide and empower you to take the right steps towards vibrant health by following your custom treatment plan and making small adjustments along the way.',
+        title: 'Cultivate Vitality',
+        body: 'We guide and empower you to take the right steps towards vitality. We maximize energy production for long-term wellness.',
       },
     ],
   },
 
   explain: {
-    heading: 'At Brio Health we know you want to be healthy, vibrant and full of energy.',
+    heading: 'Your Health Matters: Let Us Help',
+    sentence: 'You deserve to feel energized and healthy.',
     paragraphs: [
-      'In order to be that way, you need a custom step-by-step plan that rebuilds your health from the inside out.',
-      'The problem is that most people only want symptomatic relief and are misled by "quick fixes" that never address the root imbalance. This leads to confusion in the body resulting in more problems down the road like fatigue, inflammation and immune issues.',
-      "We believe the current healthcare model needs to change. It's not right that we are getting sicker and sicker as a society, despite all our medical knowledge and advancements.",
-      "We understand it's frustrating when your health feels stuck or worse, heading in the wrong direction. That's why our health approach is tailored to your specific needs, rather than treating a generic medical diagnosis. We have helped thousands of patients over the past 18 years transform their health with this personalized approach.",
+      'At Brio Health, we believe you deserve to feel healthy, vibrant, and full of energy. Whether you’re facing ongoing health issues, feeling drained as a busy professional, or seeking preventive health strategies for healthy aging, we’re here to help.',
+      'Many people chase quick fixes for their health concerns, which often leads to confusion in the body and more serious problems down the road, like fatigue and inflammation.',
+      'Our personalized approach focuses on identifying and addressing the root causes of your health challenges, rather than simply treating symptoms. For over 20 years, we’ve empowered thousands of patients to transform their health and reclaim their vitality.',
+      'Don’t let frustration hold you back any longer—schedule a consultation today and discover how you can take charge of your health!',
     ],
-    stepsIntro: 'Here are the steps to transform your health:',
-    steps: [
-      { title: 'Assessment', body: 'We take the time to listen and understand your current health status.' },
-      { title: 'Re-establish a Healthy Baseline', body: 'We help you remove obstacles to healing and restore balance in your body' },
-      {
-        title: 'Cultivate & Optimize Vitality',
-        body: 'We help you optimize the important systems in your body (ie. digestive, neurological, blood flow), so you can maximize energy production and overall health.',
-      },
-    ],
-    closing:
-      'Book an appointment today, so you can stop feeling frustrated about your health and start believing you can be healthy, vibrant and full of energy again.',
   },
 }

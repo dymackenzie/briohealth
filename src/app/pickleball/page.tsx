@@ -26,7 +26,7 @@ export const metadata = buildMetadata({
  * patterns and kept compact: the two questions in serif in columns 1-6,
  * the intro and the film (under its title card) in columns 7-12, where the
  * live page had it; the three coaching steps side by side on the page's
- * one teal field (the homepage plan's numbered steps, no booking button:
+ * one tide field (the homepage plan's numbered steps, no booking button:
  * these are lessons, not appointments); the two captioned photos; the two
  * coaching services as rows between ink rules with the rooftop photo
  * beside them; the two quotes side by side; then "Schedule a lesson" with
@@ -76,7 +76,7 @@ export default async function PickleballPage() {
             </h2>
           </Reveal>
           <Reveal delay={80}>
-            <StepList steps={page.steps} surface="teal" className="mt-8 gap-x-8 lg:grid-cols-3" />
+            <StepList steps={page.steps} surface="tide" className="mt-8 gap-x-8 lg:grid-cols-3" />
           </Reveal>
         </div>
       </Field>

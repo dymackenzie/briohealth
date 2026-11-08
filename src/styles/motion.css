@@ -118,6 +118,14 @@
       animation-range: entry 30% cover 55%;
     }
 
+    /* From lg the steps run across, so the line draws left to right. */
+    @media (width >= 64rem) {
+      .plan-line {
+        transform-origin: left;
+        animation-name: draw-line-across;
+      }
+    }
+
     @keyframes draw-line {
       from {
         transform: scaleY(0);
@@ -126,6 +134,63 @@
         transform: scaleY(1);
       }
     }
+
+    @keyframes draw-line-across {
+      from {
+        transform: scaleX(0);
+      }
+      to {
+        transform: scaleX(1);
+      }
+    }
+  }
+}
+
+/* Selection flowers (`SelectionFlowers`): the petals open one by one while
+ * `.on`, and fold back last-first when the selection lets go. Under reduced motion they appear and go at once. */
+
+.flower-layer {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  overflow: clip;
+  z-index: 30;
+  pointer-events: none;
+}
+
+.flower {
+  position: absolute;
+}
+
+.flower :is(.petal, .disc) {
+  transform-box: view-box;
+  scale: 0;
+}
+
+.flower.on :is(.petal, .disc) {
+  scale: 1;
+}
+
+@media (prefers-reduced-motion: no-preference) {
+  .flower :is(.petal, .disc) {
+    transition: scale 300ms var(--ease-out-expo);
+  }
+
+  .flower .petal {
+    transition-delay: calc((var(--n) - var(--i)) * 25ms);
+  }
+
+  .flower .disc {
+    transition-delay: calc(var(--n) * 25ms);
+  }
+
+  .flower.on .petal {
+    transition-delay: calc(var(--i) * 45ms);
+  }
+
+  .flower.on .disc {
+    transition-delay: 0ms;
   }
 }
 

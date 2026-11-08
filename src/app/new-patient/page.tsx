@@ -20,8 +20,9 @@ export const metadata = buildMetadata({
 /**
  * The live Book Now page: welcome video, the booking steps, the three
  * statements that gate "Get Started", the booking FAQs. The video is a
- * normal player, not autoplaying. One left-aligned column; no teal field;
- * the page's one bud sits in the hero's open right side.
+ * normal player, not autoplaying. The video, steps and form in one
+ * column at 1-7, the FAQs beside them at 8-12 from lg; no tide field; the
+ * page's one bud sits in the hero's open right side.
  */
 export default async function NewPatientPage() {
   const settings = await getSiteSettings()
@@ -31,8 +32,8 @@ export default async function NewPatientPage() {
     <main id="main">
       <PageHero title={page.title} bud={<Bud size="medium" colour="teal" hideBelow={false} className="top-12 right-[5%] md:right-[12%]" />} />
 
-      <div className="container-x pb-[var(--section-y)]">
-        <div className="max-w-[68ch]">
+      <div className="container-x pb-[var(--section-y)] grid-12 gap-y-16 lg:gap-x-7">
+        <div className="col-span-12 max-w-[68ch] lg:col-span-7">
           <Reveal>
             <video controls preload="metadata" width={1280} height={720} className="w-full rounded-brand bg-grey" aria-label="Welcome to Brio Health">
               <source src={page.videoUrl} type="video/mp4" />
@@ -51,14 +52,14 @@ export default async function NewPatientPage() {
               returningLabel={page.returningLabel}
             />
           </Reveal>
-
-          <Reveal delay={160} className="mt-16">
-            <h2 className="text-h2">{page.faqHeading}</h2>
-            <div className="mt-6">
-              <Accordion items={faqsFor('booking').map(({ question, answer }) => ({ question, answer }))} />
-            </div>
-          </Reveal>
         </div>
+
+        <Reveal delay={160} className="col-span-12 max-w-[68ch] lg:col-span-5 lg:col-start-8">
+          <h2 className="text-h2">{page.faqHeading}</h2>
+          <div className="mt-6">
+            <Accordion items={faqsFor('booking').map(({ question, answer }) => ({ question, answer }))} />
+          </div>
+        </Reveal>
       </div>
     </main>
   )

@@ -23,26 +23,6 @@
             "delay": 0
         },
         {
-            "key": "field_service_closing",
-            "label": "Closing block",
-            "name": "closing",
-            "aria-label": "",
-            "type": "wysiwyg",
-            "instructions": "The \"... at Brio Health\" block shown after the FAQs. Leave empty if the page has none. Paste the clinic's text as written. Headings, lists and bold come through; nothing is rewritten on the website.",
-            "required": 0,
-            "conditional_logic": 0,
-            "wrapper": {
-                "width": "",
-                "class": "",
-                "id": ""
-            },
-            "default_value": "",
-            "tabs": "all",
-            "toolbar": "full",
-            "media_upload": 0,
-            "delay": 0
-        },
-        {
             "key": "field_service_video_loop",
             "label": "Background loop",
             "name": "video_loop",

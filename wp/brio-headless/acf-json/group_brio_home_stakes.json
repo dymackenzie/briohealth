@@ -8,7 +8,7 @@
             "name": "home_stakes_heading",
             "aria-label": "",
             "type": "text",
-            "instructions": "e.g. \"Have you been frustrated with your level of health?\" Under 80 characters.",
+            "instructions": "e.g. \"Don't Let Fatigue Control Your Life\". Under 80 characters.",
             "required": 0,
             "conditional_logic": 0,
             "wrapper": {
@@ -23,12 +23,32 @@
             "append": ""
         },
         {
-            "key": "field_home_stakes_questions",
-            "label": "Questions",
-            "name": "home_stakes_questions",
+            "key": "field_home_stakes_sentence",
+            "label": "One sentence",
+            "name": "home_stakes_sentence",
+            "aria-label": "",
+            "type": "text",
+            "instructions": "Under the heading, e.g. \"What happens if you continue to ignore your health?\" Under 120 characters.",
+            "required": 0,
+            "conditional_logic": 0,
+            "wrapper": {
+                "width": "",
+                "class": "",
+                "id": ""
+            },
+            "default_value": "",
+            "maxlength": 120,
+            "placeholder": "",
+            "prepend": "",
+            "append": ""
+        },
+        {
+            "key": "field_home_stakes_points",
+            "label": "Statements",
+            "name": "home_stakes_points",
             "aria-label": "",
             "type": "repeater",
-            "instructions": "Four short questions, in order.",
+            "instructions": "Short lines in two columns, read row by row. Eight fill four rows.",
             "required": 0,
             "conditional_logic": 0,
             "wrapper": {
@@ -39,18 +59,18 @@
             "layout": "table",
             "pagination": 0,
             "min": 0,
-            "max": 6,
+            "max": 10,
             "collapsed": "",
-            "button_label": "Add question",
+            "button_label": "Add statement",
             "rows_per_page": 20,
             "sub_fields": [
                 {
-                    "key": "field_home_stakes_questions_text",
+                    "key": "field_home_stakes_points_text",
                     "label": "Line",
                     "name": "text",
                     "aria-label": "",
                     "type": "text",
-                    "instructions": "One question. Under 70 characters.",
+                    "instructions": "One statement. Under 60 characters.",
                     "required": 1,
                     "conditional_logic": 0,
                     "wrapper": {
@@ -59,54 +79,10 @@
                         "id": ""
                     },
                     "default_value": "",
-                    "maxlength": 90,
+                    "maxlength": 80,
                     "placeholder": "",
                     "prepend": "",
                     "append": ""
-                }
-            ]
-        },
-        {
-            "key": "field_home_stakes_paragraphs",
-            "label": "Paragraphs",
-            "name": "home_stakes_paragraphs",
-            "aria-label": "",
-            "type": "repeater",
-            "instructions": "The two paragraphs after the questions, as written.",
-            "required": 0,
-            "conditional_logic": 0,
-            "wrapper": {
-                "width": "",
-                "class": "",
-                "id": ""
-            },
-            "layout": "row",
-            "pagination": 0,
-            "min": 0,
-            "max": 3,
-            "collapsed": "",
-            "button_label": "Add paragraph",
-            "rows_per_page": 20,
-            "sub_fields": [
-                {
-                    "key": "field_home_stakes_paragraphs_text",
-                    "label": "Paragraph",
-                    "name": "text",
-                    "aria-label": "",
-                    "type": "textarea",
-                    "instructions": "One paragraph. Under 400 characters.",
-                    "required": 1,
-                    "conditional_logic": 0,
-                    "wrapper": {
-                        "width": "",
-                        "class": "",
-                        "id": ""
-                    },
-                    "default_value": "",
-                    "maxlength": 400,
-                    "rows": 3,
-                    "placeholder": "",
-                    "new_lines": ""
                 }
             ]
         }
