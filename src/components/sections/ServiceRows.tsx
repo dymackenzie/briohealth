@@ -36,12 +36,12 @@ const INLINE_SIZES = '100vw'
  * From md on a device that can hover, the list takes columns 1-7 and one
  * 16:9 panel sits beside it, top-aligned, showing the hovered or focused
  * row's media; moving between rows crossfades the panel (opacity only, so
- * nothing shifts). Leaving keeps the last row's still in the panel, which
- * is calmer than blanking it; the first row's shows before any hover. Only
- * the active row's loop plays (shouldPlayLoop: open, in view, no reduced
- * motion, no save-data, not paused by the visitor); leaving pauses it. The
- * panel's pause button (WCAG 2.2.2) sits on its corner, inside the hover
- * area so reaching for it doesn't stop the loop.
+ * nothing shifts). The panel's row plays on its own, the first row's
+ * before any hover and the last hovered one's after leaving (the client
+ * asked for the panel to autoplay), so only that loop plays
+ * (shouldPlayLoop: open, in view, no reduced motion, no save-data, not
+ * paused by the visitor). The panel's pause button (WCAG 2.2.2) sits on
+ * its corner.
  *
  * Below md, or where the device cannot hover, a disclosure button beside
  * the link (never inside it) opens one row at a time to show its media
@@ -157,7 +157,7 @@ export function ServiceRows({ items, label }: { items: ServiceRowItem[]; label: 
                   shown === item.slug ? 'opacity-100' : 'pointer-events-none opacity-0'
                 }`}
               >
-                <Media item={item} play={active === item.slug} paused={Boolean(paused[item.slug])} sizes={SIDE_SIZES} />
+                <Media item={item} play={shown === item.slug} paused={Boolean(paused[item.slug])} sizes={SIDE_SIZES} />
               </div>
             ))}
           </div>

@@ -2,8 +2,8 @@
  * Loop playback is decided by a pure function so the gates are testable:
  * the visitor's own pause, reduced motion and save-data win over
  * everything; a service row plays while it is open and its media is in
- * view (open means hovered or focused where the device can hover, toggled
- * by the row's disclosure button where it cannot; a closed row's media is
+ * view (open means shown in the side panel where the device can hover,
+ * toggled by the row's disclosure button where it cannot; a closed row's media is
  * clipped to nothing, so it is never in view); the service hero plays
  * while in view. The component feeds this the live values and calls
  * play()/pause().
