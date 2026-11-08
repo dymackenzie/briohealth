@@ -211,8 +211,7 @@
   letter-spacing: -0.01em;
 }
 
-/* The blog's titles (a post, the archive's heading), Substack's way: bold
- * sans, capped at 32px. */
+/* A blog post's title, Substack's way: bold sans, capped at 32px. */
 @utility text-post-title {
   font-family: var(--font-sans);
   font-weight: 700;
@@ -222,7 +221,7 @@
   text-wrap: balance;
 }
 
-/* The blog's metadata (dates, bylines, the archive's month headings):
+/* The blog's metadata (dates, bylines, the list's month headings):
  * small capitals in ink-soft. Below the 15px floor on purpose: capitals at
  * 13px stand as tall as lowercase at 18px. Never an eyebrow over a heading. */
 @utility text-meta {

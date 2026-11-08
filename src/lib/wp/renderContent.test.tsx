@@ -354,6 +354,15 @@ describe('postSummary', () => {
     expect(postSummary(post)).toBe('September has a way of making us want to reset. Summer schedules shift.')
   })
 
+  it("skips the writer's byline at the top of the body", () => {
+    const post = {
+      title: rendered('Acupuncture for Better Sleep'),
+      excerpt: rendered(''),
+      content: rendered('<p>By: Dr. Jeffrey Lee, N.D., R.Ac.<br>Naturopathic Physician &amp; Registered Acupuncturist</p><p>If you have been waking up exhausted.</p>'),
+    }
+    expect(postSummary(post)).toBe('If you have been waking up exhausted.')
+  })
+
   it('clips the fallback on a word boundary', () => {
     const post = { title: rendered('T'), excerpt: rendered(''), content: rendered('<p>' + 'word '.repeat(80) + '</p>') }
     const text = postSummary(post, 50)

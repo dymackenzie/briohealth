@@ -604,7 +604,8 @@ export function showsImage(html: string, imageUrl: string): boolean {
 /**
  * A post's summary for the list, meta description and feed. Avada posts
  * come back from the API with an empty excerpt, so those fall back to their
- * opening paragraphs, skipping one that only repeats the title.
+ * opening paragraphs, skipping one that only repeats the title and the
+ * writer's "By: Dr. Jeffrey Lee, N.D., R.Ac. ..." line.
  */
 export function postSummary(post: { title: Rendered; excerpt: Rendered; content?: Rendered }, limit = 180): string {
   const excerpt = plainExcerpt(post.excerpt.rendered, limit)
@@ -612,7 +613,7 @@ export function postSummary(post: { title: Rendered; excerpt: Rendered; content?
 
   const title = decodeTitle(post.title.rendered).toLowerCase()
   const text = paragraphsOf(post.content.rendered)
-    .filter((p) => p.toLowerCase() !== title)
+    .filter((p) => p.toLowerCase() !== title && !/^by:/i.test(p))
     .join(' ')
   return clip(text, limit)
 }
