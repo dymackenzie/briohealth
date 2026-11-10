@@ -50,7 +50,7 @@ export function HomeHero({ content, cta }: { content: HomeContent['hero']; cta: 
             <h1 id="hero-heading" className={displayClass(content.heading)}>
               {content.heading}
             </h1>
-            <p className="text-tagline mt-3 lg:mt-4 lg:text-[1.5rem]">{content.sentence}</p>
+            {content.sentence && <p className="text-tagline mt-3 lg:mt-4 lg:text-[1.5rem]">{content.sentence}</p>}
             <div className="mt-5 lg:mt-6">
               <Button href={BOOKING_PATH} size="lg">
                 {cta}
@@ -69,7 +69,7 @@ export function HomeHero({ content, cta }: { content: HomeContent['hero']; cta: 
           <h1 id="hero-heading" className={`${displayClass(content.heading)} lg:col-span-8`}>
             {content.heading}
           </h1>
-          <p className="text-tagline mt-6 max-w-[26ch] lg:col-span-4 lg:mt-0">{content.sentence}</p>
+          {content.sentence && <p className="text-tagline mt-6 max-w-[26ch] lg:col-span-4 lg:mt-0">{content.sentence}</p>}
           <div className="mt-5 lg:col-span-4 lg:col-start-9">
             <Button href={BOOKING_PATH} size="lg">
               {cta}
