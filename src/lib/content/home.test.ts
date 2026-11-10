@@ -5,10 +5,8 @@ import { reviewsUrl } from '@/lib/site'
 /** Spot checks against the second wireframe (2026-10-24) and the first round's reading notes. */
 describe('homepage content is the wireframe, verbatim', () => {
   it('hero', () => {
-    expect(home.hero).toEqual({
-      heading: 'Reclaim Your Vitality Naturally',
-      sentence: 'Are you tired of feeling exhausted every single day?',
-    })
+    // the tagline is out for now (Dr. Jeff, 2026-11-10)
+    expect(home.hero).toEqual({ heading: 'Reclaim Your Vitality Naturally' })
   })
 
   it('stakes', () => {

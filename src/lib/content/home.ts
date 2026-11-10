@@ -17,7 +17,8 @@ export type ValueIcon = 'path' | 'plant' | 'scales' | 'hand-heart'
 export interface HomeContent {
   hero: {
     heading: string
-    sentence: string
+    // Dr. Jeff took the tagline out to see the hero without it (2026-11-10)
+    sentence?: string
   }
   stakes: {
     heading: string
@@ -55,7 +56,6 @@ export interface HomeContent {
 export const home: HomeContent = {
   hero: {
     heading: 'Reclaim Your Vitality Naturally',
-    sentence: 'Are you tired of feeling exhausted every single day?',
   },
 
   stakes: {

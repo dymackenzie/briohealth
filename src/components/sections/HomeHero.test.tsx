@@ -16,7 +16,7 @@ describe('HomeHero with the photo on', () => {
 
   it('keeps the wireframe words and the booking button', () => {
     expect(html).toContain(home.hero.heading)
-    expect(html).toContain(home.hero.sentence)
+    expect(html).not.toContain('text-tagline')
     expect(html).toContain(`href="${BOOKING_PATH}"`)
   })
 })

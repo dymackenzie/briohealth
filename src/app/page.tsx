@@ -21,8 +21,9 @@ export const metadata = buildMetadata({
 })
 
 /**
- * Wireframe order: hero, stakes, value, services, trust, plan, explanatory
- * paragraph; the footer is the junk drawer. Stakes and Value pair up from lg,
+ * Wireframe order: hero, stakes, value, trust, plan, explanatory paragraph,
+ * then the services (Dr. Jeff moved them under it, 2026-11-10, with no top
+ * padding so Explain's is the gap); the footer is the junk drawer. Stakes and Value pair up from lg,
  * problem then answer.
  */
 export default async function HomePage() {
@@ -36,12 +37,12 @@ export default async function HomePage() {
         <Stakes content={home.stakes} cta={settings.ctaLabel} />
         <Value content={home.value} cta={settings.ctaLabel} />
       </div>
-      <div className="container-x section-y">
-        <ServiceList order={home.services.order} />
-      </div>
       <Trust content={home.trust} cta={settings.ctaLabel} />
       <Plan content={home.plan} cta={settings.ctaLabel} />
       <Explain content={home.explain} cta={settings.ctaLabel} />
+      <div className="container-x pb-[var(--section-y)]">
+        <ServiceList order={home.services.order} />
+      </div>
     </main>
   )
 }
